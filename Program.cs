@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.IO;
+using Noesis.Javascript;
 
 namespace TrifleJS
 {
@@ -10,20 +12,71 @@ namespace TrifleJS
         [STAThread]
         static void Main(string[] args)
         {
+            // Usage
             if (args.Length < 1) {
                 Usage();
                 return;
             }
 
-            string url = args[0];
+            // Self test
+            if (args[0] == "--test") {
+                Test();
+                return;
+            }
+
+            // Render
+            if (args[0].StartsWith("--render:")) {
+                string url = args[0].Replace("--render:", "");
+                Render(url);
+            }
+
+            // Execute
+            if (args[0].StartsWith("--open:"))
+            {
+                string filename = args[0].Replace("--open:", "");
+                Open(filename);
+            }
+
+            Console.Read();
+
+        }
+
+        static void Usage() {
+            Console.WriteLine("Usage: triflejs.exe [options]");
+            Console.WriteLine();
+            Console.WriteLine("Options: ");
+            Console.WriteLine("  --test          Runs a System Test.");
+            Console.WriteLine("  --render:url    Opens a url and renders into a file.");
+            Console.WriteLine("  --open:file     Opens a file and executes in V8 engine API.");
+
+        }
+
+        static void Test() { 
+        
+        }
+
+        static void Render(string url) {
             Console.WriteLine("Opening " + url + "...");
+
+            // Check the URL
+            Uri uri;
+            try
+            {
+                uri = new Uri(url);
+            }
+            catch
+            {
+                Console.WriteLine("Unable to open url: " + url);
+                return;
+            }
+
+            // Continue if ok
             using (var browser = new Browser())
             {
-
                 browser.Size = new Size(1024, 700);
                 browser.Navigate(url); //a file or a url
                 browser.ScrollBarsEnabled = false;
-                browser.Render("url.png");
+                browser.Render(uri.Host + ".png");
 
                 while (browser.ReadyState != System.Windows.Forms.WebBrowserReadyState.Complete)
                 {
@@ -32,8 +85,49 @@ namespace TrifleJS
             }
         }
 
-        static void Usage() {
-            Console.WriteLine("Usage: triflejs.exe [url]");
+        static void Open(string filename) {
+            if (!File.Exists(filename))
+            {
+                Console.WriteLine(String.Format("File does not exist: {0}", filename));
+                return;
+            }
+
+            //Initialize a context
+            using (JavascriptContext context = new JavascriptContext()) {
+
+                // Setting external parameters for the context
+                context.SetParameter("console", new Host.console());
+                context.SetParameter("require", new Host.require());
+                context.SetParameter("message", "Hello World !");
+                context.SetParameter("number", 1);
+
+                // Initialise host env
+                context.Run(@"
+this._require = this.require;
+this.require = function(module) {
+   return this.require.create(module);
+}
+this.require.create = this._require.create;
+delete this._require;
+                ");
+
+                // Script
+                string script = File.ReadAllText(filename);
+
+                // Running the script
+                try
+                {
+                    context.Run(script);
+                }
+                catch (Noesis.Javascript.JavascriptException ex) {
+                    // Remove refs to Host environment
+                    string message = ex.Message.Replace("TrifleJS.Host+", "");
+                    Console.WriteLine(String.Format("Line {0}: {1}", ex.Line, message));
+                }
+
+                // Getting a parameter
+                //Console.WriteLine("number: " + context.GetParameter("number"));
+            }
         }
     }
 }

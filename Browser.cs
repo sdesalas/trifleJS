@@ -19,7 +19,6 @@ namespace TrifleJS
                     pic.Save(fileName);
                 }
             };
-
         }
     }
 }
