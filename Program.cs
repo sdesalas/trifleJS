@@ -9,6 +9,8 @@ namespace TrifleJS
 {
     class Program
     {
+        public static JavascriptContext context;
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -93,23 +95,17 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (JavascriptContext context = new JavascriptContext()) {
+            using (Program.context = new JavascriptContext()) {
 
                 // Setting external parameters for the context
                 context.SetParameter("console", new Host.console());
-                context.SetParameter("require", new Host.require());
-                context.SetParameter("message", "Hello World !");
-                context.SetParameter("number", 1);
+                context.SetParameter("phantom", new Host.phantom());
+                context.SetParameter("_interop", new Host._interop());
 
                 // Initialise host env
-                context.Run(@"
-this._require = this.require;
-this.require = function(module) {
-   return this.require.create(module);
-}
-this.require.create = this._require.create;
-delete this._require;
-                ");
+                context.Run(TrifleJS.Properties.Resources.triflejs_core);
+                context.Run(TrifleJS.Properties.Resources.triflejs_modules);
+                context.Run(TrifleJS.Properties.Resources.initialize);
 
                 // Script
                 string script = File.ReadAllText(filename);

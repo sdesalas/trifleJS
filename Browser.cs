@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-
 namespace TrifleJS
 {
     public class Browser : System.Windows.Forms.WebBrowser

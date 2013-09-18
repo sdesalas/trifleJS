@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
+    </Reference>
     <Reference Include="Noesis.Javascript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ae36d046c7f89f85, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -51,24 +55,44 @@
     <Compile Include="Browser.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Callback.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="WebPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Libs\Microsoft.VC90.CRT.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="examples\phantomwebintro.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="examples\simple-example.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="includes\initialize.js" />
+    <Content Include="includes\initialize.old.js" />
+    <Content Include="includes\triflejs.core.js" />
+    <Content Include="includes\triflejs.modules.js" />
     <Content Include="Libs\msvcm90.dll" />
     <Content Include="Libs\msvcp90.dll" />
     <Content Include="Libs\msvcr90.dll" />
     <Content Include="Libs\Noesis.Javascript.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
