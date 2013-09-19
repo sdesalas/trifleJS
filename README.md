@@ -1,8 +1,11 @@
 trifleJS
 ========
 
-An IE (Trident engine) port of PhantomJS
+An Headless Internet Explorer browser using the [WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the V8 enging.
 
+The API is coded as a port of PhantomJS to reduce the learning curve.
+
+It supports different version of IE (IE7, IE8, IE9 and IE10) interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
 
 The following is a list of features that have been ported from PhantomJS.
 
