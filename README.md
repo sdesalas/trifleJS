@@ -5,7 +5,7 @@ An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://m
 
 The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
 
-It supports different version of IE (IE7, IE8, IE9 and IE10) interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
+It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
 
 The following is a list of features that have been ported from PhantomJS.
 
