@@ -3,7 +3,7 @@ trifleJS
 
 An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
 
-The API is coded as a port of PhantomJS to reduce the learning curve.
+The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
 
 It supports different version of IE (IE7, IE8, IE9 and IE10) interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
 
