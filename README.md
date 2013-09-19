@@ -18,5 +18,7 @@ The following is a list of features that have been ported from PhantomJS.
 |webpage.evaluateJavaScript() | Yep      |                              |
 |webpage.injectJs()           | Yep      |                              |
 |webpage.includeJs()          | Partial  | No Callback yet              |
+|webpage#onConsoleMessage     | Nope     |                              |
+|webpage#onError              | Nope     |                              |
 |webpage#onLoadStarted        | Yep      |                              |
 |webpage#onLoadFinished       | Yep      |                              |
