@@ -9,7 +9,7 @@ The following is a list of features that have been ported from PhantomJS.
 |Feature                      | Status   | Notes                        |
 |-----------------------------|----------|------------------------------|
 |phantom.exit()               | Yep      |                              |
-|-----------------------------|----------|------------------------------|
+|*WebPage*|
 |webpage.open()               | Yep      | Callback included            |
 |webpage.render()             | Yep      |                              |
 |webpage.renderBase64()       | Yep      |                              |
