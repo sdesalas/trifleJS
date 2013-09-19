@@ -1,4 +1,4 @@
-trifleJS
+trifleJS 0.1
 =========
 
 An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
@@ -26,3 +26,5 @@ The following is a list of features that have been ported from PhantomJS.
 |webpage#onError                          | Nope     |                              |
 |webpage#onLoadStarted                    | Yep      |                              |
 |webpage#onLoadFinished                   | Yep      |                              |
+
+This code is still very much in beta. Check again for updates.
