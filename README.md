@@ -6,20 +6,20 @@ An IE (Trident engine) port of PhantomJS
 
 The following is a list of features that have been ported from PhantomJS.
 
-|Feature                      | Status   | Notes                        |
-|-----------------------------|----------|------------------------------|
-|**phantom**                  |
-|phantom.version              | Yep      |                              |
-|phantom.exit()               | Yep      |                              |
-|**webpage**                  |
-|webpage.open()               | Yep      | Callback included            |
-|webpage.render()             | Yep      |                              |
-|webpage.renderBase64()       | Yep      |                              |
-|webpage.evaluate()           | Yep      |                              |
-|webpage.evaluateJavaScript() | Yep      |                              |
-|webpage.injectJs()           | Yep      |                              |
-|webpage.includeJs()          | Partial  | No Callback yet              |
-|webpage#onConsoleMessage     | Nope     |                              |
-|webpage#onError              | Nope     |                              |
-|webpage#onLoadStarted        | Yep      |                              |
-|webpage#onLoadFinished       | Yep      |                              |
+|Feature                                  | Status   | Notes                        |
+|-----------------------------------------|----------|------------------------------|
+|**phantom**                              |
+|phantom.version                          | Yep      |                              |
+|phantom.exit()                           | Yep      |                              |
+|**webpage**                              |
+|webpage.open(url, callback)              | Yep      | Callback included            |
+|webpage.render(filename)                 | Yep      |                              |
+|webpage.renderBase64(format)             | Yep      |                              |
+|webpage.evaluate(function, arg1, arg2,..)| Yep      |                              |
+|webpage.evaluateJavaScript(str)          | Yep      |                              |
+|webpage.includeJs(url, callback)         | Partial  | No Callback yet              |
+|webpage.injectJs(filename)               | Yep      |                              |
+|webpage#onConsoleMessage                 | Nope     |                              |
+|webpage#onError                          | Nope     |                              |
+|webpage#onLoadStarted                    | Yep      |                              |
+|webpage#onLoadFinished                   | Yep      |                              |
