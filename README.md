@@ -8,12 +8,13 @@ The following is a list of features that have been ported from PhantomJS.
 
 |Feature                      | Status   | Notes                        |
 |-----------------------------|----------|------------------------------|
+|**phantom**                  |
 |phantom.exit()               | Yep      |                              |
-|*WebPage*|
+|**webpage**                  |
 |webpage.open()               | Yep      | Callback included            |
 |webpage.render()             | Yep      |                              |
 |webpage.renderBase64()       | Yep      |                              |
+|webpage.evaluate()           | Yep      |                              |
 |webpage.evaluateJavaScript() | Yep      |                              |
 |webpage.injectJs()           | Yep      |                              |
-|webpage.evaluate()           | Yep      |                              |
 |webpate.includeJs()          | Partial  | No Callback yet              |
