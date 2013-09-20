@@ -9,7 +9,7 @@ It supports different version of IE interchangeably depending on the current ver
 
     TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
 
-
+![IE 8](https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png "Running as IE 8")
 
 The following is a list of features that have been ported from PhantomJS.
 
