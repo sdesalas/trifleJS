@@ -7,6 +7,10 @@ The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the le
 
 It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
 
+    TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
+
+
+
 The following is a list of features that have been ported from PhantomJS.
 
 |Feature                                  | Status   | Notes                        |
