@@ -13,13 +13,13 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <title>Triflejs by sdesalas</title>
+    <title>TrifleJS by sdesalas</title>
   </head>
 
   <body>
     <header>
       <div class="inner">
-        <h1>Triflejs</h1>
+        <h1>TrifleJS</h1>
         <h2>A headless Trident engine (Internet Explorer) with a Javascript API. Port of PhantomJS</h2>
         <a href="https://github.com/sdesalas/trifleJS" class="button"><small>View project on</small>GitHub</a>
       </div>
@@ -29,7 +29,7 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h1>
-<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>trifleJS 0.1</h1>
+<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>TrifleJS 0.1</h1>
 
 <p>An Headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
 
@@ -46,85 +46,85 @@
 
 <table>
 <thead><tr>
-<th>Feature</th>
-<th>Status</th>
-<th>Notes</th>
+<th align="left">Feature</th>
+<th align="left">Status</th>
+<th align="left">Notes</th>
 </tr></thead>
 <tbody>
 <tr>
-<td><strong>phantom</strong></td>
-<td></td>
-<td></td>
+<td align="left"><strong>phantom</strong></td>
+<td align="left"></td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>phantom.version</td>
-<td>Yep</td>
-<td></td>
+<td align="left">phantom.version</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>phantom.exit()</td>
-<td>Yep</td>
-<td></td>
+<td align="left">phantom.exit()</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td><strong>webpage</strong></td>
-<td></td>
-<td></td>
+<td align="left"><strong>webpage</strong></td>
+<td align="left"></td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage.open(url, callback)</td>
-<td>Yep</td>
-<td>Callback included</td>
+<td align="left">webpage.open(url, callback)</td>
+<td align="left">Yep</td>
+<td align="left">Callback included</td>
 </tr>
 <tr>
-<td>webpage.render(filename)</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage.render(filename)</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage.renderBase64(format)</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage.renderBase64(format)</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage.evaluate(function, arg1, arg2,..)</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage.evaluate(function, arg1, arg2,..)</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage.evaluateJavaScript(str)</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage.evaluateJavaScript(str)</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage.includeJs(url, callback)</td>
-<td>Partial</td>
-<td>No Callback yet</td>
+<td align="left">webpage.includeJs(url, callback)</td>
+<td align="left">Partial</td>
+<td align="left">No Callback yet</td>
 </tr>
 <tr>
-<td>webpage.injectJs(filename)</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage.injectJs(filename)</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage#onConsoleMessage</td>
-<td>Nope</td>
-<td></td>
+<td align="left">webpage#onConsoleMessage</td>
+<td align="left">Nope</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage#onError</td>
-<td>Nope</td>
-<td></td>
+<td align="left">webpage#onError</td>
+<td align="left">Nope</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage#onLoadStarted</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage#onLoadStarted</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td>webpage#onLoadFinished</td>
-<td>Yep</td>
-<td></td>
+<td align="left">webpage#onLoadFinished</td>
+<td align="left">Yep</td>
+<td align="left"></td>
 </tr>
 </tbody>
 </table><p>This code is still very much in beta. Check again for updates.</p>
@@ -147,6 +147,16 @@
       </div>
     </div>
 
-  
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-44203170-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
