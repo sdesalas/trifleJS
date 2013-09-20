@@ -1,43 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>TrifleJS by sdesalas</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>TrifleJS</h1>
-        <h2>A headless Trident engine (Internet Explorer) with a Javascript API. Port of PhantomJS</h2>
-        <a href="https://github.com/sdesalas/trifleJS" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
-<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>TrifleJS 0.1</h1>
+      <header>
+        <h1>TrifleJS</h1>
+        <p>A headless Trident engine (Internet Explorer) with a Javascript API. Port of PhantomJS</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/sdesalas/trifleJS" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/sdesalas/trifleJS/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/sdesalas/trifleJS/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>trifleJS 0.1</h1>
 
 <p>An Headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
 
 <p>The API is coded as a port of <a href="http://phantomjs.org">PhantomJS</a> to reduce the learning curve.</p>
 
+<p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png" alt="What is TrifleJS?" title="What is TrifleJS?"></p>
+
 <p>It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).</p>
 
-<pre><code>TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
+<pre><code>C:\&gt; TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
 </code></pre>
 
 <p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png" alt="IE 8" title="Running as IE 8"></p>
@@ -46,108 +59,96 @@
 
 <table>
 <thead><tr>
-<th align="left">Feature</th>
-<th align="left">Status</th>
-<th align="left">Notes</th>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><strong>phantom</strong></td>
-<td align="left"></td>
-<td align="left"></td>
+<td><strong>phantom</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td align="left">phantom.version</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>phantom.version</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">phantom.exit()</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>phantom.exit()</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left"><strong>webpage</strong></td>
-<td align="left"></td>
-<td align="left"></td>
+<td><strong>webpage</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage.open(url, callback)</td>
-<td align="left">Yep</td>
-<td align="left">Callback included</td>
+<td>webpage.open(url, callback)</td>
+<td>Yep</td>
+<td>Callback included</td>
 </tr>
 <tr>
-<td align="left">webpage.render(filename)</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage.render(filename)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage.renderBase64(format)</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage.renderBase64(format)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage.evaluate(function, arg1, arg2,..)</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage.evaluate(function, arg1, arg2,..)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage.evaluateJavaScript(str)</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage.evaluateJavaScript(str)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage.includeJs(url, callback)</td>
-<td align="left">Partial</td>
-<td align="left">No Callback yet</td>
+<td>webpage.includeJs(url, callback)</td>
+<td>Partial</td>
+<td>No Callback yet</td>
 </tr>
 <tr>
-<td align="left">webpage.injectJs(filename)</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage.injectJs(filename)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage#onConsoleMessage</td>
-<td align="left">Nope</td>
-<td align="left"></td>
+<td>webpage#onConsoleMessage</td>
+<td>Nope</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage#onError</td>
-<td align="left">Nope</td>
-<td align="left"></td>
+<td>webpage#onError</td>
+<td>Nope</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage#onLoadStarted</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage#onLoadStarted</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
-<td align="left">webpage#onLoadFinished</td>
-<td align="left">Yep</td>
-<td align="left"></td>
+<td>webpage#onLoadFinished</td>
+<td>Yep</td>
+<td></td>
 </tr>
 </tbody>
 </table><p>This code is still very much in beta. Check again for updates.</p>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/sdesalas/trifleJS/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/sdesalas/trifleJS/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/sdesalas/trifleJS"></a> is maintained by <a href="https://github.com/sdesalas">sdesalas</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/sdesalas">sdesalas</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
     </div>
-
-            <script type="text/javascript">
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
