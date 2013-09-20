@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="initialize" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\includes\initialize.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="triflejs_core" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\triflejs.core.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="triflejs_init" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\includes\triflejs.init.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="triflejs_modules" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\triflejs.modules.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

@@ -61,44 +61,11 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /*
-        ///* initialize.js
-        ///*
-        ///* By: Steven de Salas
-        ///* On: Sep 2013
-        ///* 
-        ///*
-        ///* Runs a whole set of instructions to initialize 
-        ///* the host environment.
-        ///*
-        ///* This is particularly important in order to pipe
-        ///* asyncronous callbacks as these are not currently
-        ///* supported in the Javascript.NET project.
-        ///* 
-        ///*/
-        ///
-        ///
-        ///console.debug(&quot;Initializing require()&quot;);
-        ///
-        ///// Loading module framework
-        ///// @see http://wiki.commonjs.org/wiki/Modules/1.1.1
-        ///this.exports = {
-        ///    webpage: function() {
-        ///        return new triflejs.modul [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string initialize {
-            get {
-                return ResourceManager.GetString("initialize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 
         ///// Initialise Namespace
         ///this.triflejs = this.triflejs || {};
         ///
-        ///(function() {
-        ///
+        ///(function(GLOBAL) {
         ///
         ///    // Add UID generation
         ///    triflejs.uid = function() {
@@ -111,12 +78,12 @@ namespace TrifleJS.Properties {
         ///        return s4() + s4();
         ///    };
         ///
-        ///    // Initialize callback hashmap
-        ///    triflejs.callbacks = {};
+        ///    // Set interop inside trifle
+        ///    triflejs._interop = GLOBAL._interop;
+        ///    delete GLOBAL._interop;
         ///
-        ///    // Initialize Callback
-        ///    triflejs.Callback = function(func, scope, defaultArgs) {
-        ///      [rest of string was truncated]&quot;;.
+        ///    // Initialize callback hashmap
+        ///    triflejs.cal [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_core {
             get {
@@ -125,25 +92,55 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Initialise Namespace
+        ///   Looks up a localized string similar to /*
+        ///* triflejs.init.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///*
+        ///* Runs instructions to initialize the host environment.
+        ///*
+        ///* This is particularly important in order to pipe
+        ///* asyncronous callbacks as these are not currently
+        ///* supported in the Javascript.NET project.
+        ///* 
+        ///*/
+        ///
+        ///
+        ///console._debug(&quot;Initializing require()&quot;);
+        ///
+        ///// Loading module framework
+        ///// @see http://wiki.commonjs.org/wiki/Modules/1.1.1
+        ///this.exports = {
+        ///    webpage: function() {
+        ///        return new triflejs.modules.WebPage();
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string triflejs_init {
+            get {
+                return ResourceManager.GetString("triflejs_init", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///// Initialise Namespace
         ///this.triflejs = this.triflejs || {};
         ///
-        ///(function() {
+        ///// Wrap code to avoid global vars
+        ///(function(triflejs) {
         ///
-        ///triflejs.modules = {
+        ///    // Define namespace
+        ///    modules = triflejs.modules = triflejs.modules || {};
         ///
-        ///    // A javascript wrapper for the host WebPage class
-        ///    WebPage: function() {
-        ///
-        ///        var page = {
-        ///            host: exports[name]()
-        ///        };
-        ///        
-        ///        page.open = function(url, callback) {
-        ///            return page.host.Open(url, (new triflejs.Callback(function(status) {
-        ///                console.log(&apos;callback done&apos;, arguments);
-        ///                if (page.onLoadFinished) {
-        ///            [rest of string was truncated]&quot;;.
+        ///    // WebPage Class
+        ///    // Define Constructor
+        ///    var WebPage = triflejs.modules.WebPage = function() {
+        ///        console._debug(&quot;new WebPage()&quot;);
+        ///        // Instantiate a C# webpage and store it in _interop property
+        ///        this._interop = triflejs._interop[&apos;WebPage&apos;]();
+        ///        // Fire Initia [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_modules {
             get {

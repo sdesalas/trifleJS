@@ -16,23 +16,18 @@ namespace TrifleJS
 
         public WebPage() {
             this.browser = new Browser();
-            this.browser.Size = new Size(1024, 700);
+            this.browser.Size = new Size(1024, 800);
             this.browser.ScrollBarsEnabled = false;
         }
 
         public void Render(string filename)
         {
-            using (var pic = new Bitmap(browser.Width, browser.Height))
-            {
-                NativeMethods.GetImage(browser.ActiveXInstance, pic, Color.White);
-                pic.Save(filename);
-            }
+            browser.Render(filename);
         }
 
         public string RenderBase64(string format) { 
-            using (var pic = new Bitmap(browser.Width, browser.Height))
+            using (var pic = browser.Render())
             {
-                NativeMethods.GetImage(browser.ActiveXInstance, pic, Color.White);
                 MemoryStream stream = new MemoryStream();
                 switch (format.ToUpper()) { 
                     case "JPG":
@@ -83,32 +78,22 @@ namespace TrifleJS
         }
 
         // @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
-        //public object EvaluateJavaScript(string code)
-        //{
-        //    HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
-        //    if (head != null)
-        //    {
-        //        HtmlElement scriptEl = browser.Document.CreateElement("script");
-        //        IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-        //        string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
-        //        element.text = String.Format("function {0}() {{ {1} }}", guid, code);
-        //        head[0].AppendChild(scriptEl);
-        //        return browser.Document.InvokeScript(guid);
-        //    }
-        //    return null;
-        //}
-
-        public object EvaluateJavaScript(string code)
+        public void EvaluateJavaScript(string code)
         {
             HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
             if (head != null)
             {
-                HtmlElement scriptEl = browser.Document.CreateElement("script");
-                IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-                element.text = code;
-                head[0].AppendChild(scriptEl);
+                try
+                {
+                    HtmlElement scriptEl = browser.Document.CreateElement("script");
+                    IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                    element.text = code;
+                    head[0].AppendChild(scriptEl);
+                }
+                catch (Exception ex){
+                    Utils.Debug(ex.Message);
+                }
             }
-            return null;
         }
 
         public object Evaluate(string function, object[] args)
@@ -117,7 +102,27 @@ namespace TrifleJS
             string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
             string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
             EvaluateJavaScript(script);
-            return browser.Document.InvokeScript(guid);
+            object result = browser.Document.InvokeScript(guid);
+            return result;
+        }
+
+        public void IncludeJsWebClient(string url, string callbackId)
+        {
+            Uri uri = TryParse(url);
+            if (uri != null)
+            {
+                // Fetch remotely
+                WebClient client = new WebClient();
+                //client.DownloadStringCompleted += (sender, e) =>
+                //{
+                //    EvaluateJavaScript(e.Result);
+                //    Callback.execute(callbackId);
+                //};
+                //client.DownloadStringAsync(uri);
+                string script = client.DownloadString(uri);
+                EvaluateJavaScript(script);
+            }
+
         }
 
         public void IncludeJs(string url, string callbackId)
@@ -125,16 +130,17 @@ namespace TrifleJS
             Uri uri = TryParse(url);
             if (uri != null)
             {
-                // Fetch remotely
-                WebClient client = new WebClient();
-                client.DownloadStringCompleted += (sender, e) =>
+                HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
+                if (head != null)
                 {
-                    EvaluateJavaScript(e.Result);
-                    Callback.execute(callbackId);
-                };
-                client.DownloadStringAsync(uri);
+                    HtmlElement scriptEl = browser.Document.CreateElement("script");
+                    IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                    element.src = url;
+                    element.type = "text/javascript";
+                    head[0].AppendChild(scriptEl);
+                }
+                Callback.execute(callbackId);
             }
-
         }
 
         public void InjectJs(string filename) {

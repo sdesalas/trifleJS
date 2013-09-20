@@ -8,8 +8,13 @@ namespace TrifleJS
     public class Callback
     {
         public static bool execute(string id, params object[] arguments) {
-
-            Program.context.Run(String.Format(@"triflejs.callbacks['{0}'].execute({1});", id, String.Join(",", parse(arguments))));
+            try
+            {
+                Program.context.Run(String.Format(@"triflejs.callbacks['{0}'].execute({1});", id, String.Join(",", parse(arguments))));
+            }
+            catch (Noesis.Javascript.JavascriptException ex) {
+                Host.Handle(ex);
+            }
             return true;
         }
 

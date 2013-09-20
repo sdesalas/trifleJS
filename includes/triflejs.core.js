@@ -1,8 +1,8 @@
 ﻿
-// Initialise Namespace
-this.triflejs = this.triflejs || {};
-
 (function(GLOBAL) {
+
+    // Initialise Namespace
+    var triflejs = GLOBAL.triflejs = GLOBAL.triflejs || {};
 
     // Add UID generation
     triflejs.uid = function() {
@@ -16,8 +16,8 @@ this.triflejs = this.triflejs || {};
     };
 
     // Set interop inside trifle
-    triflejs._interop = GLOBAL._interop;
-    delete GLOBAL._interop;
+    triflejs._interop = GLOBAL.interop;
+    delete GLOBAL.interop;
 
     // Initialize callback hashmap
     triflejs.callbacks = {};
@@ -29,20 +29,20 @@ this.triflejs = this.triflejs || {};
         this.scope = scope;
         this.defaultArgs = defaultArgs;
         this.id = triflejs.uid();
-        console.debug('new Callback#' + this.id + '(func, scope, defaultArgs)');
+        console.xdebug('new Callback#' + this.id + '(func, scope, defaultArgs)');
         triflejs.callbacks[this.id] = this;
     };
 
     // Callback execution
     Callback.prototype.execute = function() {
-        console.debug('Callback#' + this.id + '.prototype.execute()');
+        console.xdebug('Callback#' + this.id + '.prototype.execute()');
         this.func.apply(this.scope || this, arguments || this.defaultArgs)
     }
 
-
-    // PhantomJs
+    // PhantomJS Compatibility
     this.phantom = this.phantom || {};
     phantom.version = { 'major': 1, 'minor': 0, 'patch': 0 };
+    phantom.exit = triflejs.exit;
 
 
     // Console
@@ -51,17 +51,23 @@ this.triflejs = this.triflejs || {};
         clear: function() {
             this.host.clear();
         },
+        wait: function(milliseconds) {
+            this.host.wait(milliseconds || 1000);
+        },
         log: function() {
             this._do('log', arguments);
         },
         error: function() {
             this._do('error', arguments);
         },
+        xdebug: function() {
+            this._do('xdebug', arguments);
+        },
         debug: function() {
             this._do('debug', arguments);
         },
-        warning: function() {
-            this._do('warning', arguments);
+        warn: function() {
+            this._do('warn', arguments);
         },
         _do: function(method, args) {
             if (method) {

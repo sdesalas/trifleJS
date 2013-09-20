@@ -11,7 +11,7 @@ this.triflejs = this.triflejs || {};
     // WebPage Class
     // Define Constructor
     var WebPage = triflejs.modules.WebPage = function() {
-        console.debug("new WebPage()");
+        console.xdebug("new WebPage()");
         // Instantiate a C# webpage and store it in _interop property
         this._interop = triflejs._interop['WebPage']();
         // Fire Initialized event
@@ -22,7 +22,7 @@ this.triflejs = this.triflejs || {};
 
     // Open URL
     WebPage.prototype.open = function(url, callback) {
-        console.debug("WebPage.prototype.open(url, callback)");
+        console.xdebug("WebPage.prototype.open(url, callback)");
         var page = this;
         // Fire LoadStarted event
         if (this.onLoadStarted) {
@@ -39,7 +39,7 @@ this.triflejs = this.triflejs || {};
 
     // Evaluate JS
     WebPage.prototype.evaluateJavaScript = function(code) {
-        console.debug("WebPage.prototype.evaluateJavaScript(code)");
+        console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
         if (code && code.length) {
             return this._interop.EvaluateJavaScript(code);
         }
@@ -47,7 +47,7 @@ this.triflejs = this.triflejs || {};
 
     // Evaluate Function
     WebPage.prototype.evaluate = function(func) {
-        console.debug("WebPage.prototype.evaluate(func)", arguments);
+        console.xdebug("WebPage.prototype.evaluate(func)");
         if (typeof func === 'function') {
             var args = [];
             for (var i = 1; i < arguments.length; i++) {
@@ -61,7 +61,7 @@ this.triflejs = this.triflejs || {};
 
     // Inject JS file
     WebPage.prototype.injectJs = function(filename) {
-        console.debug("WebPage.prototype.injectJs(filename)", arguments);
+        console.xdebug("WebPage.prototype.injectJs(filename)", arguments);
         if (typeof filename === 'string') {
             return this._interop.InjectJs(filename);
         }
@@ -69,7 +69,7 @@ this.triflejs = this.triflejs || {};
 
     // Include remote JS
     WebPage.prototype.includeJs = function(url, callback) {
-        console.debug("WebPage.prototype.includeJs(url, callback)", arguments, typeof url);
+        console.xdebug("WebPage.prototype.includeJs(url, callback)", arguments, typeof url);
         var page = this;
         if (typeof url === 'string') {
             return this._interop.IncludeJs(url, (new triflejs.Callback(function() {
@@ -83,7 +83,7 @@ this.triflejs = this.triflejs || {};
 
     // Render File
     WebPage.prototype.render = function(filename) {
-        console.debug("WebPage.prototype.render(filename)");
+        console.xdebug("WebPage.prototype.render(filename)");
         if (filename) {
             return this._interop.Render(filename)
         };
@@ -91,14 +91,14 @@ this.triflejs = this.triflejs || {};
 
     // Render to Base64 string
     WebPage.prototype.renderBase64 = function(format) {
-        console.debug("WebPage.prototype.renderBase64(format)");
+        console.xdebug("WebPage.prototype.renderBase64(format)");
         return this._interop.RenderBase64(format || "PNG");
     }
 
     // FileSystem Class
     // Define Constructor
     triflejs.FileSystem = function() {
-        console.debug("new FileSystem()");
+        console.xdebug("new FileSystem()");
         // Instantiate a C# webpage and store it in _interop property
         this._interop = triflejs._interop['FileSystem']();
     }

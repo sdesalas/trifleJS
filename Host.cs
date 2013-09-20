@@ -5,33 +5,54 @@ using System.Web.Script.Serialization;
 
 namespace TrifleJS
 {
+    /// <summary>
+    /// Defines how the JavaScript context interacts with C# objects.
+    /// </summary>
     public class Host
     {
+        /// <summary>
+        /// Defines functionality for the javascript 'console' object.
+        /// </summary>
         public class console {
             public static void debug(object value)
             {
-                Console.WriteLine("{0}", parse(value));
+                stdout(value, ConsoleColor.DarkCyan);
+            }
+            public static void xdebug(object value)
+            {
+                Utils.Debug(String.Format("{0}", parse(value)));
             }
             public static void log(object value)
             {
-                Console.WriteLine("{0}", parse(value));
+                stdout(value, null);
             }
             public static void error(object value) {
-                ConsoleColor normalColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine("{0}", parse(value));
-                Console.ForegroundColor = normalColor;
+                stderr(value, ConsoleColor.Red);
             }
-            public static void warning(object value)
+            public static void warn(object value)
             {
-                ConsoleColor normalColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("{0}", parse(value));
-                Console.ForegroundColor = normalColor;
+                stdout(value, ConsoleColor.Yellow);
             }
             public static void clear()
             {
                 Console.Clear();
+            }
+            public static void wait(int milliseconds) {
+                System.Threading.Thread.Sleep(milliseconds);
+            }
+            private static void stdout(object value, ConsoleColor? color) {
+                std(value, color, false);
+            }
+            private static void stderr(object value, ConsoleColor? color)
+            {
+                std(value, color, true);
+            }
+            private static void std(object value, ConsoleColor? color, bool err) {
+                ConsoleColor normalColor = Console.ForegroundColor;
+                if (color != null) { Console.ForegroundColor = (ConsoleColor)color; }
+                if (err) { Console.Error.WriteLine("{0}", parse(value)); }
+                else { Console.WriteLine("{0}", parse(value)); }
+                Console.ForegroundColor = normalColor;
             }
             private static object parse(object value) {
                 if (value == null)
@@ -55,27 +76,21 @@ namespace TrifleJS
             }
         }
 
-        public class phantom { 
+        /// <summary>
+        /// Defines core library functionality
+        /// </summary>
+        public class triflejs { 
         
             public void exit() {
                 Environment.Exit(0);
             }
+
         }
 
-        public class require
-        {
-            public object create(string module)
-            {
-                if (module == null)
-                {
-                    throw new Exception("Please provide a module reference for require(module)");
-                }
-                else { }
-                return (new Module(module)).create();
-            }
-        }
-
-        public class _interop
+        /// <summary>
+        /// Defines a set of external classes that can be instantiated in the javascript engine.
+        /// </summary>
+        public class interop
         {
             public WebPage WebPage()
             {
@@ -85,6 +100,13 @@ namespace TrifleJS
             {
                 return new FileSystem();
             }
+        }
+
+        public static void Handle(Noesis.Javascript.JavascriptException ex)
+        {
+            // Remove refs to Host environment & output javascript error
+            string message = ex.Message.Replace("TrifleJS.Host+", "");
+            Host.console.error(String.Format("{0} ({1},{2}): {3}", ex.Source, ex.Line, ex.StartColumn, message));
         }
 
     }
