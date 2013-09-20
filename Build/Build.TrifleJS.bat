@@ -1,4 +1,3 @@
-
 @ECHO OFF
 
 :: Define variables
@@ -50,7 +49,7 @@ ECHO NOTE: This will take about 2 minutes..
 %ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll
 DEL %MergePath%\TrifleJS.pdb
 CD %MergePath%
-..\%Zip% a ..\Binary\TrifleJS.zip *.*
+..\%Zip% a ..\Binary\TrifleJS.zip -r *.*
 CD ..
 RMDIR /S /Q %MergePath%
 
