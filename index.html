@@ -29,9 +29,18 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h1>
-<a name="triflejs" class="anchor" href="#triflejs"><span class="octicon octicon-link"></span></a>trifleJS</h1>
+<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>trifleJS 0.1</h1>
 
-<p>An IE (Trident engine) port of PhantomJS</p>
+<p>An Headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
+
+<p>The API is coded as a port of <a href="http://phantomjs.org">PhantomJS</a> to reduce the learning curve.</p>
+
+<p>It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).</p>
+
+<pre><code>TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
+</code></pre>
+
+<p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png" alt="IE 8" title="Running as IE 8"></p>
 
 <p>The following is a list of features that have been ported from PhantomJS.</p>
 
@@ -63,39 +72,39 @@
 <td></td>
 </tr>
 <tr>
-<td>webpage.open()</td>
+<td>webpage.open(url, callback)</td>
 <td>Yep</td>
 <td>Callback included</td>
 </tr>
 <tr>
-<td>webpage.render()</td>
+<td>webpage.render(filename)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.renderBase64()</td>
+<td>webpage.renderBase64(format)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.evaluate()</td>
+<td>webpage.evaluate(function, arg1, arg2,..)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.evaluateJavaScript()</td>
+<td>webpage.evaluateJavaScript(str)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.injectJs()</td>
-<td>Yep</td>
-<td></td>
-</tr>
-<tr>
-<td>webpage.includeJs()</td>
+<td>webpage.includeJs(url, callback)</td>
 <td>Partial</td>
 <td>No Callback yet</td>
+</tr>
+<tr>
+<td>webpage.injectJs(filename)</td>
+<td>Yep</td>
+<td></td>
 </tr>
 <tr>
 <td>webpage#onConsoleMessage</td>
@@ -118,7 +127,7 @@
 <td></td>
 </tr>
 </tbody>
-</table>
+</table><p>This code is still very much in beta. Check again for updates.</p>
         </section>
 
         <aside id="sidebar">
