@@ -5,6 +5,8 @@ An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://m
 
 The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
 
+![What is TrifleJS?](https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png "What is TrifleJS?")
+
 It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
 
     C:\> TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
