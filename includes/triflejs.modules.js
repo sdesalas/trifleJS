@@ -61,7 +61,7 @@ this.triflejs = this.triflejs || {};
 
     // Inject JS file
     WebPage.prototype.injectJs = function(filename) {
-        console.xdebug("WebPage.prototype.injectJs(filename)", arguments);
+        console.xdebug("WebPage.prototype.injectJs(filename)");
         if (typeof filename === 'string') {
             return this._interop.InjectJs(filename);
         }
@@ -69,7 +69,7 @@ this.triflejs = this.triflejs || {};
 
     // Include remote JS
     WebPage.prototype.includeJs = function(url, callback) {
-        console.xdebug("WebPage.prototype.includeJs(url, callback)", arguments, typeof url);
+        console.xdebug("WebPage.prototype.includeJs(url, callback)");
         var page = this;
         if (typeof url === 'string') {
             return this._interop.IncludeJs(url, (new triflejs.Callback(function() {

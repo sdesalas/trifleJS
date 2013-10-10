@@ -7,6 +7,9 @@ using System.Drawing;
 
 namespace TrifleJS
 {
+    /// <summary>
+    /// Browser class that represents an IE window
+    /// </summary>
     public class Browser : System.Windows.Forms.WebBrowser
     {
         private const string IEEmulationPathx32 = @"SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
@@ -47,12 +50,20 @@ namespace TrifleJS
             Set(Versions.IE10);
         }
 
+        /// <summary>
+        /// Sets the Version of IE using the relevant registry keys
+        /// </summary>
+        /// <param name="version"></param>
         private static void Set(System.UInt32 version)
         {
             Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", version, RegistryValueKind.DWord);
             Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", version, RegistryValueKind.DWord);
         }
 
+        /// <summary>
+        /// Waits until window finishes loading and then takes a screenshot
+        /// </summary>
+        /// <param name="fileName">path where the screenshot is saved</param>
         public void RenderOnLoad(string fileName)
         {
             this.DocumentCompleted += delegate
@@ -60,13 +71,14 @@ namespace TrifleJS
                 Console.WriteLine("WebBrowser#DocumentCompleted");
                 this.Size = this.Document.Window.Size;
                 this.ScrollBarsEnabled = false;
-                using (var pic = this.Render())
-                {
-                    pic.Save(fileName);
-                }
+                Render(fileName);
             };
         }
 
+        /// <summary>
+        /// Takes a screenshot and saves into a file
+        /// </summary>
+        /// <param name="filename">path where the screenshot is saved</param>
         public void Render(string filename) {
             using (var pic = this.Render())
             {
@@ -74,6 +86,12 @@ namespace TrifleJS
             }
         }
 
+        /// <summary>
+        /// Takes a screenshot and saves into a Bitmap of specific dimensions
+        /// </summary>
+        /// <param name="width">bitmap width</param>
+        /// <param name="height">bitmap height</param>
+        /// <returns></returns>
         public Bitmap Render(int width, int height) {
             Size originalSize = this.Size;
             this.Size = new Size(width, height);
@@ -82,10 +100,15 @@ namespace TrifleJS
             return output;
         }
 
+        /// <summary>
+        /// Takes a screenshot and saves into a Bitmap
+        /// </summary>
+        /// <returns></returns>
         public Bitmap Render() {
             Bitmap output = new Bitmap(this.Width, this.Height);
             NativeMethods.GetImage(this.ActiveXInstance, output, Color.White);
             return output;
         }
+
     }
 }

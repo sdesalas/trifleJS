@@ -13,6 +13,5 @@ page.open("http://www.phantomjs.org", function(status) {
         console.wait(5000);
         phantom.exit();
     });
-    //phantom.exit();
 });
 

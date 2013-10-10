@@ -62,10 +62,10 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///// Initialise Namespace
-        ///this.triflejs = this.triflejs || {};
-        ///
         ///(function(GLOBAL) {
+        ///
+        ///    // Initialise Namespace
+        ///    var triflejs = GLOBAL.triflejs = GLOBAL.triflejs || {};
         ///
         ///    // Add UID generation
         ///    triflejs.uid = function() {
@@ -79,11 +79,10 @@ namespace TrifleJS.Properties {
         ///    };
         ///
         ///    // Set interop inside trifle
-        ///    triflejs._interop = GLOBAL._interop;
-        ///    delete GLOBAL._interop;
+        ///    triflejs._interop = GLOBAL.interop;
+        ///    delete GLOBAL.interop;
         ///
-        ///    // Initialize callback hashmap
-        ///    triflejs.cal [rest of string was truncated]&quot;;.
+        ///    // Initialize callback  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_core {
             get {
@@ -108,7 +107,7 @@ namespace TrifleJS.Properties {
         ///*/
         ///
         ///
-        ///console._debug(&quot;Initializing require()&quot;);
+        ///console.xdebug(&quot;Initializing require()&quot;);
         ///
         ///// Loading module framework
         ///// @see http://wiki.commonjs.org/wiki/Modules/1.1.1
@@ -137,7 +136,7 @@ namespace TrifleJS.Properties {
         ///    // WebPage Class
         ///    // Define Constructor
         ///    var WebPage = triflejs.modules.WebPage = function() {
-        ///        console._debug(&quot;new WebPage()&quot;);
+        ///        console.xdebug(&quot;new WebPage()&quot;);
         ///        // Instantiate a C# webpage and store it in _interop property
         ///        this._interop = triflejs._interop[&apos;WebPage&apos;]();
         ///        // Fire Initia [rest of string was truncated]&quot;;.
