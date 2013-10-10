@@ -77,7 +77,7 @@
     <Content Include="examples\simple-example.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="includes\ie.toolset.js" />
+    <None Include="includes\ie.toolset.js" />
     <Content Include="includes\triflejs.init.js" />
     <Content Include="includes\triflejs.core.js" />
     <Content Include="includes\triflejs.modules.js" />

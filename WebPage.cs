@@ -169,19 +169,6 @@ namespace TrifleJS
             }
         }
 
-        public class CallbackEventArgs : EventArgs {
-            public string callbackId;
-            public CallbackEventArgs(string callbackId)
-            {
-                this.callbackId = callbackId;
-            }
-        }
-
-        public void callbackHandler(object sender, CallbackEventArgs e)
-        {
-            Callback.execute(e.callbackId);
-        }
-
         /// <summary>
         /// Injects a JavaScript file into current active window
         /// </summary>
