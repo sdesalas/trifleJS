@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Noesis.Javascript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ae36d046c7f89f85, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -66,8 +69,8 @@
     <Compile Include="WebPage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="includes\ie.toolset.js" />
     <None Include="Libs\Microsoft.VC90.CRT.manifest" />
-    <None Include="Libs\mshtml.tlb" />
     <None Include="Libs\Noesis.Javascript.dll.LICENSE" />
   </ItemGroup>
   <ItemGroup>
@@ -77,10 +80,11 @@
     <Content Include="examples\simple-example.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="includes\ie.toolset.js" />
     <Content Include="includes\triflejs.init.js" />
     <Content Include="includes\triflejs.core.js" />
     <Content Include="includes\triflejs.modules.js" />
+    <Content Include="Libs\Microsoft.mshtml.dll">
+    </Content>
     <Content Include="Libs\msvcm90.dll" />
     <Content Include="Libs\msvcp90.dll" />
     <Content Include="Libs\msvcr90.dll" />
@@ -91,16 +95,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="MSHTML">
-      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
