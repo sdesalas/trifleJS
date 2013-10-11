@@ -10,7 +10,8 @@ namespace TrifleJS
 {
     class Program
     {
-        public static JavascriptContext context;
+        public static V8.Context context;
+        public static string[] args;
         public static bool verbose = false;
 
         [STAThread]
@@ -37,6 +38,11 @@ namespace TrifleJS
                         Program.verbose = true;
                         break;
                     case "--version":
+                        var v = V8.TrifleJS.version;
+                        Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
+                        Program.Exit();
+                        break;
+                    case "--set-version":
                         string version = arg.Replace("--version:", "");
                         isVersionSet = true;
                         switch (version.ToUpper())
@@ -67,6 +73,10 @@ namespace TrifleJS
                 Browser.SetIE9();
             }
 
+            // Define environment
+            Program.args = args;
+            bool isExecuted = false;
+
             // Second Loop - Execute Commands
             foreach (string arg in args) {
                 string[] parts = arg.Split(':');
@@ -80,27 +90,40 @@ namespace TrifleJS
                         string url = arg.Replace("--render:", "");
                         Render(url);
                         break;
-                    case "--open":
-                        string filename = arg.Replace("--open:", "");
-                        Open(filename);
+                    default:
+                        // If no switch is defined then we are dealing 
+                        // with javascript files that need executing
+                        if (arg == parts[0] && !isExecuted)
+                        {
+                            Open(arg);
+                            isExecuted = true;
+                        }
+                        else if (parts[0].StartsWith("--")) {
+                            Usage();
+                            Exit();
+                        }
                         break;
                 }
             }
 
-            #if DEBUG
+            Program.Exit();
+        }
+
+        public static void Exit() {
+#if DEBUG
             // Debugging? Wait for input
             Console.Read();
-            #endif
+#endif
+            Environment.Exit(0);
         }
 
         static void Usage() {
-            Console.WriteLine("Usage: triflejs.exe [options]");
+            Console.WriteLine("Usage: triflejs.exe [options] somescript.js [arg1 [arg2 [...]]]..)");
             Console.WriteLine();
             Console.WriteLine("Options: ");
             Console.WriteLine("  --help          Show this message.");
             Console.WriteLine("  --test          Runs a System Test.");
             Console.WriteLine("  --render:url    Opens a url and renders into a file.");
-            Console.WriteLine("  --open:file     Opens a file and executes in V8 engine API.");
 
         }
 
@@ -146,12 +169,12 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (Program.context = new JavascriptContext()) {
+            using (Program.context = new V8.Context()) {
 
                 // Setting external parameters for the context
-                context.SetParameter("console", new Host.console());
-                context.SetParameter("triflejs", new Host.triflejs());
-                context.SetParameter("interop", new Host.interop());
+                context.SetParameter("console", new V8.Console());
+                context.SetParameter("triflejs", new V8.TrifleJS());
+                context.SetParameter("interop", new V8.Interop());
 
                 try
                 {
@@ -163,9 +186,9 @@ namespace TrifleJS
                     // Run the script
                     context.Run(File.ReadAllText(filename), (new FileInfo(filename)).Name);
                 }
-                catch (Noesis.Javascript.JavascriptException ex)
+                catch (JavascriptException ex)
                 {
-                    Host.Handle(ex);
+                    V8.Context.Handle(ex);
                 }
                 catch (Exception ex) {
                     // Error in C#!

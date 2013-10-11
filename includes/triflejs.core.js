@@ -1,7 +1,28 @@
 ﻿
 (function(GLOBAL) {
 
-    // Initialise Namespace
+    // Initialise window
+    var window = {
+        host: GLOBAL.window,
+        setTimeout: function(callback, ms) {
+            if (callback && ms) {
+                this.host.setTimeout((new triflejs.Callback(function() {
+                    callback.call(window);
+                })).id, ms);
+            }
+        },
+        setTimeout: function(callback, ms) {
+            if (callback && ms) {
+                this.host.setInterval((new triflejs.Callback(function() {
+                    callback.call(window);
+                })).id, ms);
+            }
+        }
+    };
+
+    GLOBAL.window = window;
+
+    // Initialise trifleJS
     var triflejs = GLOBAL.triflejs = GLOBAL.triflejs || {};
 
     // Add UID generation
@@ -33,26 +54,29 @@
         triflejs.callbacks[this.id] = this;
     };
 
-    // Callback execution
+    // Execute callback
     Callback.prototype.execute = function() {
         console.xdebug('Callback#' + this.id + '.prototype.execute()');
         this.func.apply(this.scope || this, arguments || this.defaultArgs)
     }
 
+    // Execute callback and delete reference
+    Callback.prototype.executeOnce = function() {
+        this.execute.apply(this, arguments);
+        // Remove when finished
+        delete triflejs.callbacks[this.id];
+    }
+
     // PhantomJS Compatibility
     this.phantom = this.phantom || {};
-    phantom.version = { 'major': 1, 'minor': 0, 'patch': 0 };
+    phantom.version = triflejs.version;
     phantom.exit = triflejs.exit;
-
 
     // Console
     this.console = {
         host: console, // Import host object
         clear: function() {
             this.host.clear();
-        },
-        wait: function(milliseconds) {
-            this.host.wait(milliseconds || 1000);
         },
         log: function() {
             this._do('log', arguments);

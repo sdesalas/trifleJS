@@ -62,29 +62,6 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///// Initialize toolset
-        ///window.__toolset = window.__toolset || {};
-        ///
-        ///window.__toolset.test = &apos;hello world&apos;;
-        ///
-        ///// Loads a JS file and executes a callback when ready
-        ///window.__toolset.includeJs = function(url, callbackId) {
-        ///
-        ///    window.external.xdebug([&apos;window.__toolset.includeJs(url, callbackId)&apos;, url, callbackId]);
-        ///
-        ///    // Generate DOM for new &lt;script/&gt; tagg
-        ///    var head = document.getElementsByTagName(&quot;head&quot;)[0] || document.documentElement;
-        ///    var script = document.createElement(&quot;script&quot;);
-        ///    s [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string ie_toolset {
-            get {
-                return ResourceManager.GetString("ie_toolset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 
         ///(function(GLOBAL) {
         ///
         ///    // Initialise Namespace
@@ -160,9 +137,9 @@ namespace TrifleJS.Properties {
         ///    // Define Constructor
         ///    var WebPage = triflejs.modules.WebPage = function() {
         ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a C# webpage and store it in _interop property
+        ///        // Instantiate a V8 WebPage object and stores it in internal _interop property
         ///        this._interop = triflejs._interop[&apos;WebPage&apos;]();
-        ///        // Fire Initia [rest of string was truncated]&quot;;.
+        ///      [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_modules {
             get {

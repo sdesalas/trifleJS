@@ -6,13 +6,13 @@ this.triflejs = this.triflejs || {};
 (function(triflejs) {
 
     // Define namespace
-    modules = triflejs.modules = triflejs.modules || {};
+    triflejs.modules = triflejs.modules || {};
 
     // WebPage Class
     // Define Constructor
     var WebPage = triflejs.modules.WebPage = function() {
         console.xdebug("new WebPage()");
-        // Instantiate a C# webpage and store it in _interop property
+        // Instantiate a V8 WebPage object and stores it in internal _interop property
         this._interop = triflejs._interop['WebPage']();
         // Fire Initialized event
         if (this.onInitialized) {
@@ -53,7 +53,6 @@ this.triflejs = this.triflejs || {};
             for (var i = 1; i < arguments.length; i++) {
                 args.push(arguments[i]);
             }
-            console.log('arguments... ', args);
             return this._interop.Evaluate(func.toString(), args);
         }
         return null;
@@ -97,11 +96,22 @@ this.triflejs = this.triflejs || {};
 
     // FileSystem Class
     // Define Constructor
-    triflejs.FileSystem = function() {
+    var FileSystem = triflejs.modules.FileSystem = function() {
         console.xdebug("new FileSystem()");
-        // Instantiate a C# webpage and store it in _interop property
+        // Instantiate a V8 FileSystem object and stores it in internal _interop property
         this._interop = triflejs._interop['FileSystem']();
     }
+
+    // System Class
+    // Define Constructor
+    var System = triflejs.modules.System = function() {
+        console.xdebug("new System()");
+        // Instantiate a V8 System object and stores it in internal _interop property
+        this._interop = triflejs._interop['System']();
+        // Populate other properties
+        this.args = this._interop.args;
+    }
+
 
 })(this.triflejs);
 

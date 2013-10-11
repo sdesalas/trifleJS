@@ -55,8 +55,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Callback.cs" />
-    <Compile Include="FileSystem.cs" />
-    <Compile Include="Host.cs" />
+    <Compile Include="V8\Console.cs" />
+    <Compile Include="V8\Modules\FileSystem.cs" />
+    <Compile Include="V8\Context.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,11 +66,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="V8\Interop.cs" />
+    <Compile Include="V8\Modules\System.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="WebPage.cs" />
+    <Compile Include="V8\TrifleJS.cs" />
+    <Compile Include="V8\Modules\WebPage.cs" />
+    <Compile Include="V8\Window.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="includes\ie.toolset.js" />
     <None Include="Libs\Microsoft.VC90.CRT.manifest" />
     <None Include="Libs\Noesis.Javascript.dll.LICENSE" />
   </ItemGroup>
@@ -77,12 +81,15 @@
     <Content Include="examples\phantomwebintro.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="examples\printmargins.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="examples\simple-example.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="includes\triflejs.init.js" />
-    <Content Include="includes\triflejs.core.js" />
-    <Content Include="includes\triflejs.modules.js" />
+    <Resource Include="includes\triflejs.init.js" />
+    <Resource Include="includes\triflejs.core.js" />
+    <Resource Include="includes\triflejs.modules.js" />
     <Content Include="Libs\Microsoft.mshtml.dll">
     </Content>
     <Content Include="Libs\msvcm90.dll" />

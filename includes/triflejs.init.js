@@ -24,24 +24,32 @@ this.exports = {
     },
     fs: function() {
         return new triflejs.modules.FileSystem();
+    },
+    system: function() {
+        return new triflejs.modules.System();
     }
 };
 
+// Defines require() method
 this.require = function(name) {
-    return {
-        create: function() {
-            if (!exports[name]) {
-                console.error('require.create() -- Invalid module: ' + name);
-                return;
-            }
-            return exports[name]();
-        }
+
+    if (!exports[name]) {
+        console.error('require() -- Invalid module: ' + name);
+        return;
     }
+
+    var module = exports[name]();
+    module.create = function() {
+        return this;
+    }
+
+    return module;
 }
 
 
 console.xdebug("Finished initializing environment!");
+console.xdebug("----------------------------------");
 console.log();
 console.log();
-console.wait(2000);
+triflejs.wait(2000);
 

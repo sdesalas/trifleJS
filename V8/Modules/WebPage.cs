@@ -4,11 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
 using System.IO;
-using System.Net;
 using System.Windows.Forms;
 using mshtml;
 
-namespace TrifleJS
+namespace TrifleJS.V8.Module
 {
     /// <summary>
     /// Encapsulates a webpage opened inside IE environment
@@ -44,13 +43,13 @@ namespace TrifleJS
                 MemoryStream stream = new MemoryStream();
                 switch (format.ToUpper()) { 
                     case "JPG":
-                        pic.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        pic.Save(stream, ImageFormat.Jpeg);
                         break;
                     case "GIF":
-                        pic.Save(stream, System.Drawing.Imaging.ImageFormat.Gif);
+                        pic.Save(stream, ImageFormat.Gif);
                         break;
                     default:
-                        pic.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                        pic.Save(stream, ImageFormat.Png);
                         break;
                 }
                 return Convert.ToBase64String(stream.ToArray());
@@ -63,25 +62,23 @@ namespace TrifleJS
         /// <param name="url">URL location</param>
         /// <param name="callbackId">id of the callback to execute</param>
         public void Open(string url, string callbackId) {
-            Console.WriteLine("Opening " + url);
+            Console.log("Opening " + url);
             // Check the URL
             if (TryParse(url) != null)
             {
                 browser.Navigate(url);
                 browser.DocumentCompleted += delegate
                 {
-                    // Add toolset
-                    EvaluateJavaScript(TrifleJS.Properties.Resources.ie_toolset);
                     // Continue with callback
-                    Callback.execute(callbackId, "success");
+                    Callback.executeOnce(callbackId, "success");
                 };
-                while (browser.ReadyState != System.Windows.Forms.WebBrowserReadyState.Complete)
+                while (browser.ReadyState != WebBrowserReadyState.Complete)
                 {
-                    System.Windows.Forms.Application.DoEvents();
+                    Application.DoEvents();
                 }
             }
             else {
-                Console.WriteLine("Error opening url: " + url);
+                Console.log("Error opening url: " + url);
             }
         }
 
@@ -162,7 +159,7 @@ namespace TrifleJS
                     {
                         if (element.readyState == "complete" || element.readyState == "loaded")
                         {
-                            Callback.execute(callbackId);
+                            Callback.executeOnce(callbackId);
                         }
                     };
                 }
