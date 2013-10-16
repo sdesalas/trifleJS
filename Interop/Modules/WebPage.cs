@@ -7,7 +7,7 @@ using System.IO;
 using System.Windows.Forms;
 using mshtml;
 
-namespace TrifleJS.V8.Module
+namespace TrifleJS.Interop.Modules
 {
     /// <summary>
     /// Encapsulates a webpage opened inside IE environment

@@ -12,8 +12,8 @@ this.triflejs = this.triflejs || {};
     // Define Constructor
     var WebPage = triflejs.modules.WebPage = function() {
         console.xdebug("new WebPage()");
-        // Instantiate a V8 WebPage object and stores it in internal _interop property
-        this._interop = triflejs._interop['WebPage']();
+        // Instantiate a V8 WebPage object and stores it in internal module property
+        this.module = triflejs.module['WebPage']();
         // Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
@@ -28,7 +28,7 @@ this.triflejs = this.triflejs || {};
         if (this.onLoadStarted) {
             page.onLoadStarted.call(this);
         }
-        return this._interop.Open(url, (new triflejs.Callback(function(status) {
+        return this.module.Open(url, (new triflejs.Callback(function(status) {
             // Fire LoadFinished event
             if (page.onLoadFinished) {
                 page.onLoadFinished.call(page, status);
@@ -41,7 +41,7 @@ this.triflejs = this.triflejs || {};
     WebPage.prototype.evaluateJavaScript = function(code) {
         console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
         if (code && code.length) {
-            return this._interop.EvaluateJavaScript(code);
+            return this.module.EvaluateJavaScript(code);
         }
     };
 
@@ -53,7 +53,7 @@ this.triflejs = this.triflejs || {};
             for (var i = 1; i < arguments.length; i++) {
                 args.push(arguments[i]);
             }
-            return this._interop.Evaluate(func.toString(), args);
+            return this.module.Evaluate(func.toString(), args);
         }
         return null;
     };
@@ -62,7 +62,7 @@ this.triflejs = this.triflejs || {};
     WebPage.prototype.injectJs = function(filename) {
         console.xdebug("WebPage.prototype.injectJs(filename)");
         if (typeof filename === 'string') {
-            return this._interop.InjectJs(filename);
+            return this.module.InjectJs(filename);
         }
     }
 
@@ -71,7 +71,7 @@ this.triflejs = this.triflejs || {};
         console.xdebug("WebPage.prototype.includeJs(url, callback)");
         var page = this;
         if (typeof url === 'string') {
-            return this._interop.IncludeJs(url, (new triflejs.Callback(function() {
+            return this.module.IncludeJs(url, (new triflejs.Callback(function() {
                 if (callback && callback.call) {
                     callback.call(page);
                 }
@@ -84,32 +84,32 @@ this.triflejs = this.triflejs || {};
     WebPage.prototype.render = function(filename) {
         console.xdebug("WebPage.prototype.render(filename)");
         if (filename) {
-            return this._interop.Render(filename)
+            return this.module.Render(filename)
         };
     }
 
     // Render to Base64 string
     WebPage.prototype.renderBase64 = function(format) {
         console.xdebug("WebPage.prototype.renderBase64(format)");
-        return this._interop.RenderBase64(format || "PNG");
+        return this.module.RenderBase64(format || "PNG");
     }
 
     // FileSystem Class
     // Define Constructor
     var FileSystem = triflejs.modules.FileSystem = function() {
         console.xdebug("new FileSystem()");
-        // Instantiate a V8 FileSystem object and stores it in internal _interop property
-        this._interop = triflejs._interop['FileSystem']();
+        // Instantiate a V8 FileSystem object and stores it in internal module property
+        this.module = triflejs.module['FileSystem']();
     }
 
     // System Class
     // Define Constructor
     var System = triflejs.modules.System = function() {
         console.xdebug("new System()");
-        // Instantiate a V8 System object and stores it in internal _interop property
-        this._interop = triflejs._interop['System']();
+        // Instantiate a V8 System object and stores it in internal module property
+        this.module = triflejs.module['System']();
         // Populate other properties
-        this.args = this._interop.args;
+        this.args = this.module.args;
     }
 
 

@@ -3,17 +3,18 @@
 
     // Initialise window
     var window = {
-        host: GLOBAL.window,
+        interop: GLOBAL.window,
         setTimeout: function(callback, ms) {
             if (callback && ms) {
-                this.host.setTimeout((new triflejs.Callback(function() {
+                var c = new triflejs.Callback(function() {
                     callback.call(window);
-                })).id, ms);
+                });
+                this.interop.setTimeout(c.id, ms);
             }
         },
-        setTimeout: function(callback, ms) {
+        setInterval: function(callback, ms) {
             if (callback && ms) {
-                this.host.setInterval((new triflejs.Callback(function() {
+                this.interop.setInterval((new triflejs.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
@@ -37,8 +38,8 @@
     };
 
     // Set interop inside trifle
-    triflejs._interop = GLOBAL.interop;
-    delete GLOBAL.interop;
+    triflejs.module = GLOBAL.module;
+    delete GLOBAL.module;
 
     // Initialize callback hashmap
     triflejs.callbacks = {};
@@ -74,9 +75,9 @@
 
     // Console
     this.console = {
-        host: console, // Import host object
+        interop: console, // Import host object
         clear: function() {
-            this.host.clear();
+            this.interop.clear();
         },
         log: function() {
             this._do('log', arguments);
@@ -97,17 +98,19 @@
             if (method) {
                 switch (args.length) {
                     case 0:
-                        this.host[method]("");
+                        this.interop[method]("");
                         break;
                     case 1:
-                        this.host[method](args[0]);
+                        if (typeof args[0] === 'function') { args[0] = args[0].toString(); }
+                        this.interop[method](args[0]);
                         break;
                     default:
                         var params = [];
                         for (var i = 0; i < args.length; i++) {
+                            if (typeof args[i] === 'function') { args[i] = args[i].toString(); }
                             params[i] = args[i];
                         }
-                        this.host[method](params);
+                        this.interop[method](params);
                         break;
                 }
             }

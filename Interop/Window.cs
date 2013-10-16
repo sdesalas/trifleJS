@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Timers;
 
-namespace TrifleJS.V8
+namespace TrifleJS.Interop
 {
     public class Window
     {
@@ -29,7 +29,7 @@ namespace TrifleJS.V8
             Timer timer = new Timer(ms);
             timer.Elapsed += delegate
             {
-                Callback.execute(callbackId);
+                Callback.execute(callbackId, once, null);
             };
             timer.AutoReset = !once;
             timer.Enabled = true;

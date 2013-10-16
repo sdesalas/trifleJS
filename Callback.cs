@@ -36,20 +36,22 @@ namespace TrifleJS
         /// <summary>
         /// Executes a callback
         /// </summary>
-        private static bool execute(string id, bool once, params object[] arguments)
+        public static bool execute(string id, bool once, params object[] arguments)
         {
             try
             {
+                if (arguments == null) { arguments = new object[0];  }
+                String cmd = String.Format(@"triflejs.callbacks['{0}'].{1}({2});",
+                        id,
+                        once ? "executeOnce" : "execute",
+                        String.Join(",", parse(arguments))
+                    );
                 Program.context.Run(
-                    String.Format(@"triflejs.callbacks['{0}'].{1}({2});", 
-                        id, 
-                        String.Join(",", parse(arguments)), 
-                        once ? "executeOnce" :  "execute" 
-                    )
+                    cmd, "Callback#" + id
                 );
             }
-            catch (JavascriptException ex) {
-                V8.Context.Handle(ex);
+            catch (Exception ex) {
+                Interop.Context.Handle(ex);
                 return false;
             }
             return true;
@@ -88,7 +90,7 @@ namespace TrifleJS
         public class External
         {
             public void xdebug(string message) {
-                V8.Console.xdebug(message);
+                Interop.Console.xdebug(message);
             }
             public void doCallback(string id)
             {

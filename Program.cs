@@ -10,7 +10,7 @@ namespace TrifleJS
 {
     class Program
     {
-        public static V8.Context context;
+        public static Interop.Context context;
         public static string[] args;
         public static bool verbose = false;
 
@@ -38,9 +38,9 @@ namespace TrifleJS
                         Program.verbose = true;
                         break;
                     case "--version":
-                        var v = V8.TrifleJS.version;
+                        var v = Interop.TrifleJS.version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
-                        Program.Exit();
+                        Program.Exit(0);
                         break;
                     case "--set-version":
                         string version = arg.Replace("--version:", "");
@@ -100,21 +100,21 @@ namespace TrifleJS
                         }
                         else if (parts[0].StartsWith("--")) {
                             Usage();
-                            Exit();
+                            Exit(0);
                         }
                         break;
                 }
             }
 
-            Program.Exit();
         }
 
-        public static void Exit() {
+        public static void Exit(int exitCode)
+        {
 #if DEBUG
             // Debugging? Wait for input
             Console.Read();
 #endif
-            Environment.Exit(0);
+            Environment.Exit(exitCode);
         }
 
         static void Usage() {
@@ -169,12 +169,13 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (Program.context = new V8.Context()) {
+            using (Program.context = new Interop.Context()) {
 
                 // Setting external parameters for the context
-                context.SetParameter("console", new V8.Console());
-                context.SetParameter("triflejs", new V8.TrifleJS());
-                context.SetParameter("interop", new V8.Interop());
+                context.SetParameter("console", new Interop.Console());
+                context.SetParameter("triflejs", new Interop.TrifleJS());
+                context.SetParameter("module", new Interop.Module());
+                context.SetParameter("window", new Interop.Window());
 
                 try
                 {
@@ -184,11 +185,15 @@ namespace TrifleJS
                     context.Run(TrifleJS.Properties.Resources.triflejs_init, "triflejs.init.js");
 
                     // Run the script
-                    context.Run(File.ReadAllText(filename), (new FileInfo(filename)).Name);
+                    object ptr = context.Run(File.ReadAllText(filename), (new FileInfo(filename)).Name);
+                    while (true) { 
+                        // Keep running until told to stop
+                    }
+
                 }
                 catch (JavascriptException ex)
                 {
-                    V8.Context.Handle(ex);
+                    Interop.Context.Handle(ex);
                 }
                 catch (Exception ex) {
                     // Error in C#!

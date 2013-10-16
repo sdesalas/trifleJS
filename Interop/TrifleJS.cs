@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace TrifleJS.V8
+namespace TrifleJS.Interop
 {
     /// <summary>
     /// Main library functionality
@@ -13,7 +13,7 @@ namespace TrifleJS.V8
 
         public void exit(int exitCode)
         {
-            Environment.Exit(exitCode);
+            Program.Exit(exitCode);
         }
 
         public void exit()

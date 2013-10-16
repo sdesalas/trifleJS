@@ -55,9 +55,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Callback.cs" />
-    <Compile Include="V8\Console.cs" />
-    <Compile Include="V8\Modules\FileSystem.cs" />
-    <Compile Include="V8\Context.cs" />
+    <Compile Include="Interop\Console.cs" />
+    <Compile Include="Interop\Modules\FileSystem.cs" />
+    <Compile Include="Interop\Context.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,12 +66,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="V8\Interop.cs" />
-    <Compile Include="V8\Modules\System.cs" />
+    <Compile Include="Interop\Module.cs" />
+    <Compile Include="Interop\Modules\System.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="V8\TrifleJS.cs" />
-    <Compile Include="V8\Modules\WebPage.cs" />
-    <Compile Include="V8\Window.cs" />
+    <Compile Include="Interop\TrifleJS.cs" />
+    <Compile Include="Interop\Modules\WebPage.cs" />
+    <Compile Include="Interop\Window.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Libs\Microsoft.VC90.CRT.manifest" />
@@ -96,6 +96,18 @@
     <Content Include="Libs\msvcp90.dll" />
     <Content Include="Libs\msvcr90.dll" />
     <Content Include="Libs\Noesis.Javascript.dll" />
+    <Content Include="test\console.log.js">
+    </Content>
+    <Content Include="test\page.evaluate.js" />
+    <Content Include="test\page.evaluateJavaScript.js" />
+    <Content Include="test\page.includeJs.js" />
+    <Content Include="test\page.injectJs.js" />
+    <Content Include="test\page.open.js" />
+    <Content Include="test\page.render.js" />
+    <Content Include="test\window.setInterval.js">
+    </Content>
+    <Content Include="test\window.setTimeout.js">
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

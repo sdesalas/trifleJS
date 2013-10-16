@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using System.Text;
 
-namespace TrifleJS.V8
+namespace TrifleJS.Interop
 {
     /// <summary>
     /// Defines functionality for the javascript 'console' object.
