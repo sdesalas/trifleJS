@@ -7,19 +7,53 @@ using Noesis.Javascript;
 namespace TrifleJS.API
 {
     /// <summary>
-    /// Defines the V8 JavaScript engine context
+    /// Core JavaScript engine context
     /// </summary>
     public class Context : JavascriptContext
     {
-        public object Run(string filePath) {
-            FileInfo file = new FileInfo(filePath);
-            if (filePath == null || !file.Exists)
+        /// <summary>
+        /// Executes a javascript file
+        /// </summary>
+        /// <param name="filepath">Path to file, this can either be relative to triflejs.exe or current script being executed.</param>
+        /// <returns></returns>
+        public override object Run(string filepath) {
+            FileInfo file = Find(filepath);
+            if (file == null || !file.Exists)
             {
-                throw new Exception(String.Format("File does not exist {0}.", filePath));
+                throw new Exception(String.Format("File does not exist {0}.", filepath));
             }
-            return Run(File.ReadAllText(filePath), file.Name);
+            return Run(File.ReadAllText(file.FullName), file.Name);
         }
 
+        /// <summary>
+        /// Finds a file either in the current working directory or in the LibraryPath.
+        /// Returns null if not found.
+        /// </summary>
+        /// <param name="path">path to find</param>
+        /// <returns></returns>
+        public FileInfo Find(string path) {
+            FileInfo file = new FileInfo(path);
+            if (!file.Exists)
+            {
+                string currentDir = Environment.CurrentDirectory;
+                Environment.CurrentDirectory = Trifle.LibraryPath;
+                file = new FileInfo(path);
+                Environment.CurrentDirectory = currentDir;
+            }
+            return file;
+        }
+
+        /// <summary>
+        /// Gets the current context
+        /// </summary>
+        public static Context Current {
+            get { return Program.context; }
+        }
+
+        /// <summary>
+        /// Handles an exception
+        /// </summary>
+        /// <param name="ex"></param>
         public static void Handle(Exception ex)
         {
             JavascriptException jsEx = ex as JavascriptException;

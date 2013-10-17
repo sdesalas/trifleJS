@@ -56,7 +56,6 @@ jasmine.getGlobal = function() {
 * @param name {Function} function to find
 */
 jasmine.bindOriginal_ = function(base, name) {
-    console.log('jasmine.bindOriginal_()', name);
     var original = base[name];
     if (original.apply) {
         return function() {

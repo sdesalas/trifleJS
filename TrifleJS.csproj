@@ -98,6 +98,7 @@
     <Content Include="Libs\Noesis.Javascript.dll" />
     <Content Include="test\feature\console.log.js">
     </Content>
+    <Content Include="test\feature\fs.changeWorkingDirectory.js" />
     <Content Include="test\feature\page.evaluate.js" />
     <Content Include="test\feature\page.evaluateJavaScript.js" />
     <Content Include="test\feature\page.includeJs.js" />
@@ -113,6 +114,7 @@
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
     <Content Include="test\lib\jasmine.js" />
+    <Content Include="test\phantom-spec.js" />
     <Content Include="test\run-tests.js" />
   </ItemGroup>
   <ItemGroup>

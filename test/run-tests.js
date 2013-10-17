@@ -34,3 +34,55 @@ phantom.injectJs("./lib/jasmine-console.js");
 phantom.injectJs("./lib/chai.js");
 
 var should = chai.should();
+
+// Helper funcs
+function expectHasFunction(o, name) {
+    it("should have '" + name + "' function", function() {
+        expect(typeof o[name]).toEqual('function');
+    });
+}
+
+function expectHasProperty(o, name) {
+    it("should have '" + name + "' property", function() {
+        expect(o.hasOwnProperty(name)).toBeTruthy();
+    });
+}
+
+function expectHasPropertyString(o, name) {
+    expectHasProperty(o, name);
+
+    it("should have '" + name + "' as a string", function() {
+        expect(typeof o[name]).toEqual('string');
+    });
+}
+
+// Setting the "working directory" to the "/test" directory
+var fs = require('fs');
+
+fs.changeWorkingDirectory(phantom.libraryPath);
+
+// Load specs
+//phantom.injectJs("./phantom-spec.js");
+
+//describe("phantom global object", function() {
+//    it("should exist", function() {
+//        expect(typeof phantom).toEqual("object");
+//    });
+//});
+
+// Launch tests
+var jasmineEnv = jasmine.getEnv();
+
+// Add a ConsoleReporter to 1) print with colors on the console 2) exit when finished
+jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
+    // Print messages straight to the console
+    console.log(msg.replace('\n', ''));
+}, function(reporter) {
+    // On complete
+    phantom.exit(reporter.results().failedCount);
+}, true));
+
+// Launch tests
+jasmineEnv.updateInterval = 1000;
+jasmineEnv.execute();
+
