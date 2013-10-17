@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Text;
 using System.Timers;
 
-namespace TrifleJS.Interop
+namespace TrifleJS.API
 {
     public class Window
     {
         private static Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
 
-        public static int setTimeout(string callbackId, int ms) {
-            return setTimer(callbackId, ms, true);
+        public static int SetTimeout(string callbackId, int ms) {
+            return SetTimer(callbackId, ms, true);
         }
 
-        public static int setInterval(string callbackId, int ms) {
-            return setTimer(callbackId, ms, false);
+        public static int SetInterval(string callbackId, int ms) {
+            return SetTimer(callbackId, ms, false);
         }
 
-        public static void clearTimeout(int timeoutId) {
-            clearTimer(timeoutId);
+        public static void ClearTimeout(int timeoutId) {
+            ClearTimer(timeoutId);
         }
 
-        public static void clearInterval(int intervalId) {
-            clearTimer(intervalId);
+        public static void ClearInterval(int intervalId) {
+            ClearTimer(intervalId);
         }
 
-        private static int setTimer(string callbackId, int ms, bool once) {
+        private static int SetTimer(string callbackId, int ms, bool once) {
             Timer timer = new Timer(ms);
             timer.Elapsed += delegate
             {
@@ -39,7 +39,7 @@ namespace TrifleJS.Interop
             return id;
         }
 
-        private static void clearTimer(int timerId) {
+        private static void ClearTimer(int timerId) {
             Timer timer = Window.timers[timerId];
             if (timer != null) {
                 timer.Dispose();

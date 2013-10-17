@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace TrifleJS.Interop.Modules
+namespace TrifleJS.API.Modules
 {
     public class FileSystem
     {

@@ -1,6 +1,6 @@
 ﻿var page = require("webpage").create();
 
-page.open("http://www.triflejs.org", function(status) {
+page.open("http://www.phantomjs.org", function(status) {
     if (status === 'success') {
         page.evaluateJavaScript('var message = "hello from ie";');
         var message = page.evaluate(function() {

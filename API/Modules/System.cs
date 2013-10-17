@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TrifleJS.Interop.Modules
+namespace TrifleJS.API.Modules
 {
     /// <summary>
     /// Defines a set of system tools 

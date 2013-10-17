@@ -9,7 +9,7 @@ page.open("http://www.phantomjs.org", function(status) {
         console.log(page.evaluate(function() {
             return $("#intro").text();
         }));
-        console.wait(5000);
+        trifle.wait(5000);
         phantom.exit();
     });
 });

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web.Script.Serialization;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
 using Noesis.Javascript;
@@ -41,7 +42,7 @@ namespace TrifleJS
             try
             {
                 if (arguments == null) { arguments = new object[0];  }
-                String cmd = String.Format(@"triflejs.callbacks['{0}'].{1}({2});",
+                String cmd = String.Format(@"trifle.callbacks['{0}'].{1}({2});",
                         id,
                         once ? "executeOnce" : "execute",
                         String.Join(",", parse(arguments))
@@ -51,7 +52,7 @@ namespace TrifleJS
                 );
             }
             catch (Exception ex) {
-                Interop.Context.Handle(ex);
+                API.Context.Handle(ex);
                 return false;
             }
             return true;
@@ -67,16 +68,34 @@ namespace TrifleJS
             List<string> input = new List<string>();
             foreach (object argument in arguments)
             {
-                switch (argument.GetType().Name)
+                if (argument == null) {
+                    input.Add("null");
+                }
+                else
                 {
-                    case "Int32":
-                    case "Double":
-                    case "Boolean":
-                        input.Add(argument.ToString());
-                        break;
-                    default:
-                        input.Add(String.Format("\"{0}\"", argument.ToString()));
-                        break;
+                    switch (argument.GetType().Name)
+                    {
+                        case "Int32":
+                        case "Double":
+                            input.Add(argument.ToString());
+                            break;
+                        case "Boolean":
+                            input.Add(argument.ToString().ToLowerInvariant());
+                            break;
+                        case "String":
+                            // Fix for undefined (coming up as null)
+                            if ("{{undefined}}".Equals(argument))
+                            {
+                                input.Add("undefined");
+                            }
+                            else {
+                                input.Add(String.Format("\"{0}\"", argument.ToString()));
+                            }
+                            break;
+                        default:
+                            input.Add(new JavaScriptSerializer().Serialize(argument));
+                            break;
+                    }
                 }
             }
             return input.ToArray();
@@ -90,7 +109,7 @@ namespace TrifleJS
         public class External
         {
             public void xdebug(string message) {
-                Interop.Console.xdebug(message);
+                API.Console.xdebug(message);
             }
             public void doCallback(string id)
             {

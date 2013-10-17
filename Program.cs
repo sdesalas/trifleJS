@@ -10,7 +10,7 @@ namespace TrifleJS
 {
     class Program
     {
-        public static Interop.Context context;
+        public static API.Context context;
         public static string[] args;
         public static bool verbose = false;
 
@@ -38,7 +38,7 @@ namespace TrifleJS
                         Program.verbose = true;
                         break;
                     case "--version":
-                        var v = Interop.TrifleJS.version;
+                        var v = API.Trifle.Version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
                         Program.Exit(0);
                         break;
@@ -169,31 +169,34 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (Program.context = new Interop.Context()) {
+            using (Program.context = new API.Context())
+            {
+                // Set Library Path
+                API.Trifle.LibraryPath = new FileInfo(filename).DirectoryName;
 
                 // Setting external parameters for the context
-                context.SetParameter("console", new Interop.Console());
-                context.SetParameter("triflejs", new Interop.TrifleJS());
-                context.SetParameter("module", new Interop.Module());
-                context.SetParameter("window", new Interop.Window());
+                context.SetParameter("console", new API.Console());
+                context.SetParameter("trifle", new API.Trifle());
+                context.SetParameter("module", new API.Module());
+                context.SetParameter("window", new API.Window());
 
                 try
                 {
                     // Initialise host env
                     context.Run(TrifleJS.Properties.Resources.triflejs_core, "triflejs.core.js");
                     context.Run(TrifleJS.Properties.Resources.triflejs_modules, "triflejs.modules.js");
-                    context.Run(TrifleJS.Properties.Resources.triflejs_init, "triflejs.init.js");
 
                     // Run the script
-                    object ptr = context.Run(File.ReadAllText(filename), (new FileInfo(filename)).Name);
-                    while (true) { 
-                        // Keep running until told to stop
-                    }
+                    context.Run(filename);
+
+                    // Keep running until told to stop
+                    // This is to make sure asynchronous code gets executed
+                    while (true) { }
 
                 }
                 catch (JavascriptException ex)
                 {
-                    Interop.Context.Handle(ex);
+                    API.Context.Handle(ex);
                 }
                 catch (Exception ex) {
                     // Error in C#!

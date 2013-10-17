@@ -61,28 +61,29 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* trifle.core.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///*
+        ///* Generates the core running environment for
+        ///* javascript code to execute under
+        ///* 
+        ///*/
+        ///
         ///(function(GLOBAL) {
         ///
-        ///    // Initialise Namespace
-        ///    var triflejs = GLOBAL.triflejs = GLOBAL.triflejs || {};
-        ///
-        ///    // Add UID generation
-        ///    triflejs.uid = function() {
-        ///        var s4 = function() {
-        ///            return Math.floor((1 + Math.random()) * 0x10000)
-        ///             .toString(16)
-        ///             .substring(1);
-        ///        };
-        ///
-        ///        return s4() + s4();
-        ///    };
-        ///
-        ///    // Set interop inside trifle
-        ///    triflejs._interop = GLOBAL.interop;
-        ///    delete GLOBAL.interop;
-        ///
-        ///    // Initialize callback  [rest of string was truncated]&quot;;.
+        ///    // Initialise window
+        ///    var window = {
+        ///        interop: GLOBAL.window,
+        ///        setTimeout: function(callback, ms) {
+        ///            if (callback &amp;&amp; ms) {
+        ///                var c = new trifle.Callback(function() {
+        ///                    callback.call(window);
+        ///                });
+        ///                this.interop.setTimeout(c.i [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_core {
             get {
@@ -91,55 +92,24 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /*
-        ///* triflejs.init.js
-        ///*
-        ///* By: Steven de Salas
-        ///* On: Sep 2013
-        ///* 
-        ///*
-        ///* Runs instructions to initialize the host environment.
-        ///*
-        ///* This is particularly important in order to pipe
-        ///* asyncronous callbacks as these are not currently
-        ///* supported in the Javascript.NET project.
-        ///* 
-        ///*/
-        ///
-        ///
-        ///console.xdebug(&quot;Initializing require()&quot;);
-        ///
-        ///// Loading module framework
-        ///// @see http://wiki.commonjs.org/wiki/Modules/1.1.1
-        ///this.exports = {
-        ///    webpage: function() {
-        ///        return new triflejs.modules.WebPage();
-        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string triflejs_init {
-            get {
-                return ResourceManager.GetString("triflejs_init", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 
         ///// Initialise Namespace
-        ///this.triflejs = this.triflejs || {};
+        ///this.trifle = this.trifle || {};
         ///
         ///// Wrap code to avoid global vars
-        ///(function(triflejs) {
+        ///(function(trifle) {
         ///
         ///    // Define namespace
-        ///    modules = triflejs.modules = triflejs.modules || {};
+        ///    trifle.modules = trifle.modules || {};
         ///
         ///    // WebPage Class
         ///    // Define Constructor
-        ///    var WebPage = triflejs.modules.WebPage = function() {
+        ///    var WebPage = trifle.modules.WebPage = function() {
         ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a V8 WebPage object and stores it in internal _interop property
-        ///        this._interop = triflejs._interop[&apos;WebPage&apos;]();
-        ///      [rest of string was truncated]&quot;;.
+        ///        // Instantiate a V8 WebPage object and stores it in internal module property
+        ///        this.module = trifle.module[&apos;WebPage&apos;]();
+        ///        // Fire Initialized event
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_modules {
             get {

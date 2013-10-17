@@ -1,19 +1,19 @@
 ﻿
 // Initialise Namespace
-this.triflejs = this.triflejs || {};
+this.trifle = this.trifle || {};
 
 // Wrap code to avoid global vars
-(function(triflejs) {
+(function(trifle) {
 
     // Define namespace
-    triflejs.modules = triflejs.modules || {};
+    trifle.modules = trifle.modules || {};
 
     // WebPage Class
     // Define Constructor
-    var WebPage = triflejs.modules.WebPage = function() {
+    var WebPage = trifle.modules.WebPage = function() {
         console.xdebug("new WebPage()");
         // Instantiate a V8 WebPage object and stores it in internal module property
-        this.module = triflejs.module['WebPage']();
+        this.module = trifle.module['WebPage']();
         // Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
@@ -28,7 +28,7 @@ this.triflejs = this.triflejs || {};
         if (this.onLoadStarted) {
             page.onLoadStarted.call(this);
         }
-        return this.module.Open(url, (new triflejs.Callback(function(status) {
+        return this.module.Open(url, (new trifle.Callback(function(status) {
             // Fire LoadFinished event
             if (page.onLoadFinished) {
                 page.onLoadFinished.call(page, status);
@@ -51,6 +51,10 @@ this.triflejs = this.triflejs || {};
         if (typeof func === 'function') {
             var args = [];
             for (var i = 1; i < arguments.length; i++) {
+                // Fix undefined (coming up as null)
+                if (arguments[i] === undefined) {
+                    arguments[i] = "{{undefined}}";
+                }
                 args.push(arguments[i]);
             }
             return this.module.Evaluate(func.toString(), args);
@@ -71,7 +75,7 @@ this.triflejs = this.triflejs || {};
         console.xdebug("WebPage.prototype.includeJs(url, callback)");
         var page = this;
         if (typeof url === 'string') {
-            return this.module.IncludeJs(url, (new triflejs.Callback(function() {
+            return this.module.IncludeJs(url, (new trifle.Callback(function() {
                 if (callback && callback.call) {
                     callback.call(page);
                 }
@@ -96,22 +100,22 @@ this.triflejs = this.triflejs || {};
 
     // FileSystem Class
     // Define Constructor
-    var FileSystem = triflejs.modules.FileSystem = function() {
+    var FileSystem = trifle.modules.FileSystem = function() {
         console.xdebug("new FileSystem()");
         // Instantiate a V8 FileSystem object and stores it in internal module property
-        this.module = triflejs.module['FileSystem']();
+        this.module = trifle.module['FileSystem']();
     }
 
     // System Class
     // Define Constructor
-    var System = triflejs.modules.System = function() {
+    var System = trifle.modules.System = function() {
         console.xdebug("new System()");
         // Instantiate a V8 System object and stores it in internal module property
-        this.module = triflejs.module['System']();
+        this.module = trifle.module['System']();
         // Populate other properties
         this.args = this.module.args;
     }
 
 
-})(this.triflejs);
+})(this.trifle);
 
