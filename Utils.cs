@@ -9,12 +9,18 @@ namespace TrifleJS
 {
     public class Utils
     {
-        public static void Debug(object message) {
+        public static void Debug(object message, params object[] args) {
             if (Program.verbose)
             {
                 ConsoleColor normalColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine(message);
+                if (args != null)
+                {
+                    Console.WriteLine(String.Format(message as string, args));
+                }
+                else {
+                    Console.WriteLine(message);
+                }
                 Console.ForegroundColor = normalColor;
             }
         }

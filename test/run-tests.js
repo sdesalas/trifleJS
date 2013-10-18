@@ -64,16 +64,18 @@ fs.changeWorkingDirectory(phantom.libraryPath);
 // Load specs
 //phantom.injectJs("./phantom-spec.js");
 
-//describe("phantom global object", function() {
-//    it("should exist", function() {
-//        expect(typeof phantom).toEqual("object");
-//    });
-//});
+describe("phantom global object", function() {
+    it("should exist", function() {
+        expect(typeof phantom).toEqual("object");
+    });
+});
 
 // Launch tests
 var jasmineEnv = jasmine.getEnv();
 
-// Add a ConsoleReporter to 1) print with colors on the console 2) exit when finished
+// Add a ConsoleReporter to 
+// 1) print with colors on the console 
+// 2) exit when finished
 jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
     // Print messages straight to the console
     console.log(msg.replace('\n', ''));

@@ -106,6 +106,8 @@ namespace TrifleJS
                 }
             }
 
+            Exit(0);
+
         }
 
         public static void Exit(int exitCode)
@@ -191,7 +193,11 @@ namespace TrifleJS
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
-                    while (true) { }
+                    while (true) {
+                        foreach (KeyValuePair<int, API.Window.Timer> timerEntry in API.Window.timers) {
+                            timerEntry.Value.Tick();
+                        }
+                    }
 
                 }
                 catch (JavascriptException ex)
@@ -202,9 +208,6 @@ namespace TrifleJS
                     // Error in C#!
                     Console.Error.WriteLine(String.Format("\n===================\n{0} {1}\n===================\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace));
                 }
-
-                // Getting a parameter
-                //Console.WriteLine("number: " + context.GetParameter("number"));
             }
         }
     }

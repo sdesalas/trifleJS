@@ -41,7 +41,7 @@ namespace TrifleJS
         {
             try
             {
-                if (arguments == null) { arguments = new object[0];  }
+                if (arguments == null) { arguments = new object[0]; }
                 String cmd = String.Format(@"trifle.callbacks['{0}'].{1}({2});",
                         id,
                         once ? "executeOnce" : "execute",

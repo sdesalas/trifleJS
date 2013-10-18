@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Timers;
 
 namespace TrifleJS.API
 {
     public class Window
     {
-        private static Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
+        /// <summary>
+        /// List of currently executing timers for window.setTimeout() and window.setInterval()
+        /// </summary>
+        public static Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
 
         /// <summary>
         /// Defers execution of a callback by number of milliseconds, same as window.setTimeout()
@@ -46,13 +48,14 @@ namespace TrifleJS.API
         }
 
         private static int SetTimer(string callbackId, int ms, bool once) {
-            Timer timer = new Timer(ms);
-            timer.Elapsed += delegate
+            Timer timer = new Timer();
+            timer.Callback += delegate
             {
+                if (once) { timer.Enabled = false; }
                 Callback.execute(callbackId, once, null);
             };
-            timer.AutoReset = !once;
             timer.Enabled = true;
+            timer.Interval = ms;
             timer.Start();
             int id = Environment.TickCount;
             Window.timers.Add(id, timer);
@@ -65,6 +68,55 @@ namespace TrifleJS.API
                 timer.Dispose();
                 Window.timers.Remove(timerId);
             }
+        }
+
+    /// <summary>
+    /// Internal timer for window.setTimeout() and window.setInterval().
+    /// This is to ensure that async calls always run on the same thread.
+    /// </summary>
+        public class Timer : IDisposable
+        {
+
+            public void Tick()
+            {
+                if (Enabled && Environment.TickCount >= nextTick)
+                {
+                    Callback.Invoke(this, null);
+                    nextTick = Environment.TickCount + Interval;
+                }
+            }
+
+            private int nextTick = 0;
+
+            public void Start()
+            {
+                this.Enabled = true;
+                Interval = (interval > 0) ? interval : 1000;
+            }
+
+            public void Stop()
+            {
+                this.Enabled = false;
+            }
+
+            public event EventHandler Callback;
+
+            public bool Enabled = false;
+
+            private int interval;
+
+            public int Interval
+            {
+                get { return interval; }
+                set { interval = value; nextTick = Environment.TickCount + interval; }
+            }
+
+            public void Dispose()
+            {
+                this.Callback = null;
+                this.Stop();
+            }
+
         }
     }
 }

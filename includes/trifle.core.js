@@ -114,14 +114,19 @@
     // Execute callback
     Callback.prototype.execute = function() {
         console.xdebug('Callback#' + this.id + '.prototype.execute()');
-        this.func.apply(this.scope || this, arguments || this.defaultArgs)
+        if (this.expired) {
+            console.xdebug('Callback#' + this.id + ' has expired. Skip execution..');
+        } else {
+            this.func.apply(this.scope || this, arguments || this.defaultArgs)
+        }
     }
 
     // Execute callback and delete reference
     Callback.prototype.executeOnce = function() {
+        console.xdebug('Callback#' + this.id + '.prototype.executeOnce()');
         this.execute.apply(this, arguments);
-        // Remove when finished
-        delete trifle.callbacks[this.id];
+        // Expire callback
+        this.expired = true;
     }
 
     // Console
