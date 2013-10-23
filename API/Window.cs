@@ -91,7 +91,7 @@ namespace TrifleJS.API
             public void Start()
             {
                 this.Enabled = true;
-                Interval = (interval > 0) ? interval : 1000;
+                Interval = interval;
             }
 
             public void Stop()
@@ -103,7 +103,7 @@ namespace TrifleJS.API
 
             public bool Enabled = false;
 
-            private int interval;
+            private int interval = 1000;
 
             public int Interval
             {
