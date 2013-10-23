@@ -194,9 +194,7 @@ namespace TrifleJS
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
                     while (true) {
-                        foreach (KeyValuePair<int, API.Window.Timer> timerEntry in API.Window.timers) {
-                            timerEntry.Value.Tick();
-                        }
+                        API.Window.CheckTimers();
                     }
 
                 }

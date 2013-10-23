@@ -35,6 +35,19 @@ namespace TrifleJS.API
             stdout(value, ConsoleColor.Yellow);
         }
 
+        public static void color(string color, object value)
+        {
+            ConsoleColor consoleColor = ConsoleColor.Gray;
+            try
+            {
+                consoleColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+            }
+            catch { }
+            finally {
+                stdout(value, consoleColor);
+            }
+        }
+
         public static void clear()
         {
             System.Console.Clear();

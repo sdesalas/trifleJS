@@ -61,14 +61,11 @@ var fs = require('fs');
 
 fs.changeWorkingDirectory(phantom.libraryPath);
 
-// Load specs
-//phantom.injectJs("./phantom-spec.js");
+// Remove xdebug
+console.xdebug = function() { };
 
-describe("phantom global object", function() {
-    it("should exist", function() {
-        expect(typeof phantom).toEqual("object");
-    });
-});
+// Load specs
+phantom.injectJs("phantom-spec.js");
 
 // Launch tests
 var jasmineEnv = jasmine.getEnv();
@@ -77,14 +74,36 @@ var jasmineEnv = jasmine.getEnv();
 // 1) print with colors on the console 
 // 2) exit when finished
 jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
-    // Print messages straight to the console
-    console.log(msg.replace('\n', ''));
+    // Apply color
+    var ansi = {
+        green: '\033[32m',
+        red: '\033[31m',
+        yellow: '\033[33m',
+        none: '\033[0m',
+        newline: '\n'
+    };
+    msg = msg.replace(ansi.newline, '').replace(ansi.none, '');
+    var printInColor = function(color, message) { 
+        if (color && message && ansi[color]) {
+            console.API.color(color, message.replace(ansi[color], ''));
+        }
+    }
+    // Print messages straight to console  
+    if (msg.indexOf(ansi.red) === 0) {
+        printInColor('red', msg);
+    } else if (msg.indexOf(ansi.yellow) === 0) {
+        printInColor('yellow', msg);
+    } else if (msg.indexOf(ansi.green) === 0) {
+        printInColor('green', msg);
+    } else {
+        console.log(msg);
+    }
 }, function(reporter) {
     // On complete
     phantom.exit(reporter.results().failedCount);
 }, true));
 
 // Launch tests
-jasmineEnv.updateInterval = 1000;
+jasmineEnv.updateInterval = 500;
 jasmineEnv.execute();
 

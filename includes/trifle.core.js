@@ -30,25 +30,29 @@
         API: API.window,
         window: window,
         setTimeout: function(callback, ms) {
-            if (callback && ms) {
+            console.xdebug('window.setTimeout(callback, ' + ms + ')');
+            if (typeof callback === 'function' && typeof ms === 'number') {
                 window.API.SetTimeout((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
         },
         clearTimeout: function(id) {
+            console.xdebug('window.clearTimeout(' + id + ')');
             if (typeof id === 'number') {
                 window.API.ClearTimeout(id);
             }
         },
         setInterval: function(callback, ms) {
-            if (callback && ms) {
+            console.xdebug('window.setInterval(callback, ' + ms + ')');
+            if (typeof callback === 'function' && typeof ms === 'number') {
                 window.API.SetInterval((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
         },
         clearInterval: function(id) {
+            console.xdebug('window.clearInterval(' + id + ')');
             if (typeof id === 'number') {
                 window.API.ClearInterval(id);
             }
@@ -83,6 +87,7 @@
     // Add PhantomJS Compatibility
     var phantom = GLOBAL.phantom = {
         version: trifle.version,
+        args: trifle.API.Args,
         exit: trifle.exit,
         injectJs: trifle.injectJs,
         libraryPath: trifle.libraryPath

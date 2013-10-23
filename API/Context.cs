@@ -22,7 +22,13 @@ namespace TrifleJS.API
             {
                 throw new Exception(String.Format("File does not exist {0}.", filepath));
             }
-            return Run(File.ReadAllText(file.FullName), file.Name);
+            // Read file and add a blank function at the end, 
+            // this is to fix a stackoverflow bug
+            // in Javascript.NET where it tries
+            // to return an object with circular reference
+            string script = File.ReadAllText(file.FullName) + ";(function() {})();";
+            // Execute file
+            return Run(script, file.Name); 
         }
 
         /// <summary>

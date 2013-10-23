@@ -80,5 +80,12 @@ namespace TrifleJS.API
                 };
             }
         }
+
+        /// <summary>
+        /// Returns the arguments passed when executing triflejs.exe in the console
+        /// </summary>
+        public static string[] Args {
+            get { return Program.args; }
+        }
     }
 }

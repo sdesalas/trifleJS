@@ -118,5 +118,17 @@ namespace TrifleJS.API
             }
 
         }
+
+        /// <summary>
+        /// Checks through all available timers 
+        /// to see if any of them should be executed.
+        /// </summary>
+        public static void CheckTimers()
+        {
+            foreach (Timer timer in new List<Timer>(timers.Values))
+            {
+                timer.Tick();
+            }
+        }
     }
 }

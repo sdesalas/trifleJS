@@ -1,15 +1,15 @@
-describe("phantom global object", function() {
+﻿describe("phantom global object", function() {
     it("should exist", function() {
         expect(typeof phantom).toEqual('object');
     });
 
-//    it("should have args property", function() {
-//        expect(phantom.hasOwnProperty('args')).toBeTruthy();
-//    });
+    it("should have args property", function() {
+        expect(phantom.hasOwnProperty('args')).toBeTruthy();
+    });
 
-//    it("should have args as an array", function() {
-//        expect(typeof phantom.args).toEqual('object');
-//    });
+    it("should have args as an array", function() {
+        expect(typeof phantom.args).toEqual('object');
+    });
 
 //    it("should have libraryPath property", function() {
 //        expect(phantom.hasOwnProperty('libraryPath')).toBeTruthy();

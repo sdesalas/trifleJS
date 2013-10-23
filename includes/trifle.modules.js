@@ -124,7 +124,7 @@ this.trifle = this.trifle || {};
         // Instantiate a V8 System object and stores it in internal API property
         this.API = trifle.module['System']();
         // Populate other properties
-        this.args = this.API.args;
+        this.args = this.API.Args;
     }
 
 
