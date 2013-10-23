@@ -31,10 +31,9 @@
         window: window,
         setTimeout: function(callback, ms) {
             if (callback && ms) {
-                var c = new trifle.Callback(function() {
+                window.API.SetTimeout((new trifle.Callback(function() {
                     callback.call(window);
-                });
-                window.API.SetTimeout(c.id, ms);
+                })).id, ms);
             }
         },
         clearTimeout: function(id) {
@@ -77,8 +76,7 @@
         },
         injectJs: function(filename) {
             return trifle.API.InjectJs(filename || '');
-        },
-        callbacks: {}
+        }
     };
 
 
@@ -90,6 +88,10 @@
         libraryPath: trifle.libraryPath
     };
 
+    // Closure variable that tracks existing callbacks
+    // (hidden from outside world)
+    var callbacks = {};
+
     // Callback Class
     // Define Constructor
     var Callback = trifle.Callback = function(func, scope, defaultArgs) {
@@ -98,7 +100,7 @@
         this.defaultArgs = defaultArgs;
         this.id = this.newUID();
         console.xdebug('new Callback#' + this.id + '(func, scope, defaultArgs)');
-        trifle.callbacks[this.id] = this;
+        callbacks[this.id] = this;
     };
 
     // Unique ID Generator
@@ -112,21 +114,24 @@
     };
 
     // Execute callback
-    Callback.prototype.execute = function() {
-        console.xdebug('Callback#' + this.id + '.prototype.execute()');
-        if (this.expired) {
-            console.xdebug('Callback#' + this.id + ' has expired. Skip execution..');
-        } else {
-            this.func.apply(this.scope || this, arguments || this.defaultArgs)
+    Callback.execute = function(id, args) {
+        console.xdebug('Callback.execute("' + id + '", [args])');
+        var callback = callbacks[id];
+        if (callback) {
+            if (!args || !args.length) {
+                args = callback.defaultArgs;
+            }
+            callback.func.apply(callback.scope || callback, args);
         }
     }
 
     // Execute callback and delete reference
-    Callback.prototype.executeOnce = function() {
-        console.xdebug('Callback#' + this.id + '.prototype.executeOnce()');
-        this.execute.apply(this, arguments);
-        // Expire callback
-        this.expired = true;
+    Callback.executeOnce = function(id, args) {
+        console.xdebug('Callback.executeOnce("' + id + '", [args])');
+        if (typeof id === 'string') {
+            Callback.execute(id, args);
+            delete callbacks[id];
+        }
     }
 
     // Console

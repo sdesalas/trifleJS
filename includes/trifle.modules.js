@@ -28,13 +28,15 @@ this.trifle = this.trifle || {};
         if (this.onLoadStarted) {
             page.onLoadStarted.call(this);
         }
-        return this.API.Open(url, (new trifle.Callback(function(status) {
+        // Instantiate Callback
+        var complete = function(status) {
             // Fire LoadFinished event
             if (page.onLoadFinished) {
                 page.onLoadFinished.call(page, status);
             }
             return callback.call(page, status);
-        })).id);
+        };
+        return this.API.Open(url, (new trifle.Callback(complete)).id);
     };
 
     // Evaluate JS
@@ -75,11 +77,12 @@ this.trifle = this.trifle || {};
         console.xdebug("WebPage.prototype.includeJs(url, callback)");
         var page = this;
         if (typeof url === 'string') {
-            return this.API.IncludeJs(url, (new trifle.Callback(function() {
+            var complete = function() {
                 if (callback && callback.call) {
                     callback.call(page);
                 }
-            })).id);
+            };
+            return this.API.IncludeJs(url, (new trifle.Callback(complete)).id);
         }
     }
 
