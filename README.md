@@ -26,7 +26,7 @@ The following is a list of features that have been ported from PhantomJS.
 |webpage.renderBase64(format)             | Yep      |                              |
 |webpage.evaluate(function, arg1, arg2,..)| Yep      |                              |
 |webpage.evaluateJavaScript(str)          | Yep      |                              |
-|webpage.includeJs(url, callback)         | Partial  | No Callback yet              |
+|webpage.includeJs(url, callback)         | Yep      | Callback included            |
 |webpage.injectJs(filename)               | Yep      |                              |
 |webpage#onConsoleMessage                 | Nope     |                              |
 |webpage#onError                          | Nope     |                              |
@@ -34,3 +34,5 @@ The following is a list of features that have been ported from PhantomJS.
 |webpage#onLoadFinished                   | Yep      |                              |
 
 This code is still very much in beta. Check again for updates.
+
+You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.zip) if you want to play around with the beta version. 
