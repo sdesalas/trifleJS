@@ -32,7 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="triflejs-01" class="anchor" href="#triflejs-01"><span class="octicon octicon-link"></span></a>trifleJS 0.1</h1>
+<a name="triflejs-02" class="anchor" href="#triflejs-02"><span class="octicon octicon-link"></span></a>trifleJS 0.2</h1>
 
 <p>An Headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
 
@@ -40,9 +40,9 @@
 
 <p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png" alt="What is TrifleJS?" title="What is TrifleJS?"></p>
 
-<p>It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).</p>
+<p>It supports different version of IE interchangeably depending on the current version installed (IE9 can emulate IE7, IE8 or IE9 but not IE10).</p>
 
-<pre><code>C:\&gt; TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
+<pre><code>C:\&gt; TrifleJS.exe --emulate:IE8 --render:http://whatbrowser.org/
 </code></pre>
 
 <p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png" alt="IE 8" title="Running as IE 8"></p>
@@ -62,12 +62,27 @@
 <td></td>
 </tr>
 <tr>
-<td>phantom.version</td>
+<td>.version</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>phantom.exit()</td>
+<td>.exit()</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td>.injectJS()</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td>.libraryPath</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td>.args</td>
 <td>Yep</td>
 <td></td>
 </tr>
@@ -77,59 +92,122 @@
 <td></td>
 </tr>
 <tr>
-<td>webpage.open(url, callback)</td>
+<td>.open(url, callback)</td>
 <td>Yep</td>
 <td>Callback included</td>
 </tr>
 <tr>
-<td>webpage.render(filename)</td>
+<td>.render(filename)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.renderBase64(format)</td>
+<td>.renderBase64(format)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.evaluate(function, arg1, arg2,..)</td>
+<td>.evaluate(function, arg1, arg2,..)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.evaluateJavaScript(str)</td>
+<td>.evaluateJavaScript(str)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage.includeJs(url, callback)</td>
+<td>.includeJs(url, callback)</td>
 <td>Yep</td>
 <td>Callback included</td>
 </tr>
 <tr>
-<td>webpage.injectJs(filename)</td>
+<td>.injectJs(filename)</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage#onConsoleMessage</td>
+<td>#onConsoleMessage</td>
 <td>Nope</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage#onError</td>
+<td>#onError</td>
 <td>Nope</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage#onLoadStarted</td>
+<td>#onLoadStarted</td>
 <td>Yep</td>
 <td></td>
 </tr>
 <tr>
-<td>webpage#onLoadFinished</td>
+<td>#onLoadFinished</td>
 <td>Yep</td>
 <td></td>
+</tr>
+<tr>
+<td><strong>system</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.args</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>fs</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.changeWorkingDirectory()</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>COMMAND LINE</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>REPL input</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td>--version</td>
+<td>Yep</td>
+<td></td>
+</tr>
+</tbody>
+</table><h2>
+<a name="new-features" class="anchor" href="#new-features"><span class="octicon octicon-link"></span></a>New features</h2>
+
+<p>These are additional features added into TrifleJS that are not present in PhantomJS</p>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>COMMAND LINE</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>--emulate</td>
+<td>Yep</td>
+<td>Emulates specific IE versions</td>
+</tr>
+<tr>
+<td>--render:</td>
+<td>Yep</td>
+<td>Renders a URL to file and quits</td>
 </tr>
 </tbody>
 </table><p>This code is still very much in beta. Check again for updates.</p>
