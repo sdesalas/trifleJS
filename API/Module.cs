@@ -3,7 +3,8 @@
 namespace TrifleJS.API
 {
     /// <summary>
-    /// Defines a set of C# mid-tier classes that can be instantiated inside the javascript engine.
+    /// Defines a set of C# mid-tier classes that can be instantiated inside 
+    /// the javascript engine as CommonJS Modules.
     /// </summary>
     public class Module
     {

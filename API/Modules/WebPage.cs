@@ -64,13 +64,13 @@ namespace TrifleJS.API.Modules
         public void Open(string url, string callbackId) {
             Console.log("Opening " + url);
             // Check the URL
-            if (TryParse(url) != null)
+            if (Browser.TryParse(url) != null)
             {
                 browser.Navigate(url);
                 browser.DocumentCompleted += delegate
                 {
                     // Continue with callback
-                    Callback.executeOnce(callbackId, "success");
+                    Callback.ExecuteOnce(callbackId, "success");
                 };
                 while (browser.ReadyState != WebBrowserReadyState.Complete)
                 {
@@ -80,18 +80,6 @@ namespace TrifleJS.API.Modules
             else {
                 Console.log("Error opening url: " + url);
             }
-        }
-
-        /// <summary>
-        /// Tries to parse a URL, otherwise returns null
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private Uri TryParse(string url) {
-            Uri uri;
-            try { uri = new Uri(url); }
-            catch { return null; }
-            return uri;
         }
 
         /// <summary>
@@ -127,7 +115,7 @@ namespace TrifleJS.API.Modules
         {
             string[] input;
             if (args == null) { input = new string[] {}; }
-            else { input = Callback.parse(args); }
+            else { input = Callback.Parse(args); }
             string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
             string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
             EvaluateJavaScript(script);
@@ -143,7 +131,7 @@ namespace TrifleJS.API.Modules
         /// <param name="callbackId"></param>
         public void IncludeJs(string url, string callbackId)
         {
-            Uri uri = TryParse(url);
+            Uri uri = Browser.TryParse(url);
             if (uri != null)
             {
                 HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
@@ -155,11 +143,12 @@ namespace TrifleJS.API.Modules
                     element.type = "text/javascript";
                     head[0].AppendChild(scriptEl);
                     // Listen for readyState changes
+                    // @see http://stackoverflow.com/questions/9110388/web-browser-control-how-to-capture-document-events
                     ((mshtml.HTMLScriptEvents2_Event)element).onreadystatechange += delegate
                     {
                         if (element.readyState == "complete" || element.readyState == "loaded")
                         {
-                            Callback.executeOnce(callbackId);
+                            Callback.ExecuteOnce(callbackId);
                         }
                     };
                 }

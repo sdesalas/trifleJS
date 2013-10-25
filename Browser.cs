@@ -17,6 +17,7 @@ namespace TrifleJS
 
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys
+        /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
         /// </summary>
         /// <param name="ieVersion">The version of IE to emulate (IE7, IE8, IE9 etc)</param>
         public static void Emulate(string ieVersion)
@@ -95,6 +96,19 @@ namespace TrifleJS
             Bitmap output = new Bitmap(this.Width, this.Height);
             NativeMethods.GetImage(this.ActiveXInstance, output, Color.White);
             return output;
+        }
+
+        /// <summary>
+        /// Tries to parse a URL, otherwise returns null
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static Uri TryParse(string url)
+        {
+            Uri uri;
+            try { uri = new Uri(url); }
+            catch { return null; }
+            return uri;
         }
 
     }

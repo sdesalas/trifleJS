@@ -7,6 +7,9 @@ using System.Text;
 
 namespace TrifleJS
 {
+    /// <summary>
+    /// Various tools to make life easier
+    /// </summary>
     public class Utils
     {
         public static void Debug(object message, params object[] args) {

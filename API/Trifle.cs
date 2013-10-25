@@ -47,7 +47,7 @@ namespace TrifleJS.API
             {
                 try
                 {
-                    Program.context.Run(filename);
+                    Program.context.RunFile(filename);
                     return true;
                 }
                 catch (Exception ex)
@@ -66,7 +66,7 @@ namespace TrifleJS.API
             get { return libraryPath; }
             set { libraryPath = value; }
         }
-        private static string libraryPath;
+        private static string libraryPath = Environment.CurrentDirectory;
 
         /// <summary>
         /// Returns the current versions

@@ -92,6 +92,7 @@
     </Content>
     <Resource Include="includes\trifle.core.js" />
     <Resource Include="includes\trifle.modules.js" />
+    <None Include="includes\ie.toolset.js" />
     <Content Include="Libs\Microsoft.mshtml.dll">
     </Content>
     <Content Include="Libs\msvcm90.dll" />
@@ -114,12 +115,13 @@
     </Content>
     <Content Include="test\feature\window.setTimeout.js">
     </Content>
+    <Content Include="test\run-jasmine.js" />
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
     <Content Include="test\lib\jasmine.js" />
-    <Content Include="test\phantom-spec.js" />
+    <Content Include="test\spec\phantom.js" />
     <Content Include="test\run-tests.js" />
-    <Content Include="test\webpage-spec.js" />
+    <Content Include="test\spec\webpage.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

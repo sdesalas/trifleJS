@@ -12,27 +12,27 @@ namespace TrifleJS.API
     {
         public static void debug(object value)
         {
-            stdout(value, ConsoleColor.DarkCyan);
+            StdOut(value, ConsoleColor.DarkCyan);
         }
 
         public static void xdebug(object value)
         {
-            Utils.Debug(String.Format("{0}", parse(value)));
+            Utils.Debug(String.Format("{0}", Parse(value)));
         }
 
         public static void log(object value)
         {
-            stdout(value, null);
+            StdOut(value, null);
         }
 
         public static void error(object value)
         {
-            stderr(value, ConsoleColor.Red);
+            StdErr(value, ConsoleColor.Red);
         }
 
         public static void warn(object value)
         {
-            stdout(value, ConsoleColor.Yellow);
+            StdOut(value, ConsoleColor.Yellow);
         }
 
         public static void color(string color, object value)
@@ -44,7 +44,7 @@ namespace TrifleJS.API
             }
             catch { }
             finally {
-                stdout(value, consoleColor);
+                StdOut(value, consoleColor);
             }
         }
 
@@ -53,26 +53,31 @@ namespace TrifleJS.API
             System.Console.Clear();
         }
 
-        private static void stdout(object value, ConsoleColor? color)
+        private static void StdOut(object value, ConsoleColor? color)
         {
-            std(value, color, false);
+            Std(value, color, false);
         }
 
-        private static void stderr(object value, ConsoleColor? color)
+        private static void StdErr(object value, ConsoleColor? color)
         {
-            std(value, color, true);
+            Std(value, color, true);
         }
 
-        private static void std(object value, ConsoleColor? color, bool err)
+        private static void Std(object value, ConsoleColor? color, bool err)
         {
             ConsoleColor normalColor = System.Console.ForegroundColor;
             if (color != null) { System.Console.ForegroundColor = (ConsoleColor)color; }
-            if (err) { System.Console.Error.WriteLine("{0}", parse(value)); }
-            else { System.Console.WriteLine("{0}", parse(value)); }
+            if (err) { System.Console.Error.WriteLine("{0}", Parse(value)); }
+            else { System.Console.WriteLine("{0}", Parse(value)); }
             System.Console.ForegroundColor = normalColor;
         }
 
-        private static object parse(object value)
+        /// <summary>
+        /// Parses an object for output to the system console
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object Parse(object value)
         {
             if (value == null)
             {

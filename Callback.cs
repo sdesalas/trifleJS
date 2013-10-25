@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 using Noesis.Javascript;
 
 namespace TrifleJS
@@ -17,9 +17,9 @@ namespace TrifleJS
         /// <param name="id">Callback id</param>
         /// <param name="arguments">any arguments to pass to the callback</param>
         /// <returns></returns>
-        public static bool executeOnce(string id, params object[] arguments)
+        public static bool ExecuteOnce(string id, params object[] arguments)
         {
-            return execute(id, true, arguments);
+            return Execute(id, true, arguments);
         }
 
         /// <summary>
@@ -29,15 +29,15 @@ namespace TrifleJS
         /// <param name="id">Callback id</param>
         /// <param name="arguments">any arguments to pass to the callback</param>
         /// <returns></returns>
-        public static bool execute(string id, params object[] arguments)
+        public static bool Execute(string id, params object[] arguments)
         {
-            return execute(id, false, arguments);
+            return Execute(id, false, arguments);
         }
 
         /// <summary>
         /// Executes a callback
         /// </summary>
-        public static bool execute(string id, bool once, params object[] arguments)
+        public static bool Execute(string id, bool once, params object[] arguments)
         {
             try
             {
@@ -45,11 +45,9 @@ namespace TrifleJS
                 String cmd = String.Format(@"trifle.Callback.{0}('{1}', [{2}]);",
                         once ? "executeOnce" : "execute",
                         id,
-                        String.Join(",", parse(arguments))
+                        String.Join(",", Parse(arguments))
                     );
-                Program.context.Run(
-                    cmd, "Callback#" + id
-                );
+                Program.context.Run(cmd, "Callback#" + id);
             }
             catch (Exception ex) {
                 API.Context.Handle(ex);
@@ -64,7 +62,7 @@ namespace TrifleJS
         /// </summary>
         /// <param name="arguments">an array of argument objects (of any type)</param>
         /// <returns>list of parsed arguments</returns>
-        public static string[] parse(params object[] arguments) {
+        public static string[] Parse(params object[] arguments) {
             List<string> input = new List<string>();
             foreach (object argument in arguments)
             {
@@ -93,7 +91,7 @@ namespace TrifleJS
                             }
                             break;
                         default:
-                            input.Add(new JavaScriptSerializer().Serialize(argument));
+                            input.Add(JsonConvert.SerializeObject(argument));
                             break;
                     }
                 }
@@ -113,7 +111,7 @@ namespace TrifleJS
             }
             public void doCallback(string id)
             {
-                Callback.execute(id);
+                Callback.Execute(id);
             }
         }
     }

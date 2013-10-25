@@ -16,19 +16,31 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="filepath">Path to file, this can either be relative to triflejs.exe or current script being executed.</param>
         /// <returns></returns>
-        public override object Run(string filepath) {
+        public object RunFile(string filepath) {
             FileInfo file = Find(filepath);
             if (file == null || !file.Exists)
             {
                 throw new Exception(String.Format("File does not exist {0}.", filepath));
             }
+            // Read file 
+            string script = File.ReadAllText(file.FullName);
+            // Execute file
+            return RunScript(script, file.Name); 
+        }
+
+        /// <summary>
+        /// Executes a script
+        /// </summary>
+        /// <param name="script">String containing javascript to execute</param>
+        /// <param name="scriptName">Name of the script</param>
+        public object RunScript(string script, string scriptName) {
             // Read file and add a blank function at the end, 
             // this is to fix a stackoverflow bug
             // in Javascript.NET where it tries
             // to return an object with circular reference
-            string script = File.ReadAllText(file.FullName) + ";(function() {})();";
-            // Execute file
-            return Run(script, file.Name); 
+            script += ";(function() {})();";
+            // Execute 
+            return base.Run(script, scriptName);
         }
 
         /// <summary>

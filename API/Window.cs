@@ -52,7 +52,7 @@ namespace TrifleJS.API
             timer.Callback += delegate
             {
                 if (once) { timer.Enabled = false; }
-                Callback.execute(callbackId, once, null);
+                Callback.Execute(callbackId, once, null);
             };
             timer.Enabled = true;
             timer.Interval = ms;

@@ -61,6 +61,109 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to var isCommonJS = typeof window == &quot;undefined&quot;;
+        ///
+        ////**
+        ///* Top level namespace for Jasmine, a lightweight JavaScript BDD/spec/testing framework.
+        ///*
+        ///* @namespace
+        ///*/
+        ///var jasmine = {};
+        ///if (isCommonJS) exports.jasmine = jasmine;
+        ////**
+        ///* @private
+        ///*/
+        ///jasmine.unimplementedMethod_ = function() {
+        ///    throw new Error(&quot;unimplemented method&quot;);
+        ///};
+        ///
+        ////**
+        ///* Use &lt;code&gt;jasmine.undefined&lt;/code&gt; instead of &lt;code&gt;undefined&lt;/code&gt;, since &lt;code&gt;undefined&lt;/code&gt; is just
+        ///* a plain old variable and may be redefined by some [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jasmine {
+            get {
+                return ResourceManager.GetString("jasmine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
+        ///    //inspired by mhevery&apos;s jasmine-node reporter
+        ///    //https://github.com/mhevery/jasmine-node
+        ///
+        ///    doneCallback = doneCallback || function() { };
+        ///
+        ///    var ansi = {
+        ///        green: &apos;\033[32m&apos;,
+        ///        red: &apos;\033[31m&apos;,
+        ///        yellow: &apos;\033[33m&apos;,
+        ///        none: &apos;\033[0m&apos;
+        ///    },
+        ///    language = {
+        ///        spec: &quot;spec&quot;,
+        ///        failure: &quot;failure&quot;
+        ///    };
+        ///
+        ///    function coloredStr(color, str) {
+        ///        return showColors ? (ansi[c [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jasmine_console {
+            get {
+                return ResourceManager.GetString("jasmine_console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///// Launch tests
+        ///var jasmineEnv = jasmine.getEnv();
+        ///
+        ///// Add a ConsoleReporter to 
+        ///// 1) print with colors on the console 
+        ///// 2) exit when finished
+        ///jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
+        ///    // Apply color
+        ///    var ansi = {
+        ///        green: &apos;\033[32m&apos;,
+        ///        red: &apos;\033[31m&apos;,
+        ///        yellow: &apos;\033[33m&apos;,
+        ///        none: &apos;\033[0m&apos;,
+        ///        newline: &apos;\n&apos;
+        ///    };
+        ///    msg = msg.replace(ansi.newline, &apos;&apos;).replace(ansi.none, &apos;&apos;);
+        ///    var printInColor = function(color, message) [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string run_jasmine {
+            get {
+                return ResourceManager.GetString("run_jasmine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to describe(&quot;phantom global object&quot;, function() {
+        ///    it(&quot;should exist&quot;, function() {
+        ///        expect(typeof phantom).toEqual(&apos;object&apos;);
+        ///    });
+        ///
+        ///    it(&quot;should have args property&quot;, function() {
+        ///        expect(phantom.hasOwnProperty(&apos;args&apos;)).toBeTruthy();
+        ///    });
+        ///
+        ///    it(&quot;should have args as an array&quot;, function() {
+        ///        expect(typeof phantom.args).toEqual(&apos;object&apos;);
+        ///    });
+        ///
+        ///    it(&quot;should have libraryPath property&quot;, function() {
+        ///        expect(phantom.hasOwnProperty(&apos;libraryPath&apos;)).toBeTruthy( [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string spec_phantom {
+            get {
+                return ResourceManager.GetString("spec_phantom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /*
         ///* trifle.core.js
         ///*
@@ -75,15 +178,20 @@ namespace TrifleJS.Properties {
         ///
         ///(function(GLOBAL) {
         ///
-        ///    // Initialise window
-        ///    var window = {
-        ///        interop: GLOBAL.window,
-        ///        setTimeout: function(callback, ms) {
-        ///            if (callback &amp;&amp; ms) {
-        ///                var c = new trifle.Callback(function() {
-        ///                    callback.call(window);
-        ///                });
-        ///                this.interop.setTimeout(c.i [rest of string was truncated]&quot;;.
+        ///    // Save imported params
+        ///    var API = {
+        ///        trifle: GLOBAL.trifle,
+        ///        module: GLOBAL.module,
+        ///        console: GLOBAL.console,
+        ///        window: GLOBAL.window
+        ///    };
+        ///
+        ///    delete GLOBAL.trifle;
+        ///    delete GLOBAL.module;
+        ///    delete GLOBAL.console;
+        ///    delete GLOBAL.window;
+        ///
+        ///    // Initialise window objec [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_core {
             get {
@@ -106,10 +214,10 @@ namespace TrifleJS.Properties {
         ///    // Define Constructor
         ///    var WebPage = trifle.modules.WebPage = function() {
         ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a V8 WebPage object and stores it in internal module property
-        ///        this.module = trifle.module[&apos;WebPage&apos;]();
+        ///        // Instantiate a V8 WebPage object and stores it in internal API property
+        ///        this.API = trifle.module[&apos;WebPage&apos;]();
         ///        // Fire Initialized event
-        /// [rest of string was truncated]&quot;;.
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string triflejs_modules {
             get {
