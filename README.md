@@ -1,4 +1,4 @@
-trifleJS 0.1
+trifleJS 0.2
 =========
 
 An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
@@ -15,23 +15,44 @@ It supports different version of IE interchangeably depending on the current ver
 
 The following is a list of features that have been ported from PhantomJS.
 
-|Feature                                  | Status   | Notes                        |
-|-----------------------------------------|----------|------------------------------|
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |**phantom**                              |
-|phantom.version                          | Yep      |                              |
-|phantom.exit()                           | Yep      |                              |
-|**webpage**                              |
-|webpage.open(url, callback)              | Yep      | Callback included            |
-|webpage.render(filename)                 | Yep      |                              |
-|webpage.renderBase64(format)             | Yep      |                              |
-|webpage.evaluate(function, arg1, arg2,..)| Yep      |                              |
-|webpage.evaluateJavaScript(str)          | Yep      |                              |
-|webpage.includeJs(url, callback)         | Yep      | Callback included            |
-|webpage.injectJs(filename)               | Yep      |                              |
-|webpage#onConsoleMessage                 | Nope     |                              |
-|webpage#onError                          | Nope     |                              |
-|webpage#onLoadStarted                    | Yep      |                              |
-|webpage#onLoadFinished                   | Yep      |                              |
+|.version                                 | Yep      |                                      | 
+|.exit()                                  | Yep      |                                      |
+|.injectJS()                              | Yep      |                                      |
+|.libraryPath                             | Yep      |                                      |
+|.args                                    | Yep      |                                      |
+|**webpage**                              | 
+|.open(url, callback)                     | Yep      | Callback included                    |
+|.render(filename)                        | Yep      |                                      |
+|.renderBase64(format)                    | Yep      |                                      |
+|.evaluate(function, arg1, arg2,..)       | Yep      |                                      |
+|.evaluateJavaScript(str)                 | Yep      |                                      |
+|.includeJs(url, callback)                | Yep      | Callback included                    |
+|.injectJs(filename)                      | Yep      |                                      |
+|#onConsoleMessage                        | Nope     |                                      | 
+|#onError                                 | Nope     |                                      |
+|#onLoadStarted                           | Yep      |                                      |
+|#onLoadFinished                          | Yep      |                                      |
+|**system**                               |
+|.args                                    | Yep      |                                      |
+|**fs**                                   |
+|.changeWorkingDirectory()                | Yep      |                                      |
+|**COMMAND LINE**                         |
+|REPL input                               | Yep      |                                      |
+|--version                                | Yep      |                                      |
+
+##New features
+
+These are additional features added into TrifleJS that are not present in PhantomJS
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
+|**COMMAND LINE**                         |
+|--emulate                                | Yep      | Emulates specific IE versions        |
+|--render:<url>                           | Yep      | Renders a URL to file and quits      | 
+
 
 This code is still very much in beta. Check again for updates.
 
