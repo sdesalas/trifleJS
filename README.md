@@ -56,4 +56,4 @@ These are additional features added into TrifleJS that are not present in Phanto
 
 This code is still very much in beta. Check again for updates.
 
-You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.zip) if you want to play around with the beta version. 
+You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip) if you want to play around with the beta version. 
