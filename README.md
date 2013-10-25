@@ -7,9 +7,9 @@ The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the le
 
 ![What is TrifleJS?](https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png "What is TrifleJS?")
 
-It supports different version of IE interchangeably depending on the current version installed (IE9 can run as IE7, IE8 or IE9 but not IE10).
+It supports different version of IE interchangeably depending on the current version installed (IE9 can emulate IE7, IE8 or IE9 but not IE10).
 
-    C:\> TrifleJS.exe --version:IE8 --render:http://whatbrowser.org/
+    C:\> TrifleJS.exe --emulate:IE8 --render:http://whatbrowser.org/
 
 ![IE 8](https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png "Running as IE 8")
 
