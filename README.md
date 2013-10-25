@@ -46,6 +46,7 @@ The following is a list of features that have been ported from PhantomJS.
 ##New features
 
 These are additional features added into TrifleJS that are not present in PhantomJS
+
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
