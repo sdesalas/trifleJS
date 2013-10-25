@@ -15,49 +15,35 @@ namespace TrifleJS
         private const string IEEmulationPathx32 = @"SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
         private const string IEEmulationPathx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
 
-        public static class Versions
-        {
-            public const System.UInt32 IE10_IgnoreDoctype = 0x2711u;
-            public const System.UInt32 IE10 = 0x02710u;
-            public const System.UInt32 IE9_IgnoreDoctype = 0x270Fu;
-            public const System.UInt32 IE9 = 0x2328u;
-            public const System.UInt32 IE8_IgnoreDoctype = 0x22B8u;
-            public const System.UInt32 IE8 = 0x1F40u;
-            public const System.UInt32 IE7 = 0x1B58u;
-        }
-
-        public static void SetIE7()
-        {
-            Utils.Debug("Setting Version to IE7");
-            Set(Versions.IE7);
-        }
-
-        public static void SetIE8()
-        {
-            Utils.Debug("Setting Version to IE8");
-            Set(Versions.IE8);
-        }
-
-        public static void SetIE9()
-        {
-            Utils.Debug("Setting Version to IE9");
-            Set(Versions.IE9);
-        }
-
-        public static void SetIE10()
-        {
-            Utils.Debug("Setting Version to IE10");
-            Set(Versions.IE10);
-        }
-
         /// <summary>
-        /// Sets the Version of IE using the relevant registry keys
+        /// Emulate a version of IE using the relevant registry keys
         /// </summary>
-        /// <param name="version"></param>
-        private static void Set(System.UInt32 version)
+        /// <param name="ieVersion">The version of IE to emulate (IE7, IE8, IE9 etc)</param>
+        public static void Emulate(string ieVersion)
         {
-            Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", version, RegistryValueKind.DWord);
-            Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", version, RegistryValueKind.DWord);
+            System.UInt32 dWord;
+            switch (ieVersion)
+            {
+                case "IE10_IgnoreDoctype": dWord = 0x2711u;
+                    break;
+                case "IE10": dWord = 0x02710u;
+                    break;
+                case "IE9_IgnoreDoctype": dWord = 0x270Fu;
+                    break;
+                case "IE9": dWord = 0x2328u;
+                    break;
+                case "IE8_IgnoreDoctype": dWord = 0x22B8u;
+                    break;
+                case "IE8": dWord = 0x1F40u;
+                    break;
+                case "IE7": dWord = 0x1B58u;
+                    break;
+                default:
+                    throw new Exception("Incorrect IE version: " + ieVersion);
+            }
+            Utils.Debug("Setting Version to " + ieVersion);
+            Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
+            Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
         }
 
         /// <summary>
@@ -68,10 +54,11 @@ namespace TrifleJS
         {
             this.DocumentCompleted += delegate
             {
-                Console.WriteLine("WebBrowser#DocumentCompleted");
+                Utils.Debug("WebBrowser#DocumentCompleted");
                 this.Size = this.Document.Window.Size;
                 this.ScrollBarsEnabled = false;
                 Render(fileName);
+                Console.WriteLine("Screenshot rendered to file: " + fileName);
             };
         }
 

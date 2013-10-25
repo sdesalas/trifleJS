@@ -13,7 +13,7 @@ SET MsBuild35=C:\Windows\Microsoft.NET\Framework\v3.5\MsBuild.exe
 
 RMDIR /S /Q %CompilePath%
 RMDIR /S /Q %MergePath%
-RMDIR /S /Q %BinaryPath%
+DEL %BinaryPath%\*.* /Q /F
 MKDIR %MergePath%
 MKDIR %BinaryPath%
 
@@ -39,17 +39,18 @@ IF EXIST "%CompilePath%\TrifleJS.exe" (
 
 :: Prepare & Zip Release
 XCOPY %CompilePath%\*.* %MergePath% /Y /E
-DEL %MergePath%\TrifleJS.exe
-DEL %MergePath%\Microsoft.mshtml.dll
+DEL %MergePath%\TrifleJS.exe /Q
+DEL %MergePath%\Microsoft.mshtml.dll /Q
+DEL %MergePath%\Newtonsoft.Json.dll
 
 ECHO 
 ECHO Merging and zipping to \Build\Binary directory. 
 ECHO NOTE: This will take about 2 minutes..
 
-%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll
+%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll %CompilePath%\Newtonsoft.Json.dll
 DEL %MergePath%\TrifleJS.pdb
 CD %MergePath%
-..\%Zip% a ..\Binary\TrifleJS.zip -r *.*
+..\%Zip% a ..\Binary\TrifleJS.Latest.zip -r *.*
 CD ..
 RMDIR /S /Q %MergePath%
 

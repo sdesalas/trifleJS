@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace TrifleJS.API
@@ -88,7 +88,7 @@ namespace TrifleJS.API
                 case "System.Double":
                     return value;
                 default:
-                    return new JavaScriptSerializer().Serialize(value);
+                    return JsonConvert.SerializeObject(value, Formatting.Indented);
             }
         }
     }

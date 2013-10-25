@@ -34,6 +34,7 @@
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="Noesis.Javascript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ae36d046c7f89f85, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -75,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Libs\Microsoft.VC90.CRT.manifest" />
+    <None Include="Libs\Newtonsoft.Json.dll.LICENSE" />
     <None Include="Libs\Noesis.Javascript.dll.LICENSE" />
     <None Include="test\lib\MIT.LICENSE" />
   </ItemGroup>
@@ -95,6 +97,7 @@
     <Content Include="Libs\msvcm90.dll" />
     <Content Include="Libs\msvcp90.dll" />
     <Content Include="Libs\msvcr90.dll" />
+    <Content Include="Libs\Newtonsoft.Json.dll" />
     <Content Include="Libs\Noesis.Javascript.dll" />
     <Content Include="test\feature\console.log.js">
     </Content>
@@ -116,6 +119,7 @@
     <Content Include="test\lib\jasmine.js" />
     <Content Include="test\phantom-spec.js" />
     <Content Include="test\run-tests.js" />
+    <Content Include="test\webpage-spec.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

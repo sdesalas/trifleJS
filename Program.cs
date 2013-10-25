@@ -4,7 +4,6 @@ using System.Text;
 using System.Drawing;
 using System.IO;
 using Noesis.Javascript;
-using Microsoft.Win32;
 
 namespace TrifleJS
 {
@@ -17,52 +16,51 @@ namespace TrifleJS
         [STAThread]
         static void Main(string[] args)
         {
-            // Usage
-            if (args.Length < 1 || args[0] == "--help") {
-                Usage();
-                return;
-            }
-
+            // Define environment
+            bool isExecuted = false;
+            bool isVersionSet = false;
+            List<string> configLoop = new List<string>(args);
+            List<string> executionLoop = new List<string>();
+            Program.args = args;
 #if DEBUG
             Program.verbose = true;
 #endif
+            
+            // Usage
+            if (args.Length < 1) {
+                InteractiveMode();
+                return;
+            }
 
-            // First Loop - Config (ie Set version etc)
-            bool isVersionSet = false;
-            foreach (string arg in args)
+            // Config Loop (Set version etc)
+            foreach (string arg in configLoop)
             {
                 string[] parts = arg.Split(':');
                 switch (parts[0])
                 {
-                    case "--verbose":
+                    case "--help":
+                        Help();
+                        return;
+                    case "--debug":
                         Program.verbose = true;
                         break;
                     case "--version":
                         var v = API.Trifle.Version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
-                        Program.Exit(0);
-                        break;
-                    case "--set-version":
-                        string version = arg.Replace("--version:", "");
-                        isVersionSet = true;
-                        switch (version.ToUpper())
+                        return;
+                    case "--emulate":
+                        string version = arg.Replace("--emulate:", "");
+                        try
                         {
-                            case "IE7":
-                                Browser.SetIE7();
-                                break;
-                            case "IE8":
-                                Browser.SetIE8();
-                                break;
-                            case "IE9":
-                                Browser.SetIE9();
-                                break;
-                            case "IE10":
-                                Browser.SetIE10();
-                                break;
-                            default:
-                                Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\".", version));
-                                break;
+                            Browser.Emulate(version.ToUpper());              
+                            isVersionSet = true;
                         }
+                        catch {
+                            Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\".", version));
+                        }
+                        break;
+                    default:
+                        executionLoop.Add(arg);
                         break;
                 }
             }
@@ -70,26 +68,23 @@ namespace TrifleJS
             // Default to IE9
             if (!isVersionSet)
             {
-                Browser.SetIE9();
+                Browser.Emulate("IE9");
             }
 
-            // Define environment
-            Program.args = args;
-            bool isExecuted = false;
-
-            // Second Loop - Execute Commands
-            foreach (string arg in args) {
+            // Execution Loop - Run Commands
+            foreach (string arg in executionLoop)
+            {
                 string[] parts = arg.Split(':');
                 switch (parts[0]) 
                 { 
                     // Self test
                     case "--test":
                         Test();
-                        break;
+                        return;
                     case "--render":
                         string url = arg.Replace("--render:", "");
                         Render(url);
-                        break;
+                        return;
                     default:
                         // If no switch is defined then we are dealing 
                         // with javascript files that need executing
@@ -99,7 +94,7 @@ namespace TrifleJS
                             isExecuted = true;
                         }
                         else if (parts[0].StartsWith("--")) {
-                            Usage();
+                            Help();
                             Exit(0);
                         }
                         break;
@@ -119,20 +114,62 @@ namespace TrifleJS
             Environment.Exit(exitCode);
         }
 
-        static void Usage() {
+        static void Help()
+        {
+            Console.WriteLine();
+            Console.WriteLine("TrifleJS.exe");
+            Console.WriteLine("http://triflejs.org/");
+            Console.WriteLine();
+            Console.WriteLine("A headless Internet Explorer with JavaScript API running on V8 engine.");
+            Console.WriteLine();
+            Console.WriteLine("(c) Steven de Salas 2013 - MIT Licence");
+            Console.WriteLine();
             Console.WriteLine("Usage: triflejs.exe [options] somescript.js [arg1 [arg2 [...]]]..)");
             Console.WriteLine();
             Console.WriteLine("Options: ");
-            Console.WriteLine("  --help          Show this message.");
-            Console.WriteLine("  --test          Runs a System Test.");
-            Console.WriteLine("  --render:url    Opens a url and renders into a file.");
-
+            Console.WriteLine("  --debug                   Prints additional warning and debug messages.");
+            Console.WriteLine("  --render:<url>            Opens a url, renders into a file and quits.");
+            Console.WriteLine("  --emulate:<version>       Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
+            Console.WriteLine();
+            Console.WriteLine(" -h, --help                 Show this message and quits");
+            Console.WriteLine(" -t, --test                 Runs a System Test and quits");
+            Console.WriteLine(" -t, --version              Prints out TrifleJS version and quits");
+            Console.WriteLine();
+            Console.WriteLine("Without arguments, TrifleJS will launch in interactive mode (REPL)");
+            Console.WriteLine();
         }
 
-        static void Test() { 
-        
+        static void Test() {
+            Console.WriteLine();
+            Console.WriteLine("System test to be implemented at a later stage.");
+            Console.WriteLine();
         }
 
+        /// <summary>
+        /// Run TrifleJS in interactive mode
+        /// </summary>
+        static void InteractiveMode() {
+            // Initialize and start console read loop;
+            using (Program.context = Program.Initialise()) {
+                Console.Write("triflejs> ");
+                while (true)
+                {
+                    try
+                    {
+                        API.Console.log(context.Run(Console.ReadLine(), "REPL"));
+                    }
+                    catch (Exception ex) {
+                        API.Context.Handle(ex);
+                    }
+                    Console.Write("triflejs> ");
+                }
+            }   
+        }
+
+        /// <summary>
+        /// Renders a url
+        /// </summary>
+        /// <param name="url"></param>
         static void Render(string url) {
             Console.WriteLine("Rendering " + url + "...");
 
@@ -163,6 +200,10 @@ namespace TrifleJS
             }
         }
 
+        /// <summary>
+        /// Opens a javascript file and executes in host environment
+        /// </summary>
+        /// <param name="filename">Path to a javascript file</param>
         static void Open(string filename) {
             if (!File.Exists(filename))
             {
@@ -171,23 +212,13 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (Program.context = new API.Context())
+            using (Program.context = Initialise())
             {
                 // Set Library Path
                 API.Trifle.LibraryPath = new FileInfo(filename).DirectoryName;
 
-                // Setting external parameters for the context
-                context.SetParameter("console", new API.Console());
-                context.SetParameter("trifle", new API.Trifle());
-                context.SetParameter("module", new API.Module());
-                context.SetParameter("window", new API.Window());
-
                 try
                 {
-                    // Initialise host env
-                    context.Run(TrifleJS.Properties.Resources.triflejs_core, "triflejs.core.js");
-                    context.Run(TrifleJS.Properties.Resources.triflejs_modules, "triflejs.modules.js");
-
                     // Run the script
                     context.Run(filename);
 
@@ -198,15 +229,39 @@ namespace TrifleJS
                     }
 
                 }
-                catch (JavascriptException ex)
-                {
-                    API.Context.Handle(ex);
-                }
                 catch (Exception ex) {
-                    // Error in C#!
-                    Console.Error.WriteLine(String.Format("\n===================\n{0} {1}\n===================\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace));
+                    // Handle any exceptions
+                    API.Context.Handle(ex);
                 }
             }
         }
+
+        private static API.Context Initialise()
+        {
+
+            // Create new context
+            API.Context context = new API.Context();
+
+            // Setting core global variables
+            context.SetParameter("console", new API.Console());
+            context.SetParameter("trifle", new API.Trifle());
+            context.SetParameter("module", new API.Module());
+            context.SetParameter("window", new API.Window());
+
+            try
+            {
+                // Initialise host env
+                context.Run(TrifleJS.Properties.Resources.triflejs_core, "triflejs.core.js");
+                context.Run(TrifleJS.Properties.Resources.triflejs_modules, "triflejs.modules.js");
+            }
+            catch (Exception ex)
+            {
+                API.Context.Handle(ex);
+            }
+
+            // Return context
+            return context;
+        }
+
     }
 }
