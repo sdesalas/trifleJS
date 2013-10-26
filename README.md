@@ -17,6 +17,8 @@ The following is a list of features that have been ported from PhantomJS.
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
+|**global**                               |
+|.require()                               | Yep      | Initialises CommonJS modules         |
 |**[phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
 |.version                                 | Yep      |                                      | 
 |.exit()                                  | Yep      |                                      |
