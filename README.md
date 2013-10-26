@@ -35,11 +35,11 @@ The following is a list of features that have been ported from PhantomJS.
 |#onError                                 | Nope     |                                      |
 |#onLoadStarted                           | Yep      |                                      |
 |#onLoadFinished                          | Yep      |                                      |
-|**system**                               |
+|**[system](https://github.com/ariya/phantomjs/wiki/API-Reference-System)**                               |
 |.args                                    | Yep      |                                      |
-|**fs**                                   |
+|**[fs](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)**                                   |
 |.changeWorkingDirectory()                | Yep      |                                      |
-|**COMMAND LINE**                         |
+|**[COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)**                         |
 |REPL input                               | Yep      |                                      |
 |--version                                | Yep      |                                      |
 
