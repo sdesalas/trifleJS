@@ -3,7 +3,7 @@ trifleJS 0.2
 
 A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
 
-The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
+The API is coded as a port of [PhantomJS](http://phantomjs.org). Basically, if you have used phantom before then you already know how to use TrifleJS.
 
 ![What is TrifleJS?](https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png "What is TrifleJS?")
 
@@ -50,8 +50,8 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
-|--emulate                                | Yep      | Emulates specific IE versions        |
-|--render:<url>                           | Yep      | Renders a URL to file and quits      | 
+|--emulate:(version)                      | Yep      | Emulates specific IE versions        |
+|--render:(url)                           | Yep      | Renders a URL to file and quits      | 
 
 
 This code is still very much in beta. Check again for updates.
