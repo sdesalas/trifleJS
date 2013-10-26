@@ -1,7 +1,7 @@
 trifleJS 0.2
 =========
 
-An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
+A Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
 
 The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
 
@@ -17,13 +17,13 @@ The following is a list of features that have been ported from PhantomJS.
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
-|**phantom**                              |
+|**[phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
 |.version                                 | Yep      |                                      | 
 |.exit()                                  | Yep      |                                      |
 |.injectJS()                              | Yep      |                                      |
 |.libraryPath                             | Yep      |                                      |
 |.args                                    | Yep      |                                      |
-|**webpage**                              | 
+|**[webpage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**                              | 
 |.open(url, callback)                     | Yep      | Callback included                    |
 |.render(filename)                        | Yep      |                                      |
 |.renderBase64(format)                    | Yep      |                                      |
