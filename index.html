@@ -36,7 +36,7 @@
 
 <p>A headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
 
-<p>The API is coded as a port of <a href="http://phantomjs.org">PhantomJS</a> to reduce the learning curve.</p>
+<p>The API is coded as a port of <a href="http://phantomjs.org">PhantomJS</a>. Basically, if you have used phantom before then you already know how to use TrifleJS.</p>
 
 <p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png" alt="What is TrifleJS?" title="What is TrifleJS?"></p>
 
@@ -56,6 +56,17 @@
 <th>Notes</th>
 </tr></thead>
 <tbody>
+<tr>
+<td><strong>global</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.<a href="https://github.com/ariya/phantomjs/wiki/API-Reference#function-require">require()</a>
+</td>
+<td>Yep</td>
+<td>Initialises CommonJS modules</td>
+</tr>
 <tr>
 <td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-phantom">phantom</a></strong></td>
 <td></td>
@@ -200,12 +211,12 @@
 <td></td>
 </tr>
 <tr>
-<td>--emulate</td>
+<td>--emulate:(version)</td>
 <td>Yep</td>
 <td>Emulates specific IE versions</td>
 </tr>
 <tr>
-<td>--render:</td>
+<td>--render:(url)</td>
 <td>Yep</td>
 <td>Renders a URL to file and quits</td>
 </tr>
