@@ -28,7 +28,7 @@ IF EXIST "%MsBuild35%" (
 
 ECHO Using MsBuild at %MsBuild%
 
-%MsBuild% ..\TrifleJS.csproj /t:Rebuild /p:Configuration=Release
+%MsBuild% ..\TrifleJS.csproj /t:Rebuild /p:Configuration=Release /p:PlatformTarget=x86
 
 IF EXIST "%CompilePath%\TrifleJS.exe" (
 	ECHO Compilation Ok!

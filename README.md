@@ -1,9 +1,9 @@
 trifleJS 0.2
 =========
 
-An Headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
+A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
 
-The API is coded as a port of [PhantomJS](http://phantomjs.org) to reduce the learning curve.
+The API is coded as a port of [PhantomJS](http://phantomjs.org). Basically, if you have used phantom before then you already know how to use TrifleJS.
 
 ![What is TrifleJS?](https://raw.github.com/sdesalas/trifleJS/master/Docs/What.Is.Trifle.png "What is TrifleJS?")
 
@@ -17,13 +17,15 @@ The following is a list of features that have been ported from PhantomJS.
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
-|**phantom**                              |
+|**global**                               |
+|.[require()](https://github.com/ariya/phantomjs/wiki/API-Reference#function-require)   | Yep      | Initialises CommonJS modules         |
+|**[phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
 |.version                                 | Yep      |                                      | 
 |.exit()                                  | Yep      |                                      |
 |.injectJS()                              | Yep      |                                      |
 |.libraryPath                             | Yep      |                                      |
 |.args                                    | Yep      |                                      |
-|**webpage**                              | 
+|**[webpage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**                              | 
 |.open(url, callback)                     | Yep      | Callback included                    |
 |.render(filename)                        | Yep      |                                      |
 |.renderBase64(format)                    | Yep      |                                      |
@@ -35,11 +37,11 @@ The following is a list of features that have been ported from PhantomJS.
 |#onError                                 | Nope     |                                      |
 |#onLoadStarted                           | Yep      |                                      |
 |#onLoadFinished                          | Yep      |                                      |
-|**system**                               |
+|**[system](https://github.com/ariya/phantomjs/wiki/API-Reference-System)**                               |
 |.args                                    | Yep      |                                      |
-|**fs**                                   |
+|**[fs](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)**                                   |
 |.changeWorkingDirectory()                | Yep      |                                      |
-|**COMMAND LINE**                         |
+|**[COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)**                         |
 |REPL input                               | Yep      |                                      |
 |--version                                | Yep      |                                      |
 
@@ -50,8 +52,8 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
-|--emulate                                | Yep      | Emulates specific IE versions        |
-|--render:<url>                           | Yep      | Renders a URL to file and quits      | 
+|--emulate:(version)                      | Yep      | Emulates specific IE versions        |
+|--render:(url)                           | Yep      | Renders a URL to file and quits      | 
 
 
 This code is still very much in beta. Check again for updates.
