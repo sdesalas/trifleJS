@@ -1307,8 +1307,9 @@ describe("WebPage object", function() {
             server.close();
         });
     });
+    
 });
-
+/*
 describe("WebPage construction with options", function () {
     it("should accept an opts object", function() {
         var opts = {},
@@ -2194,3 +2195,4 @@ describe("WebPage network request headers handling", function() {
         });
     });
 });
+*/

@@ -1,19 +1,26 @@
-﻿
+﻿/*
+* WebPage.js
+*
+* By: Steven de Salas
+* On: Sep 2013
+* 
+* Defines an object representing a
+* browser page opened inside IE environment.
+* 
+*/
+
 // Initialise Namespace
 this.trifle = this.trifle || {};
+trifle.modules = trifle.modules || {};
 
 // Wrap code to avoid global vars
 (function(trifle) {
 
-    // Define namespace
-    trifle.modules = trifle.modules || {};
-
-    // WebPage Class
     // Define Constructor
-    var WebPage = trifle.modules.WebPage = function() {
+    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = function() {
         console.xdebug("new WebPage()");
         // Instantiate a V8 WebPage object and stores it in internal API property
-        this.API = trifle.module['WebPage']();
+        this.API = trifle.API['WebPage']();
         // Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
@@ -99,32 +106,6 @@ this.trifle = this.trifle || {};
     WebPage.prototype.renderBase64 = function(format) {
         console.xdebug("WebPage.prototype.renderBase64(format)");
         return this.API.RenderBase64(format || "PNG");
-    }
-
-    // FileSystem Class
-    // Define Constructor
-    var FileSystem = trifle.modules.FileSystem = function() {
-        console.xdebug("new FileSystem()");
-        // Instantiate a V8 FileSystem object and stores it in internal API property
-        this.API = trifle.module['FileSystem']();
-        // Set the working directory
-        this.workingDirectory = this.API.WorkingDirectory;
-    }
-
-    // Changes the current workingDirectory to the specified path.
-    FileSystem.prototype.changeWorkingDirectory = function(path) {
-        console.xdebug("FileSystem.prototype.changeWorkingDirectory(path)");
-        return this.API.ChangeWorkingDirectory(path || '');
-    }
-
-    // System Class
-    // Define Constructor
-    var System = trifle.modules.System = function() {
-        console.xdebug("new System()");
-        // Instantiate a V8 System object and stores it in internal API property
-        this.API = trifle.module['System']();
-        // Populate other properties
-        this.args = this.API.Args;
     }
 
 

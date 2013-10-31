@@ -61,6 +61,43 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* init.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///*
+        ///* Generates the core running environment for
+        ///* javascript code to execute under
+        ///* 
+        ///*/
+        ///
+        ///(function(GLOBAL) {
+        ///
+        ///    // Save imported params
+        ///    var API = {
+        ///        phantom: GLOBAL.phantom,
+        ///        trifle: GLOBAL.trifle,
+        ///        console: GLOBAL.console,
+        ///        window: GLOBAL.window
+        ///    };
+        ///
+        ///    delete GLOBAL.phantom;
+        ///    delete GLOBAL.trifle;
+        ///    delete GLOBAL.console;
+        ///    delete GLOBAL.window;
+        ///
+        ///    // Initialise window object
+        ///  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string init {
+            get {
+                return ResourceManager.GetString("init", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to var isCommonJS = typeof window == &quot;undefined&quot;;
         ///
         ////**
@@ -164,64 +201,147 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /*
-        ///* trifle.core.js
-        ///*
-        ///* By: Steven de Salas
-        ///* On: Sep 2013
-        ///* 
-        ///*
-        ///* Generates the core running environment for
-        ///* javascript code to execute under
-        ///* 
-        ///*/
-        ///
-        ///(function(GLOBAL) {
-        ///
-        ///    // Save imported params
-        ///    var API = {
-        ///        trifle: GLOBAL.trifle,
-        ///        module: GLOBAL.module,
-        ///        console: GLOBAL.console,
-        ///        window: GLOBAL.window
-        ///    };
-        ///
-        ///    delete GLOBAL.trifle;
-        ///    delete GLOBAL.module;
-        ///    delete GLOBAL.console;
-        ///    delete GLOBAL.window;
-        ///
-        ///    // Initialise window objec [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to function checkClipRect(page, clipRect) {
+        ///    expectHasProperty(page, &apos;clipRect&apos;);
+        ///    it(&quot;should have clipRect with height &quot;+clipRect.height, function () {
+        ///        expect(page.clipRect.height).toEqual(clipRect.height);
+        ///    });
+        ///    it(&quot;should have clipRect with left &quot;+clipRect.left, function () {
+        ///        expect(page.clipRect.left).toEqual(clipRect.left);
+        ///    });
+        ///    it(&quot;should have clipRect with top &quot;+clipRect.top, function () {
+        ///        expect(page.clipRect.top).toEqual(clipRect.top);
+        ///    });
+        ///    it(&quot;should  [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string triflejs_core {
+        internal static string spec_webpage {
             get {
-                return ResourceManager.GetString("triflejs_core", resourceCulture);
+                return ResourceManager.GetString("spec_webpage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* Callback.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///* Generates a Callback object used for async
+        ///* communication between V8 and C# runtime.
+        ///* 
+        ///*/
+        ///
         ///// Initialise Namespace
         ///this.trifle = this.trifle || {};
         ///
         ///// Wrap code to avoid global vars
         ///(function(trifle) {
         ///
-        ///    // Define namespace
-        ///    trifle.modules = trifle.modules || {};
+        ///    // Closure variable that tracks existing callbacks
+        ///    // (hidden from outside world)
+        ///    var callbacks = {};
         ///
-        ///    // WebPage Class
+        ///    // Callback Class
+        ///    // Define Constructor
+        ///    var Callback = trifle.Callback = function(func, scope,  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string trifle_Callback {
+            get {
+                return ResourceManager.GetString("trifle_Callback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* FileSystem.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///* Defines a FileSystem class representing a
+        ///* helper for file read/write operations and management.
+        ///* 
+        ///*/
+        ///
+        ///// Initialise Namespace
+        ///this.trifle = this.trifle || {};
+        ///trifle.modules = trifle.modules || {};
+        ///
+        ///// Wrap code to avoid global vars
+        ///(function(trifle) {
+        ///
+        ///
+        ///    // Define Constructor
+        ///    var FileSystem = trifle.modules.FileSystem = function() {
+        ///        console.xdebug(&quot;new FileSystem()&quot;);
+        ///        // Instantiate a V8 FileSyste [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string trifle_modules_FileSystem {
+            get {
+                return ResourceManager.GetString("trifle_modules_FileSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* System.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///* Defines a System class representing a
+        ///* general program helper.
+        ///* 
+        ///*/
+        ///
+        ///// Initialise Namespace
+        ///this.trifle = this.trifle || {};
+        ///trifle.modules = trifle.modules || {};
+        ///
+        ///// Wrap code to avoid global vars
+        ///(function(trifle) {
+        ///
+        ///
+        ///    // Define Constructor
+        ///    var System = trifle.modules.System = function() {
+        ///        console.xdebug(&quot;new System()&quot;);
+        ///        // Instantiate a V8 System object and stores it in internal API property
+        ///      [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string trifle_modules_System {
+            get {
+                return ResourceManager.GetString("trifle_modules_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* WebPage.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///* Defines an object representing a
+        ///* browser page opened inside IE environment.
+        ///* 
+        ///*/
+        ///
+        ///// Initialise Namespace
+        ///this.trifle = this.trifle || {};
+        ///trifle.modules = trifle.modules || {};
+        ///
+        ///// Wrap code to avoid global vars
+        ///(function(trifle) {
+        ///
         ///    // Define Constructor
         ///    var WebPage = trifle.modules.WebPage = function() {
         ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a V8 WebPage object and stores it in internal API property
-        ///        this.API = trifle.module[&apos;WebPage&apos;]();
-        ///        // Fire Initialized event
-        ///       [rest of string was truncated]&quot;;.
+        ///        // Instantiate a V8 WebPage object and stores it in internal AP [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string triflejs_modules {
+        internal static string trifle_modules_WebPage {
             get {
-                return ResourceManager.GetString("triflejs_modules", resourceCulture);
+                return ResourceManager.GetString("trifle_modules_WebPage", resourceCulture);
             }
         }
     }

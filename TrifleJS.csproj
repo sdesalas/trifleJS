@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Trifle.cs" />
     <Compile Include="Browser.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -67,10 +68,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="API\Module.cs" />
     <Compile Include="API\Modules\System.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="API\Trifle.cs" />
+    <Compile Include="API\Phantom.cs" />
     <Compile Include="API\Modules\WebPage.cs" />
     <Compile Include="API\Window.cs" />
   </ItemGroup>
@@ -90,9 +90,12 @@
     <Content Include="examples\simple-example.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="includes\trifle.core.js" />
-    <Resource Include="includes\trifle.modules.js" />
+    <Resource Include="includes\init.js" />
     <None Include="includes\ie.toolset.js" />
+    <Content Include="includes\trifle\Callback.js" />
+    <Content Include="includes\trifle\modules\FileSystem.js" />
+    <Content Include="includes\trifle\modules\System.js" />
+    <Content Include="includes\trifle\modules\WebPage.js" />
     <Content Include="Libs\Microsoft.mshtml.dll">
     </Content>
     <Content Include="Libs\msvcm90.dll" />

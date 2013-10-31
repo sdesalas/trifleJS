@@ -51,8 +51,8 @@
         expect(phantom.version.major).toEqual(1);
     });
 
-    it("should return 10 as the minor version", function() {
-        expect(phantom.version.minor).toEqual(10);
+    it("should return 7 as the minor version", function() {
+        expect(phantom.version.minor).toEqual(7);
     });
 
     it("should return 0 as the patch version", function() {

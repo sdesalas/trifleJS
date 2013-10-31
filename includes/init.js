@@ -1,5 +1,5 @@
 ﻿/*
-* trifle.core.js
+* init.js
 *
 * By: Steven de Salas
 * On: Sep 2013
@@ -14,14 +14,14 @@
 
     // Save imported params
     var API = {
+        phantom: GLOBAL.phantom,
         trifle: GLOBAL.trifle,
-        module: GLOBAL.module,
         console: GLOBAL.console,
         window: GLOBAL.window
     };
 
+    delete GLOBAL.phantom;
     delete GLOBAL.trifle;
-    delete GLOBAL.module;
     delete GLOBAL.console;
     delete GLOBAL.window;
 
@@ -66,80 +66,34 @@
     GLOBAL.clearTimeout = window.clearTimeout;
     GLOBAL.clearInterval = window.clearInterval;
 
-    // Initialise trifle
-    var trifle = GLOBAL.trifle = {
-        API: API.trifle,
-        module: API.module,
-        version: API.trifle.Version,
-        libraryPath: API.trifle.LibraryPath,
+    // Initialise phantom object
+    var phantom = GLOBAL.phantom = {
+        API: API.phantom,
+        version: API.phantom.Version,
+        libraryPath: API.phantom.LibraryPath,
+        scriptName: API.phantom.ScriptName,
+        outputEncoding: API.phantom.OutputEncoding,
+        cookiesEnabled: API.phantom.CookiesEnabled,
+        args: API.phantom.Args,
         exit: function(code) {
-            return trifle.API.Exit(code || 0);
-        },
-        wait: function(ms) {
-            return trifle.API.Wait(ms || 0);
+            return phantom.API.Exit(code || 0);
         },
         injectJs: function(filename) {
-            return trifle.API.InjectJs(filename || '');
+            return phantom.API.InjectJs(filename || '');
         }
     };
 
 
-    // Add PhantomJS Compatibility
-    var phantom = GLOBAL.phantom = {
-        version: trifle.version,
-        args: trifle.API.Args,
-        exit: trifle.exit,
-        injectJs: trifle.injectJs,
-        libraryPath: trifle.libraryPath
-    };
-
-    // Closure variable that tracks existing callbacks
-    // (hidden from outside world)
-    var callbacks = {};
-
-    // Callback Class
-    // Define Constructor
-    var Callback = trifle.Callback = function(func, scope, defaultArgs) {
-        this.func = func;
-        this.scope = scope;
-        this.defaultArgs = defaultArgs;
-        this.id = this.newUID();
-        console.xdebug('new Callback#' + this.id + '(func, scope, defaultArgs)');
-        callbacks[this.id] = this;
-    };
-
-    // Unique ID Generator
-    Callback.prototype.newUID = function() {
-        var s4 = function() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-             .toString(16)
-             .substring(1);
-        };
-        return s4() + s4();
-    };
-
-    // Execute callback
-    Callback.execute = function(id, args) {
-        console.xdebug('Callback.execute("' + id + '", [args])');
-        var callback = callbacks[id];
-        if (callback) {
-            if (!args || !args.length) {
-                args = callback.defaultArgs;
-            }
-            callback.func.apply(callback.scope || callback, args);
+    // TrifleJS object
+    var trifle = GLOBAL.trifle = {
+        API: API.trifle,
+        version: API.trifle.Version,
+        wait: function(ms) {
+            return API.trifle.Wait(ms || 0);
         }
-    }
+    };
 
-    // Execute callback and delete reference
-    Callback.executeOnce = function(id, args) {
-        console.xdebug('Callback.executeOnce("' + id + '", [args])');
-        if (typeof id === 'string') {
-            Callback.execute(id, args);
-            delete callbacks[id];
-        }
-    }
-
-    // Console
+    // Console object
     var console = GLOBAL.console = {
         API: API.console,
         clear: function() {

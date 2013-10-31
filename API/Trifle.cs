@@ -1,31 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Threading;
 
 namespace TrifleJS.API
 {
     /// <summary>
-    /// Main library functionality
+    /// Trifle Class
     /// </summary>
     public class Trifle
     {
         /// <summary>
-        /// Exists the program
+        /// Returns the current versions
         /// </summary>
-        /// <param name="exitCode">Return code</param>
-        public void Exit(int exitCode)
+        public static Dictionary<string, int> Version
         {
-            Program.Exit(exitCode);
-        }
-
-        /// <summary>
-        /// Exits the program
-        /// </summary>
-        public void Exit()
-        {
-            Exit(0);
+            get
+            {
+                return new Dictionary<string, int> { 
+                    {"major", 0},
+                    {"minor", 2},
+                    {"patch", 0}
+                };
+            }
         }
 
         /// <summary>
@@ -37,55 +33,22 @@ namespace TrifleJS.API
             Thread.Sleep(milliseconds);
         }
 
-        /// <summary>
-        /// Executes a JavaScript file in the current context
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        public bool InjectJs(string filename) {
-            if (Program.context.Find(filename) != null)
-            {
-                try
-                {
-                    Program.context.RunFile(filename);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Context.Handle(ex);
-                }
-            }
-            return false;
-        }
+        // See below. These are a set of C# mid-tier classes that can be instantiated inside 
+        // the javascript engine as CommonJS Modules.
 
-        /// <summary>
-        /// Returns the current library path (usually the location where a script is being run)
-        /// </summary>
-        public static string LibraryPath
+        public Modules.WebPage WebPage()
         {
-            get { return libraryPath; }
-            set { libraryPath = value; }
+            return new Modules.WebPage();
         }
-        private static string libraryPath = Environment.CurrentDirectory;
 
-        /// <summary>
-        /// Returns the current versions
-        /// </summary>
-        public static Dictionary<string, int> Version
+        public Modules.FileSystem FileSystem()
         {
-            get { return new Dictionary<string, int> { 
-                    {"major", 0},
-                    {"minor", 2},
-                    {"patch", 0}
-                };
-            }
+            return new Modules.FileSystem();
         }
 
-        /// <summary>
-        /// Returns the arguments passed when executing triflejs.exe in the console
-        /// </summary>
-        public static string[] Args {
-            get { return Program.args; }
+        public Modules.System System()
+        {
+            return new Modules.System();
         }
     }
 }

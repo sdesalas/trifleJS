@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.IO;
+using TrifleJS.Properties;
 
 namespace TrifleJS
 {
@@ -54,6 +55,8 @@ namespace TrifleJS
             bool isVersionSet = false;
             List<string> configLoop = new List<string>(args);
             List<string> commandLoop = new List<string>();
+            API.Phantom.OutputEncoding = "UTF-8";
+            API.Phantom.CookiesEnabled = true;
             Program.args = args;
 #if DEBUG
             Program.verbose = true;
@@ -82,7 +85,7 @@ namespace TrifleJS
                         break;
                     case "-v":
                     case "--version":
-                        var v = API.Trifle.Version;
+                        var v = API.Phantom.Version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
                         return;
                     case "--emulate":
@@ -169,18 +172,18 @@ namespace TrifleJS
             // Initialize and start console read loop;
             using (Program.context = Initialise())
             {
-
                 try
                 {
                     // Load libs
-                    context.RunScript(TrifleJS.Properties.Resources.jasmine, "lib/jasmine.js");
-                    context.RunScript(TrifleJS.Properties.Resources.jasmine_console, "lib/jasmine-console.js");
+                    context.RunScript(Resources.jasmine, "lib/jasmine.js");
+                    context.RunScript(Resources.jasmine_console, "lib/jasmine-console.js");
 
                     // Load Spec
-                    context.RunScript(TrifleJS.Properties.Resources.spec_phantom, "spec/phantom.js");
+                    context.RunScript(Resources.spec_phantom, "spec/phantom.js");
+                    context.RunScript(Resources.spec_webpage, "spec/webpage.js");
 
                     // Execute
-                    context.RunScript(TrifleJS.Properties.Resources.run_jasmine, "run-jasmine.js");
+                    context.RunScript(Resources.run_jasmine, "run-jasmine.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -267,7 +270,7 @@ namespace TrifleJS
             using (Program.context = Initialise())
             {
                 // Set Library Path
-                API.Trifle.LibraryPath = new FileInfo(filename).DirectoryName;
+                API.Phantom.LibraryPath = new FileInfo(filename).DirectoryName;
 
                 try
                 {
@@ -299,15 +302,18 @@ namespace TrifleJS
 
             // Setting core global variables
             context.SetParameter("console", new API.Console());
+            context.SetParameter("phantom", new API.Phantom());
             context.SetParameter("trifle", new API.Trifle());
-            context.SetParameter("module", new API.Module());
             context.SetParameter("window", new API.Window());
 
             try
             {
                 // Initialise host env
-                context.RunScript(TrifleJS.Properties.Resources.triflejs_core, "triflejs.core.js");
-                context.RunScript(TrifleJS.Properties.Resources.triflejs_modules, "triflejs.modules.js");
+                context.RunScript(Resources.init, "init.js");
+                context.RunScript(Resources.trifle_Callback, "trifle.Callback.js");
+                context.RunScript(Resources.trifle_modules_WebPage, "trifle.modules.WebPage.js");
+                context.RunScript(Resources.trifle_modules_FileSystem, "trifle.modules.FileSystem.js");
+                context.RunScript(Resources.trifle_modules_System, "trifle.modules.System.js");
             }
             catch (Exception ex)
             {
