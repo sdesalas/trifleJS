@@ -216,7 +216,8 @@ namespace TrifleJS
                     {
                         API.Console.log(context.Run(Console.ReadLine(), "REPL"));
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         API.Context.Handle(ex);
                     }
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 using Noesis.Javascript;
 
 namespace TrifleJS
@@ -91,7 +91,7 @@ namespace TrifleJS
                             }
                             break;
                         default:
-                            input.Add(JsonConvert.SerializeObject(argument));
+                            input.Add(Utils.Serialize(argument));
                             break;
                     }
                 }

@@ -2,7 +2,7 @@
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6130407F-322B-4E41-AFDB-FCF1C17D6C19}</ProjectGuid>
@@ -13,25 +13,24 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="Noesis.Javascript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ae36d046c7f89f85, processorArchitecture=MSIL" Condition="'$(Platform)'=='x86'" />
     <Reference Include="Noesis.Javascript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ae36d046c7f89f85, processorArchitecture=AMD64" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -71,7 +70,6 @@
     <Compile Include="API\Window.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Libs\Newtonsoft.Json.dll.LICENSE" />
     <None Include="test\lib\MIT.LICENSE" />
   </ItemGroup>
   <ItemGroup>
@@ -86,25 +84,14 @@
     </Content>
     <Resource Include="includes\init.js" />
     <None Include="includes\ie.toolset.js" />
-    <None Include="Libs\x64\Microsoft.VC90.CRT.manifest" />
-    <None Include="Libs\x64\Noesis.Javascript.dll.LICENSE" />
-    <None Include="Libs\x86\Microsoft.VC90.CRT.manifest" />
-    <None Include="Libs\x86\Noesis.Javascript.dll.LICENSE" />
+    <None Include="Libs\Noesis.Javascript.dll.LICENSE" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\modules\FileSystem.js" />
     <Content Include="includes\trifle\modules\System.js" />
     <Content Include="includes\trifle\modules\WebPage.js" />
     <Content Include="Libs\Microsoft.mshtml.dll">
     </Content>
-    <Content Include="Libs\Newtonsoft.Json.dll" />
-    <Content Include="Libs\x64\msvcm90.dll" />
-    <Content Include="Libs\x64\msvcp90.dll" />
-    <Content Include="Libs\x64\msvcr90.dll" />
-    <Content Include="Libs\x64\Noesis.Javascript.dll" />
-    <Content Include="Libs\x86\msvcm90.dll" />
-    <Content Include="Libs\x86\msvcp90.dll" />
-    <Content Include="Libs\x86\msvcr90.dll" />
-    <Content Include="Libs\x86\Noesis.Javascript.dll" />
+    <Content Include="Libs\Noesis.Javascript.dll" />
     <Content Include="test\feature\console.log.js">
     </Content>
     <Content Include="test\feature\fs.changeWorkingDirectory.js" />
