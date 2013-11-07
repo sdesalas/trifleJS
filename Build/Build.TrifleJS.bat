@@ -28,7 +28,7 @@ IF EXIST "%MsBuild35%" (
 
 ECHO Using MsBuild at %MsBuild%
 
-%MsBuild% ..\TrifleJS.csproj /t:Rebuild /p:Configuration=Release /p:PlatformTarget=x86
+%MsBuild% ..\TrifleJS.csproj /t:Rebuild /p:Configuration=Release
 
 IF EXIST "%CompilePath%\TrifleJS.exe" (
 	ECHO Compilation Ok!
@@ -41,13 +41,12 @@ IF EXIST "%CompilePath%\TrifleJS.exe" (
 XCOPY %CompilePath%\*.* %MergePath% /Y /E
 DEL %MergePath%\TrifleJS.exe /Q
 DEL %MergePath%\Microsoft.mshtml.dll /Q
-DEL %MergePath%\Newtonsoft.Json.dll
 
 ECHO 
 ECHO Merging and zipping to \Build\Binary directory. 
 ECHO NOTE: This will take about 2 minutes..
 
-%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll %CompilePath%\Newtonsoft.Json.dll
+%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll
 DEL %MergePath%\TrifleJS.pdb
 CD %MergePath%
 ..\%Zip% a ..\Binary\TrifleJS.Latest.zip -r *.*
