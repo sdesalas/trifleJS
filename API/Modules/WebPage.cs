@@ -20,7 +20,7 @@ namespace TrifleJS.API.Modules
             this.browser = new Browser();
             this.browser.Size = new Size(1024, 800);
             this.browser.ScrollBarsEnabled = false;
-            this.browser.ObjectForScripting = new Callback.External();
+            this.browser.ObjectForScripting = new Callback.External(this);
             Open("about:blank", null);
         }
 
@@ -73,6 +73,13 @@ namespace TrifleJS.API.Modules
                     // Add toolset
                     EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
                     EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
+                    this.browser.Document.Window.Error += delegate (object obj, HtmlElementErrorEventArgs e)
+                    {
+                        Exception ex = new Exception(e.Description);
+                        ex.Source = "Internet Explorer";
+                        API.Context.Handle(ex);
+                        e.Handled = true;
+                    };
                     // Continue with callback
                     Callback.ExecuteOnce(callbackId, "success");
                 };

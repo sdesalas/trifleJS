@@ -79,7 +79,7 @@
     <Content Include="examples\printmargins.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="examples\simple-example.js">
+    <Content Include="examples\test.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="includes\init.js" />

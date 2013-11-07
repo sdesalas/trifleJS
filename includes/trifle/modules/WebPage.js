@@ -130,7 +130,7 @@ trifle.modules = trifle.modules || {};
         console.xdebug("WebPage.onCallback(args)");
         var currentPage = WebPage.current;
         if (currentPage && currentPage.onCallback && currentPage.onCallback.apply) {
-            currentPage.onCallback.apply(currentPage, args);
+            return currentPage.onCallback.apply(currentPage, args);
         }
     }
 
