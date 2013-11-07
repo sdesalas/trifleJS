@@ -153,6 +153,8 @@ namespace TrifleJS
         {
 #if DEBUG
             // Debugging? Wait for input
+            Console.WriteLine();
+            Console.WriteLine("Press any key to finish...");
             Console.Read();
 #endif
             Environment.Exit(exitCode);

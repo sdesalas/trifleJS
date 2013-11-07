@@ -21,6 +21,7 @@ namespace TrifleJS.API.Modules
             this.browser.Size = new Size(1024, 800);
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External();
+            Open("about:blank", null);
         }
 
         /// <summary>
@@ -69,6 +70,9 @@ namespace TrifleJS.API.Modules
                 browser.Navigate(url);
                 browser.DocumentCompleted += delegate
                 {
+                    // Add toolset
+                    EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
+                    EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
                     // Continue with callback
                     Callback.ExecuteOnce(callbackId, "success");
                 };

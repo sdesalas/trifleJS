@@ -1,13 +1,12 @@
 ﻿
-// Initialize toolset
-window.__toolset = window.__toolset || {};
-
-window.__toolset.test = 'hello world';
+/*
+// Initialize tools
+window.__tools = window.__tools || {};
 
 // Loads a JS file and executes a callback when ready
-window.__toolset.includeJs = function(url, callbackId) {
+window.__tools.includeJs = function(url, callbackId) {
 
-    window.external.xdebug(['window.__toolset.includeJs(url, callbackId)', url, callbackId]);
+    window.external.xdebug(['window.__tools.includeJs(url, callbackId)', url, callbackId]);
 
     // Generate DOM for new <script/> tagg
     var head = document.getElementsByTagName("head")[0] || document.documentElement;
@@ -21,9 +20,9 @@ window.__toolset.includeJs = function(url, callbackId) {
 };
 
 // Checks if a script is ready
-window.__toolset.isScriptReady = function(callbackId) {
+window.__tools.isScriptReady = function(callbackId) {
 
-    window.external.xdebug(['window.__toolset.isScriptReady(callbackId)', callbackId]);
+    window.external.xdebug(['window.__tools.isScriptReady(callbackId)', callbackId]);
 
     var script = document.getElementById('script' + callbackId);
     var head = document.getElementsByTagName("head")[0] || document.documentElement;
@@ -37,4 +36,15 @@ window.__toolset.isScriptReady = function(callbackId) {
         }
     }
     return false;
+}
+*/
+
+// Add OnCallback functionality
+callPhantom = function() {
+    window.external.xdebug('window.callPhantom(args)');
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i]);
+    }
+    window.external.callPhantom(JSON.stringify(args));
 }

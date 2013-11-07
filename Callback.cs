@@ -113,6 +113,18 @@ namespace TrifleJS
             {
                 Callback.Execute(id);
             }
+            public void callPhantom(string x) {
+                try
+                {
+                    Program.context.Run(
+                        String.Format("WebPage.onCallback({0});", x),
+                        "window.external.callPhantom(args)"
+                    );
+                }
+                catch (Exception ex) {
+                    API.Context.Handle(ex);
+                }
+            }
         }
     }
 }

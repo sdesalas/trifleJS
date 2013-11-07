@@ -113,8 +113,7 @@ describe("WebPage object", function() {
         expect(page.onInitialized).toEqual(onInitialized2);
         expect(page.onInitialized).toNotEqual(onInitialized1);
         page.onInitialized = null;
-        // Will only allow setting to a function value, so setting it to `null` returns `undefined`
-        expect(page.onInitialized).toBeUndefined();
+        expect(page.onInitialized).toBeNull();
         page.onInitialized = undefined;
         expect(page.onInitialized).toBeUndefined();
     });
@@ -130,8 +129,7 @@ describe("WebPage object", function() {
         expect(page.onConfirm).toEqual(onConfirmFunc2);
         expect(page.onConfirm).toNotEqual(onConfirmFunc1);
         page.onConfirm = null;
-        // Will only allow setting to a function value, so setting it to `null` returns `undefined`
-        expect(page.onConfirm).toBeUndefined();
+        expect(page.onConfirm).toBeNull();
         page.onConfirm = undefined;
         expect(page.onConfirm).toBeUndefined();
     });
@@ -147,8 +145,7 @@ describe("WebPage object", function() {
         expect(page.onError).toEqual(onErrorFunc2);
         expect(page.onError).toNotEqual(onErrorFunc1);
         page.onError = null;
-        // Will only allow setting to a function value, so setting it to `null` returns `undefined`
-        expect(page.onError).toBeUndefined();
+        expect(page.onError).toBeNull();
         page.onError = undefined;
         expect(page.onError).toBeUndefined();
     });

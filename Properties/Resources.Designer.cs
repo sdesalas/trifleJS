@@ -62,6 +62,60 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /*
+        ///json2.js
+        ///2013-05-26
+        ///
+        ///Public Domain.
+        ///
+        ///NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+        ///
+        ///See http://www.JSON.org/js.html
+        ///
+        ///
+        ///This code should be minified before deployment.
+        ///See http://javascript.crockford.com/jsmin.html
+        ///
+        ///USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
+        ///NOT CONTROL.
+        ///
+        ///
+        ///This file creates a global JSON object containing two methods: stringify
+        ///and parse.
+        ///
+        ///JSON.stringify(value, replacer, space)
+        ///value       any JavaScript value, usually an obje [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ie_json2 {
+            get {
+                return ResourceManager.GetString("ie_json2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ////*
+        ///// Initialize tools
+        ///window.__tools = window.__tools || {};
+        ///
+        ///// Loads a JS file and executes a callback when ready
+        ///window.__tools.includeJs = function(url, callbackId) {
+        ///
+        ///    window.external.xdebug([&apos;window.__tools.includeJs(url, callbackId)&apos;, url, callbackId]);
+        ///
+        ///    // Generate DOM for new &lt;script/&gt; tagg
+        ///    var head = document.getElementsByTagName(&quot;head&quot;)[0] || document.documentElement;
+        ///    var script = document.createElement(&quot;script&quot;);
+        ///    script.id = &apos;script&apos; + callbackId;
+        ///    script.sr [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ie_tools {
+            get {
+                return ResourceManager.GetString("ie_tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
         ///* init.js
         ///*
         ///* By: Steven de Salas
@@ -335,9 +389,9 @@ namespace TrifleJS.Properties {
         ///(function(trifle) {
         ///
         ///    // Define Constructor
-        ///    var WebPage = trifle.modules.WebPage = function() {
+        ///    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = function() {
         ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a V8 WebPage object and stores it in internal AP [rest of string was truncated]&quot;;.
+        ///        // Instantiate a V8 WebPage obj [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_WebPage {
             get {

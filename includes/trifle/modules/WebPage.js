@@ -50,6 +50,9 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.evaluateJavaScript = function(code) {
         console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
         if (code && code.length) {
+            // Set current page (for WebPage#onCallback)
+            WebPage.current = this;
+            // Execute JS on IE host
             return this.API.EvaluateJavaScript(code);
         }
     };
@@ -66,6 +69,9 @@ trifle.modules = trifle.modules || {};
                 }
                 args.push(arguments[i]);
             }
+            // Set current page (for WebPage#onCallback)
+            WebPage.current = this;
+            // Execute JS on IE host
             return this.API.Evaluate(func.toString(), args);
         }
         return null;
@@ -75,6 +81,9 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.injectJs = function(filename) {
         console.xdebug("WebPage.prototype.injectJs(filename)");
         if (typeof filename === 'string') {
+            // Set current page (for WebPage#onCallback)
+            WebPage.current = this;
+            // Execute JS on IE host
             return this.API.InjectJs(filename);
         }
     }
@@ -89,6 +98,9 @@ trifle.modules = trifle.modules || {};
                     callback.call(page);
                 }
             };
+            // Set current page (for WebPage#onCallback)
+            WebPage.current = this;
+            // Execute JS on IE host
             return this.API.IncludeJs(url, (new trifle.Callback(complete)).id);
         }
     }
@@ -106,6 +118,20 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.renderBase64 = function(format) {
         console.xdebug("WebPage.prototype.renderBase64(format)");
         return this.API.RenderBase64(format || "PNG");
+    }
+
+    // STATIC PROPERTIES
+
+    // Currently running IE instance
+    WebPage.current = null;
+
+    // Add static onCallback() method for event handling
+    WebPage.onCallback = function(args) {
+        console.xdebug("WebPage.onCallback(args)");
+        var currentPage = WebPage.current;
+        if (currentPage && currentPage.onCallback && currentPage.onCallback.apply) {
+            currentPage.onCallback.apply(currentPage, args);
+        }
     }
 
 

@@ -83,9 +83,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="includes\init.js" />
-    <None Include="includes\ie.toolset.js" />
+    <None Include="includes\trifle\ie\tools.js" />
     <None Include="Libs\Noesis.Javascript.dll.LICENSE" />
     <Content Include="includes\trifle\Callback.js" />
+    <Content Include="includes\trifle\ie\json2.js" />
     <Content Include="includes\trifle\modules\FileSystem.js" />
     <Content Include="includes\trifle\modules\System.js" />
     <Content Include="includes\trifle\modules\WebPage.js" />
@@ -99,6 +100,7 @@
     <Content Include="test\feature\page.evaluateJavaScript.js" />
     <Content Include="test\feature\page.includeJs.js" />
     <Content Include="test\feature\page.injectJs.js" />
+    <Content Include="test\feature\page.onCallback.js" />
     <Content Include="test\feature\page.open.js" />
     <Content Include="test\feature\page.render.js" />
     <Content Include="test\feature\phantom.injectJs.js" />
