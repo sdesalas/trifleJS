@@ -128,10 +128,21 @@ trifle.modules = trifle.modules || {};
     // Add static onCallback() method for event handling
     WebPage.onCallback = function(args) {
         console.xdebug("WebPage.onCallback(args)");
-        var currentPage = WebPage.current;
-        if (currentPage && currentPage.onCallback && currentPage.onCallback.apply) {
-            return currentPage.onCallback.apply(currentPage, args);
+        var page = WebPage.current;
+        if (page && page.onCallback && page.onCallback.apply) {
+            return page.onCallback.apply(page, args);
         }
+    }
+
+    // Add static onError() method for event handling
+    WebPage.onError = function(msg, line, url) {
+        console.xdebug("WebPage.onCallback(args)");
+        var page = WebPage.current;
+        if (page && page.onError && page.onError.call) {
+            page.onError.call(page, msg, [{ line: line, file: url}]);
+            return true;
+        }
+        return false;
     }
 
 

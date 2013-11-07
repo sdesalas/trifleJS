@@ -66,7 +66,7 @@ namespace TrifleJS
             List<string> input = new List<string>();
             foreach (object argument in arguments)
             {
-                input.Add(Parse(argument));
+                input.Add(ParseOne(argument));
             }
             return input.ToArray();
         }
@@ -76,7 +76,7 @@ namespace TrifleJS
         /// </summary>
         /// <param name="argument">an argument object (of any type)</param>
         /// <returns>the parsed argument</returns>
-        public static string Parse(object argument) {
+        public static string ParseOne(object argument) {
             if (argument == null)
             {
                 return "null";

@@ -16,7 +16,8 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="filepath">Path to file, this can either be relative to triflejs.exe or current script being executed.</param>
         /// <returns></returns>
-        public object RunFile(string filepath) {
+        public object RunFile(string filepath)
+        {
             FileInfo file = Find(filepath);
             if (file == null || !file.Exists)
             {
@@ -25,7 +26,7 @@ namespace TrifleJS.API
             // Read file 
             string script = File.ReadAllText(file.FullName);
             // Execute file
-            return RunScript(script, file.Name); 
+            return RunScript(script, file.Name);
         }
 
         /// <summary>
@@ -33,7 +34,8 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="script">String containing javascript to execute</param>
         /// <param name="scriptName">Name of the script</param>
-        public object RunScript(string script, string scriptName) {
+        public object RunScript(string script, string scriptName)
+        {
             // Read file and add a blank function at the end, 
             // this is to fix a stackoverflow bug
             // in Javascript.NET where it tries
@@ -51,7 +53,8 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="path">path to find</param>
         /// <returns></returns>
-        public FileInfo Find(string path) {
+        public FileInfo Find(string path)
+        {
             FileInfo file = new FileInfo(path);
             if (!file.Exists)
             {
@@ -66,7 +69,8 @@ namespace TrifleJS.API
         /// <summary>
         /// Gets the current context
         /// </summary>
-        public static Context Current {
+        public static Context Current
+        {
             get { return Program.context; }
         }
 
@@ -77,14 +81,18 @@ namespace TrifleJS.API
         public static void Handle(Exception ex)
         {
             JavascriptException jsEx = ex as JavascriptException;
-            if (jsEx != null) {
+            if (jsEx != null)
+            {
                 // Remove refs to Host environment & output javascript error
                 string message = jsEx.Message.Replace("TrifleJS.Host+", "");
                 Console.error(String.Format("{0} ({1},{2}): {3}", jsEx.Source, jsEx.Line, jsEx.StartColumn, message));
-            } else {
+            }
+            else
+            {
                 Console.error(String.Format("{0}: {1}", ex.Source, ex.Message));
             }
         }
+
     }
 
 }

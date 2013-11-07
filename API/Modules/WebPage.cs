@@ -75,9 +75,7 @@ namespace TrifleJS.API.Modules
                     EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
                     this.browser.Document.Window.Error += delegate (object obj, HtmlElementErrorEventArgs e)
                     {
-                        Exception ex = new Exception(e.Description);
-                        ex.Source = "Internet Explorer";
-                        API.Context.Handle(ex);
+                        Handle(e.Description, e.LineNumber, e.Url);
                         e.Handled = true;
                     };
                     // Continue with callback
@@ -90,6 +88,32 @@ namespace TrifleJS.API.Modules
             }
             else {
                 Console.log("Error opening url: " + url);
+            }
+        }
+
+        /// <summary>
+        /// Handles an exception in the IE runtime
+        /// </summary>
+        /// <param name="ex"></param>
+        private void Handle(string description, int line, Uri uri)
+        {
+            bool isHandled = false;
+            // Check the page.onError() handler to see if we need to run it
+            try
+            {
+                string script = String.Format("WebPage.onError(\"{0}\", {1}, \"{2}\");", description, line, uri);
+                isHandled = Convert.ToBoolean(Program.context.Run(script, "WebPage.onError()"));
+            }
+            catch (Exception ex2)
+            {
+                // Problems?
+                API.Context.Handle(ex2);
+                isHandled = true;
+            }
+            // Output to console if we havent handled it yet
+            if (!isHandled)
+            {
+                Console.error(String.Format("{0}:{1}({2}): {3}", "IE", uri.AbsoluteUri, line, description));
             }
         }
 
@@ -175,5 +199,6 @@ namespace TrifleJS.API.Modules
                 EvaluateJavaScript(File.ReadAllText(filename));
             }
         }
+
     }
 }
