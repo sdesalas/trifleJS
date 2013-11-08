@@ -247,7 +247,7 @@ namespace TrifleJS
                 browser.Size = new Size(1024, 700);
                 browser.Navigate(url); //a file or a url
                 browser.ScrollBarsEnabled = false;
-                browser.RenderOnLoad(uri.Host + ".png");
+                browser.RenderOnLoad(String.IsNullOrEmpty(uri.Host) ? "page.png" : uri.Host + ".png");
 
                 while (browser.ReadyState != System.Windows.Forms.WebBrowserReadyState.Complete)
                 {
