@@ -26,13 +26,14 @@ The following is a list of features that have been ported from PhantomJS.
 |.cookiesEnabled                          | Nope     |                                      | 
 |.version                                 | Yep      |                                      | 
 |.libraryPath                             | Yep      |                                      |
-|*__Functions__*                                                                           |
-|.addCookie()                             | Nope      |                                      |
-|.clearCookies()                          | Nope      |                                      |
-|.deleteCookie()                          | Nope      |                                      |
-|.exit()                                  | Yep      |                                      |
+|*__Functions__*                                                                            |
+|.addCookie()                             | Nope      |                                     |
+|.clearCookies()                          | Nope      |                                     |
+|.deleteCookie()                          | Nope      |                                     |
 |.exit()                                  | Yep      |                                      |
 |.injectJS()                              | Yep      |                                      |
+|*__Functions__*                                                                            |
+|#onError                                 | Nope      |                                     |
 |**[Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**       |
 |*__Properties__*                                                                           |
 |.viewportSize                            | Nope     |                                      |
