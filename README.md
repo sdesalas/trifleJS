@@ -38,7 +38,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.clearCookies()                          | Nope      |                                     |
 |.deleteCookie()                          | Nope      |                                     |
 |.exit()                                  | Yep      |                                      |
-|.injectJS()                              | Yep      |                                      |
+|.injectJS(filename)                      | Yep      |                                      |
 |*__Callbacks__*                                                                            |
 |#onError                                 | Nope      |                                     |
 
@@ -47,17 +47,24 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
+|.content                                 | Nope     |                                      |
+|.cookies                                 | Nope     |                                      |
+|.plainText                               | Nope     |                                      |
 |.viewportSize                            | Nope     |                                      |
 |.url                                     | Nope     |                                      |
 |.title                                   | Nope     |                                      |
 |*__Functions__*                                                                            |
-|.open(url, callback)                     | Yep      | Callback included                    |
-|.render(filename)                        | Yep      |                                      |
-|.renderBase64(format)                    | Yep      |                                      |
+|.addCookie()                             | Nope      |                                     |
+|.clearCookies()                          | Nope      |                                     |
+|.deleteCookie()                          | Nope      |                                     |
 |.evaluate(function, arg1, arg2,..)       | Yep      |                                      |
+|.evaluateAsync(function)                 | Nope      |                                     |
 |.evaluateJavaScript(str)                 | Yep      |                                      |
 |.includeJs(url, callback)                | Yep      | Callback included                    |
 |.injectJs(filename)                      | Yep      |                                      |
+|.open(url, callback)                     | Yep      | Callback included                    |
+|.render(filename)                        | Yep      |                                      |
+|.renderBase64(format)                    | Yep      |                                      |
 |*__Callbacks__*                                                                            |
 |#onAlert                                 | Nope     |                                      | 
 |#onCallback                              | Yep      |                                      | 
@@ -70,12 +77,21 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
+|*__Properties__*                                                                           |
+|.pid                                     | Nope      |                                     |
+|.platform                                | Nope      |                                     |
+|.os                                      | Nope      |                                     |
+|.env                                     | Nope      |                                     |
 |.args                                    | Yep      |                                      |
 
 ### [Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
+|*__Properties__*                                                                           |
+|.separator                               | Nope      |                                     |
+|.workingDirectory                        | Nope      |                                     |
+|*__Callbacks__*                                                                            |
 |.changeWorkingDirectory()                | Yep      |                                      |
 
 ### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
