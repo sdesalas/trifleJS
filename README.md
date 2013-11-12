@@ -33,13 +33,13 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.cookiesEnabled                          | Nope     |                                      | 
 |.version                                 | Yep      |                                      | 
 |.libraryPath                             | Yep      |                                      |
-|*__Functions__*                                                                            |
+|*__Methods__*                                                                              |
 |.addCookie()                             | Nope      |                                     |
 |.clearCookies()                          | Nope      |                                     |
 |.deleteCookie()                          | Nope      |                                     |
 |.exit()                                  | Yep      |                                      |
 |.injectJS(filename)                      | Yep      |                                      |
-|*__Callbacks__*                                                                            |
+|*__Events__*                                                                               |
 |#onError                                 | Nope      |                                     |
 
 ### [Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)
@@ -53,7 +53,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.viewportSize                            | Nope     |                                      |
 |.url                                     | Nope     |                                      |
 |.title                                   | Nope     |                                      |
-|*__Functions__*                                                                            |
+|*__Methods__*                                                                              |
 |.addCookie()                             | Nope      |                                     |
 |.clearCookies()                          | Nope      |                                     |
 |.deleteCookie()                          | Nope      |                                     |
@@ -65,7 +65,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.open(url, callback)                     | Yep      | Callback included                    |
 |.render(filename)                        | Yep      |                                      |
 |.renderBase64(format)                    | Yep      |                                      |
-|*__Callbacks__*                                                                            |
+|*__Events__*                                                                               |
 |#onAlert                                 | Nope     |                                      | 
 |#onCallback                              | Yep      |                                      | 
 |#onConsoleMessage                        | Nope     |                                      | 
@@ -91,7 +91,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |*__Properties__*                                                                           |
 |.separator                               | Nope      |                                     |
 |.workingDirectory                        | Nope      |                                     |
-|*__Callbacks__*                                                                            |
+|*__Methods__*                                                                              |
 |.changeWorkingDirectory()                | Yep      |                                      |
 
 ### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
