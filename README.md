@@ -19,13 +19,26 @@ The following is a list of features that have been ported from PhantomJS.
 |-----------------------------------------|----------|--------------------------------------|
 |**global**                               |
 |.[require()](https://github.com/ariya/phantomjs/wiki/API-Reference#function-require)   | Yep      | Initialises CommonJS modules         |
-|**[phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
+|**[Object: phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
+|*__Properties__*                                                                           |
+|.args                                    | Yep      |                                      |
+|.cookies                                 | Nope     |                                      | 
+|.cookiesEnabled                          | Nope     |                                      | 
 |.version                                 | Yep      |                                      | 
+|.libraryPath                             | Yep      |                                      |
+|*__Functions__*                                                                           |
+|.addCookie()                             | Nope      |                                      |
+|.clearCookies()                          | Nope      |                                      |
+|.deleteCookie()                          | Nope      |                                      |
+|.exit()                                  | Yep      |                                      |
 |.exit()                                  | Yep      |                                      |
 |.injectJS()                              | Yep      |                                      |
-|.libraryPath                             | Yep      |                                      |
-|.args                                    | Yep      |                                      |
-|**[webpage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**                              | 
+|**[Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**       |
+|*__Properties__*                                                                           |
+|.viewportSize                            | Nope     |                                      |
+|.url                                     | Nope     |                                      |
+|.title                                   | Nope     |                                      |
+|*__Functions__*                                                                            |
 |.open(url, callback)                     | Yep      | Callback included                    |
 |.render(filename)                        | Yep      |                                      |
 |.renderBase64(format)                    | Yep      |                                      |
@@ -33,13 +46,16 @@ The following is a list of features that have been ported from PhantomJS.
 |.evaluateJavaScript(str)                 | Yep      |                                      |
 |.includeJs(url, callback)                | Yep      | Callback included                    |
 |.injectJs(filename)                      | Yep      |                                      |
+|*__Callbacks__*                                                                            |
+|#onAlert                                 | Nope     |                                      | 
+|#onCallback                              | Yep      |                                      | 
 |#onConsoleMessage                        | Nope     |                                      | 
-|#onError                                 | Nope     |                                      |
+|#onError                                 | Partial  | Stacktrace not implemented yet       |
 |#onLoadStarted                           | Yep      |                                      |
 |#onLoadFinished                          | Yep      |                                      |
-|**[system](https://github.com/ariya/phantomjs/wiki/API-Reference-System)**                               |
+|**[Module: System](https://github.com/ariya/phantomjs/wiki/API-Reference-System)**                               |
 |.args                                    | Yep      |                                      |
-|**[fs](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)**                                   |
+|**[Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)**                                   |
 |.changeWorkingDirectory()                | Yep      |                                      |
 |**[COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)**                         |
 |REPL input                               | Yep      |                                      |
