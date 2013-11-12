@@ -47,7 +47,28 @@
 
 <p><img src="https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png" alt="IE 8" title="Running as IE 8"></p>
 
-<p>The following is a list of features that have been ported from PhantomJS.</p>
+<p>The following is a list of features that have been ported from PhantomJS. </p>
+
+<p>We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage.</p>
+
+<h3>
+<a name="global-methods-common-js" class="anchor" href="#global-methods-common-js"><span class="octicon octicon-link"></span></a>Global Methods (Common JS)</h3>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody><tr>
+<td>.<a href="https://github.com/ariya/phantomjs/wiki/API-Reference#function-require">require()</a>
+</td>
+<td>Yep</td>
+<td>Initialises CommonJS modules</td>
+</tr></tbody>
+</table><h3>
+<a name="object-phantom" class="anchor" href="#object-phantom"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-phantom">Object: phantom</a>
+</h3>
 
 <table>
 <thead><tr>
@@ -57,24 +78,53 @@
 </tr></thead>
 <tbody>
 <tr>
-<td><strong>global</strong></td>
+<td><em><strong>Properties</strong></em></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>.<a href="https://github.com/ariya/phantomjs/wiki/API-Reference#function-require">require()</a>
-</td>
+<td>.args</td>
 <td>Yep</td>
-<td>Initialises CommonJS modules</td>
+<td></td>
 </tr>
 <tr>
-<td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-phantom">phantom</a></strong></td>
+<td>.cookies</td>
+<td>Nope</td>
 <td></td>
+</tr>
+<tr>
+<td>.cookiesEnabled</td>
+<td>Nope</td>
 <td></td>
 </tr>
 <tr>
 <td>.version</td>
 <td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td>.libraryPath</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
+<td><em><strong>Functions</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.addCookie()</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td>.clearCookies()</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td>.deleteCookie()</td>
+<td>Nope</td>
 <td></td>
 </tr>
 <tr>
@@ -88,17 +138,49 @@
 <td></td>
 </tr>
 <tr>
-<td>.libraryPath</td>
-<td>Yep</td>
+<td><em><strong>Callbacks</strong></em></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
-<td>.args</td>
-<td>Yep</td>
+<td>#onError</td>
+<td>Nope</td>
+<td></td>
+</tr>
+</tbody>
+</table><h3>
+<a name="module-webpage" class="anchor" href="#module-webpage"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage">Module: WebPage</a>
+</h3>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><em><strong>Properties</strong></em></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
-<td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage">webpage</a></strong></td>
+<td>.viewportSize</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td>.url</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td>.title</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td><em><strong>Functions</strong></em></td>
 <td></td>
 <td></td>
 </tr>
@@ -138,14 +220,29 @@
 <td></td>
 </tr>
 <tr>
+<td><em><strong>Callbacks</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#onAlert</td>
+<td>Nope</td>
+<td></td>
+</tr>
+<tr>
+<td>#onCallback</td>
+<td>Yep</td>
+<td></td>
+</tr>
+<tr>
 <td>#onConsoleMessage</td>
 <td>Nope</td>
 <td></td>
 </tr>
 <tr>
 <td>#onError</td>
-<td>Nope</td>
-<td></td>
+<td>Partial</td>
+<td>Stacktrace not implemented yet</td>
 </tr>
 <tr>
 <td>#onLoadStarted</td>
@@ -157,31 +254,48 @@
 <td>Yep</td>
 <td></td>
 </tr>
-<tr>
-<td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-System">system</a></strong></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
+</tbody>
+</table><h3>
+<a name="module-system" class="anchor" href="#module-system"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-System">Module: System</a>
+</h3>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody><tr>
 <td>.args</td>
 <td>Yep</td>
 <td></td>
-</tr>
-<tr>
-<td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem">fs</a></strong></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
+</tr></tbody>
+</table><h3>
+<a name="module-filesystem" class="anchor" href="#module-filesystem"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem">Module: FileSystem</a>
+</h3>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody><tr>
 <td>.changeWorkingDirectory()</td>
 <td>Yep</td>
 <td></td>
-</tr>
-<tr>
-<td><strong><a href="https://github.com/ariya/phantomjs/wiki/API-Reference">COMMAND LINE</a></strong></td>
-<td></td>
-<td></td>
-</tr>
+</tr></tbody>
+</table><h3>
+<a name="command-line" class="anchor" href="#command-line"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference">COMMAND LINE</a>
+</h3>
+
+<table>
+<thead><tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
 <tr>
 <td>REPL input</td>
 <td>Yep</td>
