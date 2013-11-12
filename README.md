@@ -13,13 +13,20 @@ It supports different version of IE interchangeably depending on the current ver
 
 ![IE 8](https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png "Running as IE 8")
 
-The following is a list of features that have been ported from PhantomJS.
+The following is a list of features that have been ported from PhantomJS. 
+
+We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage.
+
+### Global Methods (Common JS)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
-|**global**                               |
 |.[require()](https://github.com/ariya/phantomjs/wiki/API-Reference#function-require)   | Yep      | Initialises CommonJS modules         |
-|**[Object: phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)**                              |
+
+### [Object: phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
 |.args                                    | Yep      |                                      |
 |.cookies                                 | Nope     |                                      | 
@@ -32,9 +39,13 @@ The following is a list of features that have been ported from PhantomJS.
 |.deleteCookie()                          | Nope      |                                     |
 |.exit()                                  | Yep      |                                      |
 |.injectJS()                              | Yep      |                                      |
-|*__Functions__*                                                                            |
+|*__Callbacks__*                                                                            |
 |#onError                                 | Nope      |                                     |
-|**[Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)**       |
+
+### [Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
 |.viewportSize                            | Nope     |                                      |
 |.url                                     | Nope     |                                      |
@@ -54,15 +65,27 @@ The following is a list of features that have been ported from PhantomJS.
 |#onError                                 | Partial  | Stacktrace not implemented yet       |
 |#onLoadStarted                           | Yep      |                                      |
 |#onLoadFinished                          | Yep      |                                      |
-|**[Module: System](https://github.com/ariya/phantomjs/wiki/API-Reference-System)**                               |
+
+### [Module: System](https://github.com/ariya/phantomjs/wiki/API-Reference-System)
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |.args                                    | Yep      |                                      |
-|**[Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)**                                   |
+
+### [Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |.changeWorkingDirectory()                | Yep      |                                      |
-|**[COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)**                         |
+
+### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
+
+|Feature                                  | Status   | Notes                                |
+|-----------------------------------------|----------|--------------------------------------|
 |REPL input                               | Yep      |                                      |
 |--version                                | Yep      |                                      |
 
-##New features
+## New features
 
 These are additional features added into TrifleJS that are not present in PhantomJS
 
