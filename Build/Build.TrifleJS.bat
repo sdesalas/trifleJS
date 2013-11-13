@@ -41,12 +41,13 @@ IF EXIST "%CompilePath%\TrifleJS.exe" (
 XCOPY %CompilePath%\*.* %MergePath% /Y /E
 DEL %MergePath%\TrifleJS.exe /Q
 DEL %MergePath%\Microsoft.mshtml.dll /Q
+DEL %MergePath%\Newtonsoft.Json.dll /Q
 
 ECHO 
 ECHO Merging and zipping to \Build\Binary directory. 
 ECHO NOTE: This will take about 2 minutes..
 
-%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll
+%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll %CompilePath%\Newtonsoft.Json.dll
 DEL %MergePath%\TrifleJS.pdb
 CD %MergePath%
 ..\%Zip% a ..\Binary\TrifleJS.Latest.zip -r *.*

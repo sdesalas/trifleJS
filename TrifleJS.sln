@@ -5,14 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrifleJS", "TrifleJS.csproj
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Debug|x86.ActiveCfg = Debug|x86
+		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Debug|x86.Build.0 = Debug|x86
+		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Release|x86.ActiveCfg = Release|x86
+		{6130407F-322B-4E41-AFDB-FCF1C17D6C19}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

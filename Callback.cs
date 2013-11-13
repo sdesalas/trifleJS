@@ -88,10 +88,8 @@ namespace TrifleJS
                     case "Int32":
                     case "Double":
                         return argument.ToString();
-                        break;
                     case "Boolean":
                         return argument.ToString().ToLowerInvariant();
-                        break;
                     case "String":
                         // Fix for undefined (coming up as null)
                         if ("{{undefined}}".Equals(argument))
@@ -102,10 +100,8 @@ namespace TrifleJS
                         {
                             return String.Format("\"{0}\"", argument.ToString());
                         }
-                        break;
                     default:
                         return Utils.Serialize(argument);
-                        break;
                 }
             }
         }
