@@ -25,6 +25,39 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Returns the title of the current page
+        /// </summary>
+        public string Title {
+            get { return (this.browser != null) ? this.browser.DocumentTitle : String.Empty; }
+        }
+
+        /// <summary>
+        /// Returns the current url
+        /// </summary>
+        public string Url {
+            get { return (this.browser != null && this.browser.Url != null) ? this.browser.Url.AbsoluteUri : String.Empty; }
+        }
+
+        /// <summary>
+        /// Gets the HTML content of the document
+        /// </summary>
+        public string Content {
+            get { return (this.browser != null) ? this.browser.DocumentText : String.Empty; }
+        }
+
+        /// <summary>
+        /// Gets the Plain Text content of the document
+        /// </summary>
+        public string PlainText {
+            get { return (this.browser != null 
+                        && this.browser.Document != null 
+                        && this.browser.Document.Body != null 
+                        && this.browser.Document.Body.Parent != null) ?
+                            this.browser.Document.Body.Parent.OuterText:
+                            String.Empty; }
+        }
+
+        /// <summary>
         /// Takes a screenshot and saves into a file path
         /// </summary>
         /// <param name="filename">path where the screenshot is saved</param>

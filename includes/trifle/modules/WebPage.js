@@ -41,6 +41,12 @@ trifle.modules = trifle.modules || {};
             if (page.onLoadFinished) {
                 page.onLoadFinished.call(page, status);
             }
+            // Load additional properties for current page
+            page.content = page.API.Content;
+            page.plainText = page.API.PlainText;
+            page.url = page.API.Url;
+            page.title = page.API.Title;
+            // Execute callback
             return callback.call(page, status);
         };
         return this.API.Open(url, (new trifle.Callback(complete)).id);
