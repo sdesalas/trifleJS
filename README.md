@@ -88,10 +88,10 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|`.pid`                                   | --       | Current Process ID for TrifleJS process. |
-|`.platform`                              | --       | Name of platform, always `phantomjs`. |
-|`.os`                                    | --       | Information about the operating system |
-|`.env`                                   | --       | Key-value pairs of environment variables |
+|`.pid`                                   | Ready    | Current Process ID for TrifleJS process. |
+|`.platform`                              | Ready    | Name of platform, always `phantomjs`. |
+|`.os`                                    | Ready    | Information about the operating system |
+|`.env`                                   | Ready    | Key-value pairs of environment variables |
 |`.args`                                  | Ready    | List of the command-line arguments |
 
 ### [Module: `FileSystem`](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
