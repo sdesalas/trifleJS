@@ -24,6 +24,14 @@ trifle.modules = trifle.modules || {};
         this.API = trifle.API['System']();
         // Populate other properties
         this.args = this.API.Args;
+        this.pid = this.API.PID;
+        this.platform = 'phantom';
+        this.env = this.API.Env;
+        this.os = {
+			name: this.API.Name,
+			architecture: this.API.Architecture,
+			version: this.API.Version
+        };
     }
 
 
