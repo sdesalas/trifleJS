@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TrifleJS")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A headless Internet Explorer browser with a Javascript API. Port of PhantomJS")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("TrifleJS")]
+[assembly: AssemblyProduct("http://triflejs.org")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,3 +32,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyCompanyAttribute("")]
+[assembly: AssemblyCopyrightAttribute("Steven de Salas (MIT License)")]
