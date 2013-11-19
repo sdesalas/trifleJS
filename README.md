@@ -127,8 +127,8 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
-|--emulate:(version)                      | Ready    | Emulates specific IE versions        |
-|--render:(url)                           | Ready    | Renders a URL to file and quits      | 
+|--emulate:(`version`)                      | Ready    | Emulates specific IE versions        |
+|--render:(`url`)                           | Ready    | Renders a URL to file and quits      | 
 
 
 This code is still very much in beta. Check again for updates.
