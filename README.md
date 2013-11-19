@@ -23,7 +23,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |-----------------------------------------|----------|--------------------------------------|
 |.[require()](https://github.com/ariya/phantomjs/wiki/API-Reference#function-require)   | Yep      | Initialises CommonJS modules         |
 
-### [Object: phantom](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)
+### [Object: `phantom`](https://github.com/ariya/phantomjs/wiki/API-Reference-phantom)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
@@ -43,7 +43,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |*__Events__*                                                                               |
 |#onError                                 | --       | Errors not caught by a WebPage#onError |
 
-### [Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)
+### [Module: `WebPage`](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
@@ -83,7 +83,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |#onLoadFinished                          | Ready    |                                      |
 |#onPrompt                                | --       |                                      | 
 
-### [Module: System](https://github.com/ariya/phantomjs/wiki/API-Reference-System)
+### [Module: `System`](https://github.com/ariya/phantomjs/wiki/API-Reference-System)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
@@ -94,7 +94,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.env                                     | --       | Key-value pairs of environment variables |
 |.args                                    | Ready    | List of the command-line arguments |
 
-### [Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
+### [Module: `FileSystem`](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
