@@ -51,14 +51,14 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.canGoBack`                             | --       | `true` if browser can navigate back. |
 |`.canGoForward`                          | --       | `true` if browser can navigate forward. |
 |`.clipRect`                              | --       | Area of page rasterized during `.render()` |
-|`.content`                               | --       | HTML content of the web page.     |
+|`.content`                               | Ready    | HTML content of the web page.     |
 |`.cookies`                               | --       | Get/set cookies visible in current URL.  |
 |`.customHeaders`                         | --       | Additional HTTP headers sent to server. |
-|`.plainText`                             | --       | Content of the web page in plain text.  |
+|`.plainText`                             | Ready    | Content of the web page in plain text.  |
 |`.settings`                              | --       | Various settings of the web page.    |
 |`.viewportSize`                          | --       | Size of viewport for the layout process. |
-|`.url`                                   | --       | Current URL of the web page.         |
-|`.title`                                 | --       | Title of the page.                  |
+|`.url`                                   | Ready    | Current URL of the web page.         |
+|`.title`                                 | Ready    | Title of the page.                  |
 |*__Methods__*                                                                             |
 |`.addCookie({cookie})`                   | --       | Add a cookie to the page.           |
 |`.clearCookies()`                        | --       | Delete all Cookies for current domain. |
