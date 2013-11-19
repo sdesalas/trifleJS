@@ -50,7 +50,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |*__Properties__*                                                                           |
 |`.canGoBack`                             | --       | `true` if browser can navigate back. |
 |`.canGoForward`                          | --       | `true` if browser can navigate forward. |
-|`.clipRect`                              | --       | Area of page rasterized during `.render()` |
+|`.clipRect`                              | --       | Page area rasterized during `.render()` |
 |`.content`                               | Ready    | HTML content of the web page.     |
 |`.cookies`                               | --       | Get/set cookies visible in current URL.  |
 |`.customHeaders`                         | --       | Additional HTTP headers sent to server. |
@@ -64,7 +64,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.clearCookies()`                        | --       | Delete all Cookies for current domain. |
 |`.deleteCookie(name)`                    | --       | Deletes a Cookie in current domain. |
 |`.evaluate(function, arg1, arg2,..)`     | Ready    | Evaluates function inside current page.  |
-|`.evaluateAsync(function)`               | --       | As `evaluate()` without blocking execution. |
+|`.evaluateAsync(function)`               | --       | `evaluate()` without blocking execution. |
 |`.evaluateJavaScript(str)`               | Ready    | Evaluates script in current page.  |
 |`.includeJs(url, callback)`              | Ready    | Includes script the specified `url`  |
 |`.injectJs(filename)`                    | Ready    | Injects script code specified file   |
@@ -74,10 +74,10 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.render(filename)`                      | Ready    | Renders page to specified `filename` |
 |`.renderBase64(format)`                  | Ready    | Renders page as Base64-encoded string |
 |*__Events__*                                                                               |
-|`#onAlert`                               | --       | Fires when `alert()` call made on page. | 
-|`#onCallback`                            | Ready    | Fires when `window.callPhantom` call made. | 
-|`#onConfirm`                             | --       | Fires when `confirm()` call made on page. | 
-|`#onConsoleMessage`                      | --       | Fires for `console` messages on the page. | 
+|`#onAlert`                               | --       | Fires for `alert()` calls on page. | 
+|`#onCallback`                            | Ready    | Fires for `window.callPhantom` calls. | 
+|`#onConfirm`                             | --       | Fires for `confirm()` calls on page. | 
+|`#onConsoleMessage`                      | --       | Fires for `console` messages on page. | 
 |`#onError`                               | Partial  | Stacktrace not implemented yet       |
 |`#onLoadStarted`                         | Ready    | Fires when page starts loading.     |
 |`#onLoadFinished`                        | Ready    | Fires when page finishes loading.    |
