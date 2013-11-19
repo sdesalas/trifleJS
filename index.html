@@ -32,7 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="triflejs-02" class="anchor" href="#triflejs-02"><span class="octicon octicon-link"></span></a>trifleJS 0.2</h1>
+<a name="triflejs-03" class="anchor" href="#triflejs-03"><span class="octicon octicon-link"></span></a>trifleJS 0.3</h1>
 
 <p>A headless Internet Explorer browser using the <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx">.NET WebBrowser Class</a> with a Javascript API running on the <a href="http://en.wikipedia.org/wiki/V8_(JavaScript_engine)">V8 JavaScript engine</a>.</p>
 
@@ -67,7 +67,7 @@
 <td>Initialises CommonJS modules</td>
 </tr></tbody>
 </table><h3>
-<a name="object-phantom" class="anchor" href="#object-phantom"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-phantom">Object: phantom</a>
+<a name="object-phantom" class="anchor" href="#object-phantom"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-phantom">Object: <code>phantom</code></a>
 </h3>
 
 <table>
@@ -83,29 +83,34 @@
 <td></td>
 </tr>
 <tr>
-<td>.args</td>
-<td>Yep</td>
-<td></td>
+<td><code>.args</code></td>
+<td>Ready</td>
+<td>Arguments passed to the script.</td>
 </tr>
 <tr>
-<td>.cookies</td>
-<td>Nope</td>
-<td></td>
+<td><code>.cookies</code></td>
+<td>--</td>
+<td>Get or set Cookies for any domain.</td>
 </tr>
 <tr>
-<td>.cookiesEnabled</td>
-<td>Nope</td>
-<td></td>
+<td><code>.cookiesEnabled</code></td>
+<td>--</td>
+<td>Controls whether cookies are enabled</td>
 </tr>
 <tr>
-<td>.version</td>
-<td>Yep</td>
-<td></td>
+<td><code>.version</code></td>
+<td>Ready</td>
+<td>The version of PhantomJS instance.</td>
 </tr>
 <tr>
-<td>.libraryPath</td>
-<td>Yep</td>
-<td></td>
+<td><code>.libraryPath</code></td>
+<td>Ready</td>
+<td>Used by <code>.injectJs()</code> to find scripts.</td>
+</tr>
+<tr>
+<td><code>.scriptName</code></td>
+<td>Ready</td>
+<td>Name of the invoked script file.</td>
 </tr>
 <tr>
 <td><em><strong>Methods</strong></em></td>
@@ -113,29 +118,29 @@
 <td></td>
 </tr>
 <tr>
-<td>.addCookie()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.addCookie({cookie})</code></td>
+<td>--</td>
+<td>Add a Cookie to the CookieJar.</td>
 </tr>
 <tr>
-<td>.clearCookies()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.clearCookies()</code></td>
+<td>--</td>
+<td>Delete all Cookies.</td>
 </tr>
 <tr>
-<td>.deleteCookie()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.deleteCookie(name)</code></td>
+<td>--</td>
+<td>Deletes a Cookie.</td>
 </tr>
 <tr>
-<td>.exit()</td>
-<td>Yep</td>
-<td></td>
+<td><code>.exit(returnValue)</code></td>
+<td>Ready</td>
+<td>Exits program with return value.</td>
 </tr>
 <tr>
-<td>.injectJS(filename)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.injectJS(filename)</code></td>
+<td>Ready</td>
+<td>Injects external scripts</td>
 </tr>
 <tr>
 <td><em><strong>Events</strong></em></td>
@@ -143,13 +148,13 @@
 <td></td>
 </tr>
 <tr>
-<td>#onError</td>
-<td>Nope</td>
-<td></td>
+<td><code>#onError</code></td>
+<td>--</td>
+<td>Errors not caught by a WebPage#onError</td>
 </tr>
 </tbody>
 </table><h3>
-<a name="module-webpage" class="anchor" href="#module-webpage"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage">Module: WebPage</a>
+<a name="module-webpage" class="anchor" href="#module-webpage"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage">Module: <code>WebPage</code></a>
 </h3>
 
 <table>
@@ -165,34 +170,62 @@
 <td></td>
 </tr>
 <tr>
-<td>.content</td>
-<td>Nope</td>
-<td></td>
+<td><code>.canGoBack</code></td>
+<td>--</td>
+<td>
+<code>true</code> if browser can navigate back.</td>
 </tr>
 <tr>
-<td>.cookies</td>
-<td>Nope</td>
-<td></td>
+<td><code>.canGoForward</code></td>
+<td>--</td>
+<td>
+<code>true</code> if browser can navigate forward.</td>
 </tr>
 <tr>
-<td>.plainText</td>
-<td>Nope</td>
-<td></td>
+<td><code>.clipRect</code></td>
+<td>--</td>
+<td>Area of page rasterized during <code>.render()</code>
+</td>
 </tr>
 <tr>
-<td>.viewportSize</td>
-<td>Nope</td>
-<td></td>
+<td><code>.content</code></td>
+<td>Ready</td>
+<td>HTML content of the web page.</td>
 </tr>
 <tr>
-<td>.url</td>
-<td>Nope</td>
-<td></td>
+<td><code>.cookies</code></td>
+<td>--</td>
+<td>Get/set cookies visible in current URL.</td>
 </tr>
 <tr>
-<td>.title</td>
-<td>Nope</td>
-<td></td>
+<td><code>.customHeaders</code></td>
+<td>--</td>
+<td>Additional HTTP headers sent to server.</td>
+</tr>
+<tr>
+<td><code>.plainText</code></td>
+<td>Ready</td>
+<td>Content of the web page in plain text.</td>
+</tr>
+<tr>
+<td><code>.settings</code></td>
+<td>--</td>
+<td>Various settings of the web page.</td>
+</tr>
+<tr>
+<td><code>.viewportSize</code></td>
+<td>--</td>
+<td>Size of viewport for the layout process.</td>
+</tr>
+<tr>
+<td><code>.url</code></td>
+<td>Ready</td>
+<td>Current URL of the web page.</td>
+</tr>
+<tr>
+<td><code>.title</code></td>
+<td>Ready</td>
+<td>Title of the page.</td>
 </tr>
 <tr>
 <td><em><strong>Methods</strong></em></td>
@@ -200,59 +233,71 @@
 <td></td>
 </tr>
 <tr>
-<td>.addCookie()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.addCookie({cookie})</code></td>
+<td>--</td>
+<td>Add a cookie to the page.</td>
 </tr>
 <tr>
-<td>.clearCookies()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.clearCookies()</code></td>
+<td>--</td>
+<td>Delete all Cookies for current domain.</td>
 </tr>
 <tr>
-<td>.deleteCookie()</td>
-<td>Nope</td>
-<td></td>
+<td><code>.deleteCookie(name)</code></td>
+<td>--</td>
+<td>Deletes a Cookie in current domain.</td>
 </tr>
 <tr>
-<td>.evaluate(function, arg1, arg2,..)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.evaluate(function, arg1, arg2,..)</code></td>
+<td>Ready</td>
+<td>Evaluates function inside current page.</td>
 </tr>
 <tr>
-<td>.evaluateAsync(function)</td>
-<td>Nope</td>
-<td></td>
+<td><code>.evaluateAsync(function)</code></td>
+<td>--</td>
+<td>As <code>evaluate()</code> without blocking execution.</td>
 </tr>
 <tr>
-<td>.evaluateJavaScript(str)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.evaluateJavaScript(str)</code></td>
+<td>Ready</td>
+<td>Evaluates script in current page.</td>
 </tr>
 <tr>
-<td>.includeJs(url, callback)</td>
-<td>Yep</td>
-<td>Callback included</td>
+<td><code>.includeJs(url, callback)</code></td>
+<td>Ready</td>
+<td>Includes script the specified <code>url</code>
+</td>
 </tr>
 <tr>
-<td>.injectJs(filename)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.injectJs(filename)</code></td>
+<td>Ready</td>
+<td>Injects script code specified file</td>
 </tr>
 <tr>
-<td>.open(url, callback)</td>
-<td>Yep</td>
-<td>Callback included</td>
+<td><code>.open(url, callback)</code></td>
+<td>Ready</td>
+<td>Opens <code>url</code> and loads it to the page.</td>
 </tr>
 <tr>
-<td>.render(filename)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.openUrl(url, httpConf, settings)</code></td>
+<td>--</td>
+<td>Opens <code>url</code> with specific settings.</td>
 </tr>
 <tr>
-<td>.renderBase64(format)</td>
-<td>Yep</td>
-<td></td>
+<td><code>.reload()</code></td>
+<td>--</td>
+<td>Reloads current page.</td>
+</tr>
+<tr>
+<td><code>.render(filename)</code></td>
+<td>Ready</td>
+<td>Renders page to specified <code>filename</code>
+</td>
+</tr>
+<tr>
+<td><code>.renderBase64(format)</code></td>
+<td>Ready</td>
+<td>Renders page as Base64-encoded string</td>
 </tr>
 <tr>
 <td><em><strong>Events</strong></em></td>
@@ -260,38 +305,48 @@
 <td></td>
 </tr>
 <tr>
-<td>#onAlert</td>
-<td>Nope</td>
-<td></td>
+<td><code>#onAlert</code></td>
+<td>--</td>
+<td>Fires when <code>alert()</code> call made on page.</td>
 </tr>
 <tr>
-<td>#onCallback</td>
-<td>Yep</td>
-<td></td>
+<td><code>#onCallback</code></td>
+<td>Ready</td>
+<td>Fires when <code>window.callPhantom</code> call made.</td>
 </tr>
 <tr>
-<td>#onConsoleMessage</td>
-<td>Nope</td>
-<td></td>
+<td><code>#onConfirm</code></td>
+<td>--</td>
+<td>Fires when <code>confirm()</code> call made on page.</td>
 </tr>
 <tr>
-<td>#onError</td>
+<td><code>#onConsoleMessage</code></td>
+<td>--</td>
+<td>Fires for <code>console</code> messages on the page.</td>
+</tr>
+<tr>
+<td><code>#onError</code></td>
 <td>Partial</td>
 <td>Stacktrace not implemented yet</td>
 </tr>
 <tr>
-<td>#onLoadStarted</td>
-<td>Yep</td>
-<td></td>
+<td><code>#onLoadStarted</code></td>
+<td>Ready</td>
+<td>Fires when page starts loading.</td>
 </tr>
 <tr>
-<td>#onLoadFinished</td>
-<td>Yep</td>
-<td></td>
+<td><code>#onLoadFinished</code></td>
+<td>Ready</td>
+<td>Fires when page finishes loading.</td>
+</tr>
+<tr>
+<td><code>#onPrompt</code></td>
+<td>--</td>
+<td>Fires when <code>prompt()</code> call made on page.</td>
 </tr>
 </tbody>
 </table><h3>
-<a name="module-system" class="anchor" href="#module-system"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-System">Module: System</a>
+<a name="module-system" class="anchor" href="#module-system"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-System">Module: <code>System</code></a>
 </h3>
 
 <table>
@@ -307,33 +362,33 @@
 <td></td>
 </tr>
 <tr>
-<td>.pid</td>
-<td>Nope</td>
-<td></td>
+<td><code>.pid</code></td>
+<td>Ready</td>
+<td>Current Process ID for TrifleJS process.</td>
 </tr>
 <tr>
-<td>.platform</td>
-<td>Nope</td>
-<td></td>
+<td><code>.platform</code></td>
+<td>Ready</td>
+<td>Name of platform, always <code>phantomjs</code>.</td>
 </tr>
 <tr>
-<td>.os</td>
-<td>Nope</td>
-<td></td>
+<td><code>.os</code></td>
+<td>Ready</td>
+<td>Information about the operating system</td>
 </tr>
 <tr>
-<td>.env</td>
-<td>Nope</td>
-<td></td>
+<td><code>.env</code></td>
+<td>Ready</td>
+<td>Key-value pairs of environment variables</td>
 </tr>
 <tr>
-<td>.args</td>
-<td>Yep</td>
-<td></td>
+<td><code>.args</code></td>
+<td>Ready</td>
+<td>List of the command-line arguments</td>
 </tr>
 </tbody>
 </table><h3>
-<a name="module-filesystem" class="anchor" href="#module-filesystem"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem">Module: FileSystem</a>
+<a name="module-filesystem" class="anchor" href="#module-filesystem"><span class="octicon octicon-link"></span></a><a href="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem">Module: <code>FileSystem</code></a>
 </h3>
 
 <table>
@@ -349,14 +404,14 @@
 <td></td>
 </tr>
 <tr>
-<td>.separator</td>
-<td>Nope</td>
-<td></td>
+<td><code>.separator</code></td>
+<td>--</td>
+<td>The path separator for O/S.</td>
 </tr>
 <tr>
-<td>.workingDirectory</td>
-<td>Nope</td>
-<td></td>
+<td><code>.workingDirectory</code></td>
+<td>--</td>
+<td>The current working directory.</td>
 </tr>
 <tr>
 <td><em><strong>Methods</strong></em></td>
@@ -364,8 +419,56 @@
 <td></td>
 </tr>
 <tr>
-<td>.changeWorkingDirectory()</td>
-<td>Yep</td>
+<td><code>.changeWorkingDirectory(path)</code></td>
+<td>Ready</td>
+<td>Changes the current <code>.workingDirectory</code>
+</td>
+</tr>
+<tr>
+<td><code>.list(path)</code></td>
+<td>--</td>
+<td>Returns list of files in <code>path</code>.</td>
+</tr>
+<tr>
+<td><code>.absolute(path)</code></td>
+<td>--</td>
+<td></td>
+</tr>
+<tr>
+<td><code>.exists(path)</code></td>
+<td>--</td>
+<td>
+<code>true</code> if a file or a directory exists.</td>
+</tr>
+<tr>
+<td><code>.isDirectory(path)</code></td>
+<td>--</td>
+<td>
+<code>true</code> if specified <code>path</code> is directory.</td>
+</tr>
+<tr>
+<td><code>.isFile(path)</code></td>
+<td>--</td>
+<td></td>
+</tr>
+<tr>
+<td><code>.read(path)</code></td>
+<td>--</td>
+<td></td>
+</tr>
+<tr>
+<td><code>.size(path)</code></td>
+<td>--</td>
+<td></td>
+</tr>
+<tr>
+<td><code>.remove(path)</code></td>
+<td>--</td>
+<td></td>
+</tr>
+<tr>
+<td><code>.copy(path)</code></td>
+<td>--</td>
 <td></td>
 </tr>
 </tbody>
@@ -382,13 +485,13 @@
 <tbody>
 <tr>
 <td>REPL input</td>
-<td>Yep</td>
-<td></td>
+<td>Ready</td>
+<td>Runs interactive mode.</td>
 </tr>
 <tr>
-<td>--version</td>
-<td>Yep</td>
-<td></td>
+<td><code>--version</code></td>
+<td>Ready</td>
+<td>Targetted version of PhantomJS</td>
 </tr>
 </tbody>
 </table><h2>
@@ -409,13 +512,13 @@
 <td></td>
 </tr>
 <tr>
-<td>--emulate:(version)</td>
-<td>Yep</td>
+<td><code>--emulate:(version)</code></td>
+<td>Ready</td>
 <td>Emulates specific IE versions</td>
 </tr>
 <tr>
-<td>--render:(url)</td>
-<td>Yep</td>
+<td><code>--render:(url)</code></td>
+<td>Ready</td>
 <td>Renders a URL to file and quits</td>
 </tr>
 </tbody>
