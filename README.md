@@ -102,7 +102,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.separator`                             | --       | The path separator for O/S.          |
 |`.workingDirectory`                      | --       | The current working directory.        |
 |*__Query Methods__*                                                                        |
-|`.list(path)`                            | --       | Returns list of files in `path`.       |
+|`.list(path)`                            | Ready    | Returns list of files in `path`.       |
 |`.absolute(path)`                        | Ready    | Returns absolute path to file or directory |
 |`.exists(path)`                          | Ready    | `true` if a file or a directory exists.   |
 |`.isDirectory(path)`                     | Ready    | `true` if specified `path` is directory. |
