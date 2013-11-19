@@ -37,7 +37,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |*__Methods__*                                                                              |
 |`.addCookie({cookie})`                   | --       | Add a Cookie to the CookieJar.       |
 |`.clearCookies()`                        | --       | Delete all Cookies.                  |
-|`.deleteCookie(name)`                    | --       | Deletesa Cookie.                     |
+|`.deleteCookie(name)`                    | --       | Deletes a Cookie.                    |
 |`.exit(returnValue)`                     | Ready    | Exits program with return value.     |
 |`.injectJS(filename)`                    | Ready    | Injects external scripts             |
 |*__Events__*                                                                               |
@@ -48,24 +48,24 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|`.canGoBack`                             | --       |                                      |
-|`.canGoForward`                          | --       |                                      |
-|`.clipRect`                              | --       |                                      |
-|`.content`                               | --       |                                      |
-|`.cookies`                               | --       |                                      |
-|`.customHeaders`                         | --       |                                      |
-|`.plainText`                             | --       |                                      |
-|`.settings`                              | --       |                                      |
-|`.viewportSize`                          | --       |                                      |
-|`.url`                                   | --       |                                      |
-|`.title`                                 | --       |                                      |
+|`.canGoBack`                             | --       | `true` if browser can navigate back. |
+|`.canGoForward`                          | --       | `true` if browser can navigate forward. |
+|`.clipRect`                              | --       | Area of page rasterized during `.render()` |
+|`.content`                               | --       | `HTML` content of the web page.     |
+|`.cookies`                               | --       | Get/set cookies visible in current URL.  |
+|`.customHeaders`                         | --       | Additional HTTP headers sent to server. |
+|`.plainText`                             | --       | Content of the web page in plain text.  |
+|`.settings`                              | --       | Various settings of the web page.    |
+|`.viewportSize`                          | --       | Size of viewport for the layout process. |
+|`.url`                                   | --       | Current URL of the web page.         |
+|`.title`                                 | --       | Title of the page.                  |
 |*__Methods__*                                                                             |
-|`.addCookie()`                           | --       |                                     |
-|`.clearCookies()`                        | --       |                                     |
-|`.deleteCookie()`                        | --       |                                     |
-|`.evaluate(function, arg1, arg2,..)`     | Ready    |                                      |
-|`.evaluateAsync(function)`               | --       |                                     |
-|`.evaluateJavaScript(str)`               | Ready    |                                      |
+|`.addCookie({cookie})`                   | --       | Add a cookie to the page.           |
+|`.clearCookies()`                        | --       | Delete all Cookies for current domain. |
+|`.deleteCookie(name)`                    | --       | Deletes a Cookie in current domain. |
+|`.evaluate(function, arg1, arg2,..)`     | Ready    | Evaluates function inside current page.  |
+|`.evaluateAsync(function)`               | --       | As `evaluate()` without blocking execution. |
+|`.evaluateJavaScript(str)`               | Ready    | Evaluates script in current page.  |
 |`.includeJs(url, callback)`              | Ready    | Includes script the specified `url`  |
 |`.injectJs(filename)`                    | Ready    | Injects script code specified file   |
 |`.open(url, callback)`                   | Ready    | Opens `url` and loads it to the page. |
@@ -117,8 +117,8 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
-|REPL input                               | Ready    |                                      |
-|`--version`                              | Ready    |                                      |
+|REPL input                               | Ready    | Runs interactive mode.               |
+|`--version`                              | Ready    | Targetted version of PhantomJS       |
 
 ## New features
 
