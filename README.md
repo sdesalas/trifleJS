@@ -1,4 +1,4 @@
-trifleJS 0.2
+trifleJS 0.3
 =========
 
 A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine\)).
@@ -28,78 +28,97 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.args                                    | Yep      |                                      |
-|.cookies                                 | Nope     |                                      | 
-|.cookiesEnabled                          | Nope     |                                      | 
-|.version                                 | Yep      |                                      | 
-|.libraryPath                             | Yep      |                                      |
+|.args                                    | Ready    | Arguments passed to the script.      |
+|.cookies                                 | --       | Get or set Cookies for any domain.   | 
+|.cookiesEnabled                          | --       | Controls whether cookies are enabled | 
+|.version                                 | Ready    | The version of PhantomJS instance.   | 
+|.libraryPath                             | Ready    | Used by .injectJs() to find scripts. |
+|.scriptName                              | Ready    | Name of the invoked script file.     |
 |*__Methods__*                                                                              |
-|.addCookie()                             | Nope      |                                     |
-|.clearCookies()                          | Nope      |                                     |
-|.deleteCookie()                          | Nope      |                                     |
-|.exit()                                  | Yep      |                                      |
-|.injectJS(filename)                      | Yep      |                                      |
+|.addCookie({cookie})                     | --       | Add a Cookie to the CookieJar.       |
+|.clearCookies()                          | --       | Delete all Cookies.                  |
+|.deleteCookie(name)                      | --       | Deletesa Cookie.                     |
+|.exit(returnValue)                       | Ready    | Exits program with return value.     |
+|.injectJS(filename)                      | Ready    | Injects external scripts             |
 |*__Events__*                                                                               |
-|#onError                                 | Nope      |                                     |
+|#onError                                 | --       | Errors not caught by a WebPage#onError |
 
 ### [Module: WebPage](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.content                                 | Nope     |                                      |
-|.cookies                                 | Nope     |                                      |
-|.plainText                               | Nope     |                                      |
-|.viewportSize                            | Nope     |                                      |
-|.url                                     | Nope     |                                      |
-|.title                                   | Nope     |                                      |
-|*__Methods__*                                                                              |
-|.addCookie()                             | Nope      |                                     |
-|.clearCookies()                          | Nope      |                                     |
-|.deleteCookie()                          | Nope      |                                     |
-|.evaluate(function, arg1, arg2,..)       | Yep      |                                      |
-|.evaluateAsync(function)                 | Nope      |                                     |
-|.evaluateJavaScript(str)                 | Yep      |                                      |
-|.includeJs(url, callback)                | Yep      | Callback included                    |
-|.injectJs(filename)                      | Yep      |                                      |
-|.open(url, callback)                     | Yep      | Callback included                    |
-|.render(filename)                        | Yep      |                                      |
-|.renderBase64(format)                    | Yep      |                                      |
+|.canGoBack                               | --       |                                      |
+|.canGoForward                            | --       |                                      |
+|.clipRect                                | --       |                                      |
+|.content                                 | --       |                                      |
+|.cookies                                 | --       |                                      |
+|.customHeaders                           | --       |                                      |
+|.plainText                               | --       |                                      |
+|.settings                                | --       |                                      |
+|.viewportSize                            | --       |                                      |
+|.url                                     | --       |                                      |
+|.title                                   | --       |                                      |
+|*__Methods__*                                                                             |
+|.addCookie()                             | --       |                                     |
+|.clearCookies()                          | --       |                                     |
+|.deleteCookie()                          | --       |                                     |
+|.evaluate(function, arg1, arg2,..)       | Ready    |                                      |
+|.evaluateAsync(function)                 | --       |                                     |
+|.evaluateJavaScript(str)                 | Ready    |                                      |
+|.includeJs(url, callback)                | Ready    | Callback included                    |
+|.injectJs(filename)                      | Ready    |                                      |
+|.open(url, callback)                     | Ready    | Callback included                    |
+|.openUrl()                               | --       |                                      |
+|.reload()                                | --       |                                      |
+|.render(filename)                        | Ready    |                                      |
+|.renderBase64(format)                    | Ready    |                                      |
 |*__Events__*                                                                               |
-|#onAlert                                 | Nope     |                                      | 
-|#onCallback                              | Yep      |                                      | 
-|#onConsoleMessage                        | Nope     |                                      | 
+|#onAlert                                 | --       |                                      | 
+|#onCallback                              | Ready    |                                      | 
+|#onConfirm                               | --       |                                      | 
+|#onConsoleMessage                        | --       |                                      | 
 |#onError                                 | Partial  | Stacktrace not implemented yet       |
-|#onLoadStarted                           | Yep      |                                      |
-|#onLoadFinished                          | Yep      |                                      |
+|#onLoadStarted                           | Ready    |                                      |
+|#onLoadFinished                          | Ready    |                                      |
+|#onPrompt                                | --       |                                      | 
 
 ### [Module: System](https://github.com/ariya/phantomjs/wiki/API-Reference-System)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.pid                                     | Nope      |                                     |
-|.platform                                | Nope      |                                     |
-|.os                                      | Nope      |                                     |
-|.env                                     | Nope      |                                     |
-|.args                                    | Yep      |                                      |
+|.pid                                     | --       |                                     |
+|.platform                                | --       |                                     |
+|.os                                      | --       |                                     |
+|.env                                     | --       |                                     |
+|.args                                    | Ready    |                                      |
 
 ### [Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.separator                               | Nope      |                                     |
-|.workingDirectory                        | Nope      |                                     |
+|.separator                               | --       |                                      |
+|.workingDirectory                        | --       |                                      |
 |*__Methods__*                                                                              |
-|.changeWorkingDirectory()                | Yep      |                                      |
+|.changeWorkingDirectory()                | Ready    |                                      |
+|.list(path)                              | --       |                                      |
+|.absolute(path)                          | --       |                                      |
+|.exists(path)                            | --       |                                      |
+|.isDirectory(path)                       | --       |                                      |
+|.isFile(path)                            | --       |                                      |
+|.read(path)                              | --       |                                      |
+|.size(path)                              | --       |                                      |
+|.remove(path)                            | --       |                                      |
+|.copy(path)                              | --       |                                      |
 
 ### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
-|REPL input                               | Yep      |                                      |
-|--version                                | Yep      |                                      |
+|REPL input                               | Ready    |                                      |
+|--version                                | Ready    |                                      |
 
 ## New features
 
@@ -108,8 +127,8 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
-|--emulate:(version)                      | Yep      | Emulates specific IE versions        |
-|--render:(url)                           | Yep      | Renders a URL to file and quits      | 
+|--emulate:(version)                      | Ready    | Emulates specific IE versions        |
+|--render:(url)                           | Ready    | Renders a URL to file and quits      | 
 
 
 This code is still very much in beta. Check again for updates.
