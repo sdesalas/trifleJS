@@ -101,16 +101,21 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |*__Properties__*                                                                           |
 |`.separator`                             | --       | The path separator for O/S.          |
 |`.workingDirectory`                      | --       | The current working directory.        |
-|*__Methods__*                                                                              |
-|`.changeWorkingDirectory(path)`          | Ready    | Changes the current `.workingDirectory` |
+|*__Query Methods__*                                                                        |
 |`.list(path)`                            | --       | Returns list of files in `path`.       |
-|`.absolute(path)`                        | --       |                                      |
-|`.exists(path)`                          | --       | `true` if a file or a directory exists.   |
-|`.isDirectory(path)`                     | --       | `true` if specified `path` is directory. |
-|`.isFile(path)`                          | --       |                                      |
-|`.read(path)`                            | --       |                                      |
-|`.size(path)`                            | --       |                                      |
-|`.remove(path)`                          | --       |                                      |
+|`.absolute(path)`                        | Ready    | Returns absolute path to file or directory |
+|`.exists(path)`                          | Ready    | `true` if a file or a directory exists.   |
+|`.isDirectory(path)`                     | Ready    | `true` if specified `path` is directory. |
+|`.isFile(path)`                          | Ready    | `true` if specified `path` is a file  |
+|*__Directory Methods__*                                                                        |
+|`.changeWorkingDirectory(path)`          | Ready    | Changes the current `.workingDirectory` |
+|`.makeDirectory(path)`                   | --       | Creates a directory                 |
+|`.removeDirectory(path)`                 | --       | Removes a directory                 |
+|`.copyTree(path)`                        | --       | Copies a directory tree.            |
+|*__File Methods__*                                                                        |
+|`.read(path)`                            | Ready    | Reads contents of a file.            |
+|`.size(path)`                            | Ready    | Returns size of a file.             |
+|`.remove(path)`                          | Ready    | Deletes a file.                      |
 |`.copy(path)`                            | --       |                                      |
 
 ### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
