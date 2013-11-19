@@ -66,22 +66,22 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.evaluate(function, arg1, arg2,..)`     | Ready    |                                      |
 |`.evaluateAsync(function)`               | --       |                                     |
 |`.evaluateJavaScript(str)`               | Ready    |                                      |
-|`.includeJs(url, callback)`              | Ready    | Callback included                    |
-|`.injectJs(filename)`                    | Ready    |                                      |
-|`.open(url, callback)`                   | Ready    | Callback included                    |
-|`.openUrl()`                             | --       |                                      |
-|`.reload()`                              | --       |                                      |
-|`.render(filename)`                      | Ready    |                                      |
-|`.renderBase64(format)`                  | Ready    |                                      |
+|`.includeJs(url, callback)`              | Ready    | Includes script the specified `url`  |
+|`.injectJs(filename)`                    | Ready    | Injects script code specified file   |
+|`.open(url, callback)`                   | Ready    | Opens `url` and loads it to the page. |
+|`.openUrl(url, httpConf, settings)`      | --       | Opens `url` with specific settings.  |
+|`.reload()`                              | --       | Reloads current page.                |
+|`.render(filename)`                      | Ready    | Renders page to specified `filename` |
+|`.renderBase64(format)`                  | Ready    | Renders page as Base64-encoded string |
 |*__Events__*                                                                               |
-|`#onAlert`                               | --       |                                      | 
-|`#onCallback`                            | Ready    |                                      | 
-|`#onConfirm`                             | --       |                                      | 
-|`#onConsoleMessage`                      | --       |                                      | 
+|`#onAlert`                               | --       | Fires when `alert()` call made on page. | 
+|`#onCallback`                            | Ready    | Fires when `window.callPhantom` call made. | 
+|`#onConfirm`                             | --       | Fires when `confirm()` call made on page. | 
+|`#onConsoleMessage`                      | --       | Fires for `console` messages on the page. | 
 |`#onError`                               | Partial  | Stacktrace not implemented yet       |
-|`#onLoadStarted`                         | Ready    |                                      |
-|`#onLoadFinished`                        | Ready    |                                      |
-|`#onPrompt`                              | --       |                                      | 
+|`#onLoadStarted`                         | Ready    | Fires when page starts loading.     |
+|`#onLoadFinished`                        | Ready    | Fires when page finishes loading.    |
+|`#onPrompt`                              | --       | Fires when `prompt()` call made on page. | 
 
 ### [Module: `System`](https://github.com/ariya/phantomjs/wiki/API-Reference-System)
 
