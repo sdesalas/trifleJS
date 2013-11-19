@@ -415,7 +415,40 @@
 <td>The current working directory.</td>
 </tr>
 <tr>
-<td><em><strong>Methods</strong></em></td>
+<td><em><strong>Query Methods</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.list(path)</code></td>
+<td>Ready</td>
+<td>Returns list of files in <code>path</code>.</td>
+</tr>
+<tr>
+<td><code>.absolute(path)</code></td>
+<td>Ready</td>
+<td>Returns absolute path to file or directory</td>
+</tr>
+<tr>
+<td><code>.exists(path)</code></td>
+<td>Ready</td>
+<td>
+<code>true</code> if a file or a directory exists.</td>
+</tr>
+<tr>
+<td><code>.isDirectory(path)</code></td>
+<td>Ready</td>
+<td>
+<code>true</code> if specified <code>path</code> is directory.</td>
+</tr>
+<tr>
+<td><code>.isFile(path)</code></td>
+<td>Ready</td>
+<td>
+<code>true</code> if specified <code>path</code> is a file</td>
+</tr>
+<tr>
+<td><em><strong>Directory Methods</strong></em></td>
 <td></td>
 <td></td>
 </tr>
@@ -426,46 +459,39 @@
 </td>
 </tr>
 <tr>
-<td><code>.list(path)</code></td>
+<td><code>.makeDirectory(path)</code></td>
 <td>--</td>
-<td>Returns list of files in <code>path</code>.</td>
+<td>Creates a directory</td>
 </tr>
 <tr>
-<td><code>.absolute(path)</code></td>
+<td><code>.removeDirectory(path)</code></td>
 <td>--</td>
+<td>Removes a directory</td>
+</tr>
+<tr>
+<td><code>.copyTree(path)</code></td>
+<td>--</td>
+<td>Copies a directory tree.</td>
+</tr>
+<tr>
+<td><em><strong>File Methods</strong></em></td>
 <td></td>
-</tr>
-<tr>
-<td><code>.exists(path)</code></td>
-<td>--</td>
-<td>
-<code>true</code> if a file or a directory exists.</td>
-</tr>
-<tr>
-<td><code>.isDirectory(path)</code></td>
-<td>--</td>
-<td>
-<code>true</code> if specified <code>path</code> is directory.</td>
-</tr>
-<tr>
-<td><code>.isFile(path)</code></td>
-<td>--</td>
 <td></td>
 </tr>
 <tr>
 <td><code>.read(path)</code></td>
-<td>--</td>
-<td></td>
+<td>Ready</td>
+<td>Reads contents of a file.</td>
 </tr>
 <tr>
 <td><code>.size(path)</code></td>
-<td>--</td>
-<td></td>
+<td>Ready</td>
+<td>Returns size of a file.</td>
 </tr>
 <tr>
 <td><code>.remove(path)</code></td>
-<td>--</td>
-<td></td>
+<td>Ready</td>
+<td>Deletes a file.</td>
 </tr>
 <tr>
 <td><code>.copy(path)</code></td>
