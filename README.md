@@ -32,14 +32,14 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.cookies                                 | --       | Get or set Cookies for any domain.   | 
 |.cookiesEnabled                          | --       | Controls whether cookies are enabled | 
 |.version                                 | Ready    | The version of PhantomJS instance.   | 
-|.libraryPath                             | Ready    | Used by .injectJs() to find scripts. |
+|.libraryPath                             | Ready    | Used by `.injectJs()` to find scripts. |
 |.scriptName                              | Ready    | Name of the invoked script file.     |
 |*__Methods__*                                                                              |
-|.addCookie({cookie})                     | --       | Add a Cookie to the CookieJar.       |
+|.addCookie(`{cookie}`)                   | --       | Add a Cookie to the CookieJar.       |
 |.clearCookies()                          | --       | Delete all Cookies.                  |
-|.deleteCookie(name)                      | --       | Deletesa Cookie.                     |
-|.exit(returnValue)                       | Ready    | Exits program with return value.     |
-|.injectJS(filename)                      | Ready    | Injects external scripts             |
+|.deleteCookie(`name`)                    | --       | Deletesa Cookie.                     |
+|.exit(`returnValue`)                     | Ready    | Exits program with return value.     |
+|.injectJS(`filename`)                    | Ready    | Injects external scripts             |
 |*__Events__*                                                                               |
 |#onError                                 | --       | Errors not caught by a WebPage#onError |
 
@@ -63,16 +63,16 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |.addCookie()                             | --       |                                     |
 |.clearCookies()                          | --       |                                     |
 |.deleteCookie()                          | --       |                                     |
-|.evaluate(function, arg1, arg2,..)       | Ready    |                                      |
-|.evaluateAsync(function)                 | --       |                                     |
-|.evaluateJavaScript(str)                 | Ready    |                                      |
-|.includeJs(url, callback)                | Ready    | Callback included                    |
-|.injectJs(filename)                      | Ready    |                                      |
-|.open(url, callback)                     | Ready    | Callback included                    |
+|.evaluate(`function`, `arg1`, `arg2`,..) | Ready    |                                      |
+|.evaluateAsync(`function`)               | --       |                                     |
+|.evaluateJavaScript(`str`)               | Ready    |                                      |
+|.includeJs(`url`, `callback`)            | Ready    | Callback included                    |
+|.injectJs(`filename`)                    | Ready    |                                      |
+|.open(`url`, `callback`)                 | Ready    | Callback included                    |
 |.openUrl()                               | --       |                                      |
 |.reload()                                | --       |                                      |
-|.render(filename)                        | Ready    |                                      |
-|.renderBase64(format)                    | Ready    |                                      |
+|.render(`filename`)                      | Ready    |                                      |
+|.renderBase64(`format`)                  | Ready    |                                      |
 |*__Events__*                                                                               |
 |#onAlert                                 | --       |                                      | 
 |#onCallback                              | Ready    |                                      | 
@@ -88,30 +88,30 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.pid                                     | --       |                                     |
-|.platform                                | --       |                                     |
-|.os                                      | --       |                                     |
-|.env                                     | --       |                                     |
-|.args                                    | Ready    |                                      |
+|.pid                                     | --       | Current Process ID for TrifleJS process. |
+|.platform                                | --       | Name of platform, always `phantomjs`. |
+|.os                                      | --       | Information about the operating system |
+|.env                                     | --       | Key-value pairs of environment variables |
+|.args                                    | Ready    | List of the command-line arguments |
 
 ### [Module: FileSystem](https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem)
 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |*__Properties__*                                                                           |
-|.separator                               | --       |                                      |
-|.workingDirectory                        | --       |                                      |
+|.separator                               | --       | The path separator for O/S.          |
+|.workingDirectory                        | --       | The current working directory.        |
 |*__Methods__*                                                                              |
-|.changeWorkingDirectory()                | Ready    |                                      |
-|.list(path)                              | --       |                                      |
-|.absolute(path)                          | --       |                                      |
-|.exists(path)                            | --       |                                      |
-|.isDirectory(path)                       | --       |                                      |
-|.isFile(path)                            | --       |                                      |
-|.read(path)                              | --       |                                      |
-|.size(path)                              | --       |                                      |
-|.remove(path)                            | --       |                                      |
-|.copy(path)                              | --       |                                      |
+|.changeWorkingDirectory(`path`)          | Ready    | Changes the current `.workingDirectory` |
+|.list(`path`)                            | --       | Returns list of files in `path`.       |
+|.absolute(`path`)                        | --       |                                      |
+|.exists(`path`)                          | --       | `true` if a file or a directory exists.   |
+|.isDirectory(`path`)                     | --       | `true` if specified `path` is directory. |
+|.isFile(`path`)                          | --       |                                      |
+|.read(`path`)                            | --       |                                      |
+|.size(`path`)                            | --       |                                      |
+|.remove(`path`)                          | --       |                                      |
+|.copy(`path`)                            | --       |                                      |
 
 ### [COMMAND LINE](https://github.com/ariya/phantomjs/wiki/API-Reference)
 
