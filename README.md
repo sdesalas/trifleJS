@@ -53,7 +53,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.clipRect`                              | --       | Page area rasterized during `.render()` |
 |`.content`                               | Ready    | HTML content of the web page.     |
 |`.cookies`                               | --       | Get/set cookies visible in current URL.  |
-|`.customHeaders`                         | --       | Additional HTTP headers sent to server. |
+|`.customHeaders`                         | Ready    | Additional HTTP headers sent to server. |
 |`.plainText`                             | Ready    | Content of the web page in plain text.  |
 |`.settings`                              | --       | Various settings of the web page.    |
 |`.viewportSize`                          | --       | Size of viewport for the layout process. |
@@ -69,6 +69,8 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.includeJs(url, callback)`              | Ready    | Includes script the specified `url`  |
 |`.injectJs(filename)`                    | Ready    | Injects script code specified file   |
 |`.open(url, callback)`                   | Ready    | Opens `url` and loads it to the page. |
+|`.open(url, method, callback)`           | Ready    | As above but using a HTTP method. |
+|`.open(url, method, data, callback)`     | Ready    | As above, using a HTTP method and data. |
 |`.openUrl(url, httpConf, settings)`      | --       | Opens `url` with specific settings.  |
 |`.reload()`                              | --       | Reloads current page.                |
 |`.render(filename)`                      | Ready    | Renders page to specified `filename` |
