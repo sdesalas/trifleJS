@@ -1,15 +1,29 @@
 ﻿var page = require("webpage").create();
 
-page.open("http://www.phantomjs.org", function(status) {
-    console.log("Page load finished, status: " + status);
-    page.evaluateJavaScript('var message = "hello from ie";');
-    console.log(page.evaluate(function(message1, message2, message3) { return message + message1 + message2 + message3; }, 'hello argument1', 'argument2', 3));
-    page.render("phantomjs.org.png");
-    page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
-        console.log(page.evaluate(function() {
-            return $("#intro").text();
-        }));
-        trifle.wait(5000);
-        phantom.exit();
-    });
+// GET
+page.open("http://www.xhaus.com/headers", function(status) {
+    if (status === 'success') {
+        page.render("get.png");
+        console.log('Page rendered');
+    } else {
+        console.error('Cannot load url.');
+    }
+});
+
+
+page.customHeaders = {
+	'X-Test': 'foo',
+	'DNT': 1,
+	'scooby': 'doo'
+}
+
+//POST
+page.open("http://www.xhaus.com/headers", "POST", "blah", function(status) {
+    if (status === 'success') {
+        page.render("post.png");
+        console.log('Page rendered');
+    } else {
+        console.error('Cannot load url.');
+    }
+    phantom.exit();
 });

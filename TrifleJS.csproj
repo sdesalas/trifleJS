@@ -2,7 +2,7 @@
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6130407F-322B-4E41-AFDB-FCF1C17D6C19}</ProjectGuid>
@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +24,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
@@ -103,10 +103,12 @@
     <Content Include="test\feature\console.log.js">
     </Content>
     <Content Include="test\feature\fs.changeWorkingDirectory.js" />
+    <Content Include="test\feature\page.customHeaders.js" />
     <Content Include="test\feature\page.evaluate.js" />
     <Content Include="test\feature\page.evaluateJavaScript.js" />
     <Content Include="test\feature\page.includeJs.js" />
     <Content Include="test\feature\page.injectJs.js" />
+    <Content Include="test\feature\page.js" />
     <Content Include="test\feature\page.onCallback.js" />
     <Content Include="test\feature\page.open.js" />
     <Content Include="test\feature\page.render.js" />

@@ -28,9 +28,27 @@ trifle.modules = trifle.modules || {};
     };
 
     // Open URL
-    WebPage.prototype.open = function(url, callback) {
-        console.xdebug("WebPage.prototype.open(url, callback)");
-        var page = this;
+    WebPage.prototype.open = function() {
+        console.xdebug("WebPage.prototype.open()");
+        var page = this, a = arguments;
+        // Determine the arguments to use
+        var url = a[0], method, data, callback;
+        // Using: page.open(url, method, data, callback)
+        if (typeof a[3] === "function") {
+			method = a[1];
+			data = a[2];
+			callback = a[3];
+        }
+        // Using: page.open(url, method, callback)
+        if (typeof a[2] === "function") {
+			method = a[1];
+			callback = a[2];
+        }
+        // Using: page.open(url, callback)
+        if (typeof a[1] === "function") {
+			method = "GET";
+			callback = a[1];
+        }
         // Fire LoadStarted event
         if (this.onLoadStarted) {
             page.onLoadStarted.call(this);
@@ -49,7 +67,16 @@ trifle.modules = trifle.modules || {};
             // Execute callback
             return callback.call(page, status);
         };
-        return this.API.Open(url, (new trifle.Callback(complete)).id);
+        // Load custom headers
+        if (typeof this.customHeaders === "object") {
+			var headers = [];
+			for (var prop in this.customHeaders) {
+				headers.push(prop + ': ' + this.customHeaders[prop] + '\r\n');
+			}
+			this.API.CustomHeaders = headers.join('');
+        }
+        // Open URL in .NET API
+		return this.API.Open(url, method, data, (new trifle.Callback(complete)).id);
     };
 
     // Evaluate JS

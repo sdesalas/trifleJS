@@ -89,24 +89,61 @@ namespace TrifleJS.API.Modules
                 return Convert.ToBase64String(stream.ToArray());
             }
         }
+
+        /// <summary>
+        /// List of key/value pairs for custom headers to send to the server
+        /// </summary>
+        public string CustomHeaders
+        {
+            get; set;
+        }
         
         /// <summary>
-        /// Opens a url and executes a callback
+        /// Opens a url using GET request and executes a callback
         /// </summary>
         /// <param name="url">URL location</param>
         /// <param name="callbackId">id of the callback to execute</param>
         public void Open(string url, string callbackId) {
+            Open(url, "GET", null, callbackId);
+        }
+
+        /// <summary>
+        /// Opens a URL using a specific HTTP method with a corresponding payload
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
+        /// <param name="callbackId"></param>
+        public void Open(string url, string method, string data, string callbackId) {
             Console.log("Opening " + url);
             // Check the URL
-            if (Browser.TryParse(url) != null)
+            Uri uri = Browser.TryParse(url);
+            if (uri != null)
             {
-                browser.Navigate(url);
+                // Use HTTP method, currently only POST and GET are supported
+                switch (method) { 
+                    case "POST":
+                        // We must have some sort of payload for a POST request. 
+                        // Create one if empty
+                        if (String.IsNullOrEmpty(data)) {
+                            data = " ";
+                        }
+                        browser.Navigate(uri, "", Utils.GetBytes(data), CustomHeaders);
+                        break;
+                    case "GET":
+                        browser.Navigate(uri, "", null, CustomHeaders);
+                        break;
+                    default:
+                        throw new Exception("WebPage.open(url, method), only POST and GET methods allowed.");
+                }
+                // Define what happens when browser finishes loading the page
                 browser.DocumentCompleted += delegate
                 {
                     // Add toolset
                     EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
                     EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
-                    this.browser.Document.Window.Error += delegate (object obj, HtmlElementErrorEventArgs e)
+                    // Track unhandled errors
+                    this.browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
                     {
                         Handle(e.Description, e.LineNumber, e.Url);
                         e.Handled = true;
@@ -114,12 +151,14 @@ namespace TrifleJS.API.Modules
                     // Continue with callback
                     Callback.ExecuteOnce(callbackId, "success");
                 };
+                // Continue with Forms application logic until ready
                 while (browser.ReadyState != WebBrowserReadyState.Complete)
                 {
                     Application.DoEvents();
                 }
             }
-            else {
+            else
+            {
                 Console.log("Error opening url: " + url);
             }
         }
