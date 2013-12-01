@@ -105,6 +105,5 @@ namespace TrifleJS
             System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
             return new string(chars);
         }
-
     }
 }

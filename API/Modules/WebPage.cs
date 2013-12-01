@@ -58,46 +58,10 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// Takes a screenshot and saves into a file path
-        /// </summary>
-        /// <param name="filename">path where the screenshot is saved</param>
-        public void Render(string filename)
-        {
-            browser.Render(filename);
-        }
-
-        /// <summary>
-        /// Takes a screenshot and returns Base64 encoding
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public string RenderBase64(string format) { 
-            using (var pic = browser.Render())
-            {
-                MemoryStream stream = new MemoryStream();
-                switch (format.ToUpper()) { 
-                    case "JPG":
-                        pic.Save(stream, ImageFormat.Jpeg);
-                        break;
-                    case "GIF":
-                        pic.Save(stream, ImageFormat.Gif);
-                        break;
-                    default:
-                        pic.Save(stream, ImageFormat.Png);
-                        break;
-                }
-                return Convert.ToBase64String(stream.ToArray());
-            }
-        }
-
-        /// <summary>
         /// List of key/value pairs for custom headers to send to the server
         /// </summary>
-        public string CustomHeaders
-        {
-            get; set;
-        }
-        
+        public string CustomHeaders { get; set; }
+
         /// <summary>
         /// Opens a url using GET request and executes a callback
         /// </summary>
@@ -190,6 +154,14 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Closes the page and releases memory
+        /// </summary>
+        public void Close() {
+            this.browser.Dispose();
+            this.browser = null;
+        }
+
+        /// <summary>
         /// Evaluates (executes) javascript on the currently open window
         /// @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
         /// </summary>
@@ -270,6 +242,70 @@ namespace TrifleJS.API.Modules
             if (File.Exists(filename)) {
                 EvaluateJavaScript(File.ReadAllText(filename));
             }
+        }
+
+        /// <summary>
+        /// Takes a screenshot and saves into a file path
+        /// </summary>
+        /// <param name="filename">path where the screenshot is saved</param>
+        public void Render(string filename)
+        {
+            browser.Render(filename);
+        }
+
+        /// <summary>
+        /// Takes a screenshot and returns Base64 encoding
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public string RenderBase64(string format)
+        {
+            using (var pic = browser.Render())
+            {
+                MemoryStream stream = new MemoryStream();
+                switch (format.ToUpper())
+                {
+                    case "JPG":
+                        pic.Save(stream, ImageFormat.Jpeg);
+                        break;
+                    case "GIF":
+                        pic.Save(stream, ImageFormat.Gif);
+                        break;
+                    default:
+                        pic.Save(stream, ImageFormat.Png);
+                        break;
+                }
+                return Convert.ToBase64String(stream.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// Get size of the page for the layout process.
+        /// </summary>
+        public Dictionary<string, int> GetViewportSize()
+        {
+            return new Dictionary<string, int>() { 
+                {"width", browser.Size.Width},
+                {"height", browser.Size.Height}
+            };
+        }
+
+        /// <summary>
+        /// Sets the viewport size for the layout process
+        /// </summary>
+        /// <param name="size"></param>
+        public void SetViewportSize(int width, int height)
+        {
+            try
+            {
+                width = width > 0 ? width : browser.Size.Width;
+                height = height > 0 ? height : browser.Size.Height;
+                if (width != browser.Size.Width || height != browser.Size.Height)
+                {
+                    browser.Size = new Size(width, height);
+                }
+            }
+            catch { }
         }
 
     }

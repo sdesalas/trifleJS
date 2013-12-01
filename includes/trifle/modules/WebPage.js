@@ -21,7 +21,10 @@ trifle.modules = trifle.modules || {};
         console.xdebug("new WebPage()");
         // Instantiate a V8 WebPage object and stores it in internal API property
         this.API = trifle.API['WebPage']();
-        // Fire Initialized event
+        // Assign properties
+        this.customHeaders = {};
+        this.viewportSize = this.API.GetViewportSize();
+		// Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
         }
@@ -32,7 +35,7 @@ trifle.modules = trifle.modules || {};
         console.xdebug("WebPage.prototype.open()");
         var page = this, a = arguments;
         // Determine the arguments to use
-        var url = a[0], method, data, callback;
+        var url = a[0], method = "GET", data, callback;
         // Using: page.open(url, method, data, callback)
         if (typeof a[3] === "function") {
 			method = a[1];
@@ -40,13 +43,12 @@ trifle.modules = trifle.modules || {};
 			callback = a[3];
         }
         // Using: page.open(url, method, callback)
-        if (typeof a[2] === "function") {
+        else if (typeof a[2] === "function") {
 			method = a[1];
 			callback = a[2];
         }
         // Using: page.open(url, callback)
-        if (typeof a[1] === "function") {
-			method = "GET";
+        else if (typeof a[1] === "function") {
 			callback = a[1];
         }
         // Fire LoadStarted event
@@ -65,7 +67,9 @@ trifle.modules = trifle.modules || {};
             page.url = page.API.Url;
             page.title = page.API.Title;
             // Execute callback
-            return callback.call(page, status);
+            if (callback && callback.call) {
+				return !!callback ? callback.call(page, status) : null;
+            }
         };
         // Load custom headers
         if (typeof this.customHeaders === "object") {
@@ -75,16 +79,26 @@ trifle.modules = trifle.modules || {};
 			}
 			this.API.CustomHeaders = headers.join('');
         }
+        // Sync internal properties
+        this.syncProperties();
         // Open URL in .NET API
 		return this.API.Open(url, method, data, (new trifle.Callback(complete)).id);
     };
+    
+    // Closes the webpage and releases memory
+    WebPage.prototype.close = function() {
+        console.xdebug("WebPage.prototype.close()");
+		this.API.Close();
+    }
 
     // Evaluate JS
     WebPage.prototype.evaluateJavaScript = function(code) {
         console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
-        if (code && code.length) {
+        if (code && typeof code === "string") {
             // Set current page (for WebPage#onCallback)
             WebPage.current = this;
+			// Sync internal properties
+			this.syncProperties();
             // Execute JS on IE host
             return this.API.EvaluateJavaScript(code);
         }
@@ -104,6 +118,8 @@ trifle.modules = trifle.modules || {};
             }
             // Set current page (for WebPage#onCallback)
             WebPage.current = this;
+			// Sync internal properties
+			this.syncProperties();
             // Execute JS on IE host
             return this.API.Evaluate(func.toString(), args);
         }
@@ -116,6 +132,8 @@ trifle.modules = trifle.modules || {};
         if (typeof filename === 'string') {
             // Set current page (for WebPage#onCallback)
             WebPage.current = this;
+			// Sync internal properties
+			this.syncProperties();
             // Execute JS on IE host
             return this.API.InjectJs(filename);
         }
@@ -133,6 +151,8 @@ trifle.modules = trifle.modules || {};
             };
             // Set current page (for WebPage#onCallback)
             WebPage.current = this;
+			// Sync internal properties
+			this.syncProperties();
             // Execute JS on IE host
             return this.API.IncludeJs(url, (new trifle.Callback(complete)).id);
         }
@@ -143,6 +163,8 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.render = function(filename) {
         console.xdebug("WebPage.prototype.render(filename)");
         if (filename) {
+			// Sync internal properties
+			this.syncProperties();
             return this.API.Render(filename)
         };
     }
@@ -150,7 +172,17 @@ trifle.modules = trifle.modules || {};
     // Render to Base64 string
     WebPage.prototype.renderBase64 = function(format) {
         console.xdebug("WebPage.prototype.renderBase64(format)");
+		// Sync internal properties
+		this.syncProperties();
         return this.API.RenderBase64(format || "PNG");
+    }
+    
+    // Helper function to sync internal properties
+    WebPage.prototype.syncProperties = function() {
+        // Viewport Size
+        if (typeof this.viewportSize === "object") {
+			this.API.SetViewportSize(this.viewportSize.width || 0, this.viewportSize.height || 0);
+        }
     }
 
     // STATIC PROPERTIES
