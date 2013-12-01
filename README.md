@@ -54,14 +54,19 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.content`                               | Ready    | HTML content of the web page.     |
 |`.cookies`                               | --       | Get/set cookies visible in current URL.  |
 |`.customHeaders`                         | Ready    | Additional HTTP headers sent to server. |
+|`.paperSize`                             | --       | Size of the page when rendered as PDF.  |
 |`.plainText`                             | Ready    | Content of the web page in plain text.  |
 |`.settings`                              | --       | Various settings of the web page.    |
-|`.viewportSize`                          | --       | Size of viewport for the layout process. |
+|`.scrollPosition`                        | --       | Scroll position of the web page.    |
+|`.viewportSize`                          | Ready    | Size of viewport for the layout process. |
 |`.url`                                   | Ready    | Current URL of the web page.         |
 |`.title`                                 | Ready    | Title of the page.                  |
+|`.windowName`                            | --       | Name of the main browser window.   |
+|`.zoomFactor`                            | --       | Scaling factor for rendering pages. |
 |*__Methods__*                                                                             |
 |`.addCookie({cookie})`                   | --       | Add a cookie to the page.           |
 |`.clearCookies()`                        | --       | Delete all Cookies for current domain. |
+|`.close()`                               | Ready    | Closes page to release memory.      |
 |`.deleteCookie(name)`                    | --       | Deletes a Cookie in current domain. |
 |`.evaluate(function, arg1, arg2,..)`     | Ready    | Evaluates function inside current page.  |
 |`.evaluateAsync(function)`               | --       | `evaluate()` without blocking execution. |
