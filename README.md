@@ -62,7 +62,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |`.url`                                   | Ready    | Current URL of the web page.         |
 |`.title`                                 | Ready    | Title of the page.                  |
 |`.windowName`                            | --       | Name of the main browser window.   |
-|`.zoomFactor`                            | --       | Scaling factor for rendering pages. |
+|`.zoomFactor`                            | Ready    | Scaling factor for rendering pages. |
 |*__Methods__*                                                                             |
 |`.addCookie({cookie})`                   | --       | Add a cookie to the page.           |
 |`.clearCookies()`                        | --       | Delete all Cookies for current domain. |
