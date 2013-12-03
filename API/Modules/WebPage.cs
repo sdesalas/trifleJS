@@ -18,7 +18,7 @@ namespace TrifleJS.API.Modules
 
         public WebPage() {
             this.browser = new Browser();
-            this.browser.Size = new Size(1024, 800);
+            this.browser.Size = new Size(1024, 800); // TODO: Remove this and set viewport on page load to full size
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
             Open("about:blank", null);
@@ -250,7 +250,7 @@ namespace TrifleJS.API.Modules
         /// <param name="filename">path where the screenshot is saved</param>
         public void Render(string filename)
         {
-            browser.Render(filename);
+            browser.Render(filename, ZoomFactor);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public string RenderBase64(string format)
         {
-            using (var pic = browser.Render())
+            using (var pic = browser.Render(ZoomFactor))
             {
                 MemoryStream stream = new MemoryStream();
                 switch (format.ToUpper())
@@ -307,6 +307,11 @@ namespace TrifleJS.API.Modules
             }
             catch { }
         }
+
+        /// <summary>
+        /// The scaling factor for WebPage.Render() and WebPage.RenderBase64()
+        /// </summary>
+        public double ZoomFactor { get; set; }
 
     }
 }

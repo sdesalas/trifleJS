@@ -79,25 +79,43 @@ namespace TrifleJS
         }
 
         /// <summary>
-        /// Takes a screenshot and saves into a Bitmap of specific dimensions
+        /// Takes a screenshot and saves into a file at a specific zoom ratio
         /// </summary>
-        /// <param name="width">bitmap width</param>
-        /// <param name="height">bitmap height</param>
-        /// <returns></returns>
-        public Bitmap Render(int width, int height) {
-            Size originalSize = this.Size;
-            this.Size = new Size(width, height);
-            Bitmap output = this.Render();
-            this.Size = originalSize;
-            return output;
+        /// <param name="filename">path where the screenshot is saved</param>
+        /// <param name="ratio">zoom ratio</param>
+        public void Render(string filename, double ratio)
+        {
+            using (var pic = this.Render(ratio))
+            {
+                pic.Save(filename);
+            }
         }
 
         /// <summary>
         /// Takes a screenshot and saves into a Bitmap
         /// </summary>
         /// <returns></returns>
-        public Bitmap Render() {
-            Bitmap output = new Bitmap(this.Width, this.Height);
+        public Bitmap Render()
+        {
+            return Render(this.Width, this.Height);
+        }
+
+        /// <summary>
+        /// Takes a screenshot and saves into a Bitmap at a specific zoom ratio
+        /// </summary>
+        /// <param name="ratio">zoom ratio</param>
+        /// <returns></returns>
+        public Bitmap Render(double ratio)
+        {
+            return Render(Convert.ToInt32(this.Width * ratio), Convert.ToInt32(this.Height * ratio));
+        }
+
+        /// <summary>
+        /// Takes a screenshot and saves into a Bitmap with specific width and height
+        /// </summary>
+        /// <returns></returns>
+        public Bitmap Render(int width, int height) {
+            Bitmap output = new Bitmap(width, height);
             NativeMethods.GetImage(this.ActiveXInstance, output, Color.White);
             return output;
         }

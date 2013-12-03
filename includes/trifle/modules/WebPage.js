@@ -24,6 +24,7 @@ trifle.modules = trifle.modules || {};
         // Assign properties
         this.customHeaders = {};
         this.viewportSize = this.API.GetViewportSize();
+        this.zoomFactor = 1.0;
 		// Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
@@ -182,6 +183,9 @@ trifle.modules = trifle.modules || {};
         // Viewport Size
         if (typeof this.viewportSize === "object") {
 			this.API.SetViewportSize(this.viewportSize.width || 0, this.viewportSize.height || 0);
+        }
+        if (typeof this.zoomFactor === "number" && this.zoomFactor > 0) {
+			this.API.ZoomFactor = this.zoomFactor;
         }
     }
 

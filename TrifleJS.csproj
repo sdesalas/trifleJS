@@ -149,6 +149,7 @@
     <Content Include="test\feature\page.open.js" />
     <Content Include="test\feature\page.render.js" />
     <Content Include="test\feature\page.viewportSize.js" />
+    <Content Include="test\feature\page.zoomFactor.js" />
     <Content Include="test\feature\phantom.injectJs.js" />
     <Content Include="test\feature\phantom.libraryPath.js" />
     <Content Include="test\feature\window.setInterval.js">
