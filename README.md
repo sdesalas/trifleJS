@@ -130,8 +130,8 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |REPL input                               | Ready    | Runs interactive mode.               |
-|`--help`                                 | Ready    | Lists command line options and quits. |
-|`--version`                              | Ready    | Targetted version of PhantomJS       |
+|`--help` or `-h`                         | Ready    | Lists command line options and quits. |
+|`--version` or `-v`                      | Ready    | Targetted version of PhantomJS       |
 |`--ignore-ssl-errors=[true/false]`       | --       | Ignores SSL errors.                  |
 |`--load-images=[true/false]`             | --       | Load all inlined images (default `true`). |
 |`--output-encoding=encoding`             | --       | Encoding for terminal output (default `utf8`).|
