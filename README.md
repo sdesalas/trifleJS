@@ -150,6 +150,7 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
+|`--test` or `t`                          | Partial  | Runs a full regression test          |
 |`--emulate:(version)`                    | Ready    | Emulates specific IE versions        |
 |`--render:(url)`                         | Ready    | Renders a URL to file and quits      | 
 
