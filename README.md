@@ -130,7 +130,18 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |REPL input                               | Ready    | Runs interactive mode.               |
-|`--version`                              | Ready    | Targetted version of PhantomJS       |
+|`--help` or `-h`                         | Ready    | Lists command line options and quits. |
+|`--version` or `-v`                      | Ready    | Targetted version of PhantomJS       |
+|`--ignore-ssl-errors=[true/false]`       | --       | Ignores SSL errors.                  |
+|`--load-images=[true/false]`             | --       | Load all inlined images (default `true`). |
+|`--output-encoding=encoding`             | --       | Encoding for terminal output (default `utf8`).|
+|`--proxy=address:port`                   | --       | Specifies the proxy server to use.    |
+|`--proxy-type=[http/socks5/none]`        | --       | Specifies the type of the proxy server.   |
+|`--proxy-auth=user:passw`                | --       | Authentication info for the proxy.  |
+|`--script-encoding=encoding`             | --       | Encoding for starting script (default `utf8`).  |
+|`--web-security=[true/false]`            | --       | Prevents cross-domain XHR (default `true`).  |
+|`--config=/path/to/config.json`          | --       | JSON replacement for command switches.  |
+
 
 ## New features
 
@@ -139,6 +150,7 @@ These are additional features added into TrifleJS that are not present in Phanto
 |Feature                                  | Status   | Notes                                |
 |-----------------------------------------|----------|--------------------------------------|
 |**COMMAND LINE**                         |
+|`--test` or `t`                          | Partial  | Runs a full regression test          |
 |`--emulate:(version)`                    | Ready    | Emulates specific IE versions        |
 |`--render:(url)`                         | Ready    | Renders a URL to file and quits      | 
 
