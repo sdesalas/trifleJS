@@ -31,6 +31,21 @@ namespace TrifleJS
             }
         }
 
+        public static object TryReadRegistryKey(string path, string name)
+        {
+            try
+            {
+                // Use current user, no need for admin permissions
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(path);
+                if (key != null)
+                {
+                    return key.GetValue(name);
+                }
+            }
+            catch { }
+            return null;
+        }
+
         public static bool TryWriteRegistryKey(string path, string name, object value, RegistryValueKind kind)
         {
             try

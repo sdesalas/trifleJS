@@ -20,35 +20,65 @@ namespace TrifleJS
         /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
         /// </summary>
         /// <param name="ieVersion">The version of IE to emulate (IE7, IE8, IE9 etc)</param>
-        public static void Emulate(string ieVersion)
+        public static bool Emulate(string ieVersion)
         {
-            System.UInt32 dWord;
-            switch (ieVersion)
+            try
             {
-                case "IE10_IgnoreDoctype": dWord = 0x2711u;
+                System.UInt32 dWord;
+                switch (ieVersion)
+                {
+                    case "IE10_IgnoreDoctype": dWord = 0x2711u;
+                        break;
+                    case "IE10": dWord = 0x02710u;
+                        break;
+                    case "IE9_IgnoreDoctype": dWord = 0x270Fu;
+                        break;
+                    case "IE9": dWord = 0x2328u;
+                        break;
+                    case "IE8_IgnoreDoctype": dWord = 0x22B8u;
+                        break;
+                    case "IE8": dWord = 0x1F40u;
+                        break;
+                    case "IE7": dWord = 0x1B58u;
+                        break;
+                    default:
+                        throw new Exception("Incorrect IE version: " + ieVersion);
+                }
+                Utils.Debug("Setting Version to " + ieVersion);
+#if DEBUG
+                Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
+                Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
+#else 
+                Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
+                Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
+#endif
+            }
+            catch {
+                Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\".", ieVersion));
+                return false;
+            }
+            return true;
+        }
+
+        public void Navigate(Uri uri, string method, string data, string customHeaders) {
+            // Use HTTP method, currently only POST and GET are supported
+            switch (method)
+            {
+                case "POST":
+                    // We must have some sort of payload for a POST request. 
+                    // Create one if empty
+                    if (String.IsNullOrEmpty(data))
+                    {
+                        data = " ";
+                    }
+                    base.Navigate(uri.AbsoluteUri, "", Utils.GetBytes(data), customHeaders);
                     break;
-                case "IE10": dWord = 0x02710u;
-                    break;
-                case "IE9_IgnoreDoctype": dWord = 0x270Fu;
-                    break;
-                case "IE9": dWord = 0x2328u;
-                    break;
-                case "IE8_IgnoreDoctype": dWord = 0x22B8u;
-                    break;
-                case "IE8": dWord = 0x1F40u;
-                    break;
-                case "IE7": dWord = 0x1B58u;
+                case "GET":
+                    base.Navigate(uri.AbsoluteUri, "", null, customHeaders);
                     break;
                 default:
-                    throw new Exception("Incorrect IE version: " + ieVersion);
+                    throw new Exception("Browser.Navigate(), only POST and GET methods allowed.");
             }
-            Utils.Debug("Setting Version to " + ieVersion);
-            Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
-            Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
-#if DEBUG
-            Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
-            Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
-#endif
         }
 
         /// <summary>

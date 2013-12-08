@@ -75,6 +75,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="API\Modules\System.cs" />
+    <Compile Include="Proxy.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="API\Phantom.cs" />
     <Compile Include="API\Modules\WebPage.cs" />
@@ -138,6 +139,7 @@
     <Content Include="includes\trifle\modules\WebPage.js" />
     <Content Include="test\feature\console.log.js">
     </Content>
+    <Content Include="test\feature\console.proxy.js" />
     <Content Include="test\feature\fs.changeWorkingDirectory.js" />
     <Content Include="test\feature\page.customHeaders.js" />
     <Content Include="test\feature\page.evaluate.js" />

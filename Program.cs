@@ -21,23 +21,27 @@ namespace TrifleJS
             Console.WriteLine();
             Console.WriteLine("==========================");
             Console.WriteLine("TrifleJS.exe");
+            Console.WriteLine("Headless automation for Internet Explorer");
             Console.WriteLine("==========================");
             Console.WriteLine("http://triflejs.org/");
             Console.WriteLine();
             Console.WriteLine("A headless Internet Explorer emulator with JavaScript API running on V8 engine.");
+            Console.WriteLine("PhantomJS for the Trident Engine.");
             Console.WriteLine();
             Console.WriteLine("(c) Steven de Salas 2013 - MIT Licence");
             Console.WriteLine();
             Console.WriteLine("Usage: triflejs.exe [options] somescript.js [argument [argument [...]]]");
             Console.WriteLine();
             Console.WriteLine("Options: ");
-            Console.WriteLine("  --debug                   Prints additional warning and debug messages.");
-            Console.WriteLine("  --render:<url>            Opens a url, renders into a file and quits.");
-            Console.WriteLine("  --emulate:<version>       Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
+            Console.WriteLine("  --debug                     Prints additional warning and debug messages.");
+            Console.WriteLine("  --proxy=address:port        Specifies proxy server to use.");
+            Console.WriteLine("  --proxy-auth=user:passw     Authentication information for the proxy.");
+            Console.WriteLine("  --render=<url>              Opens a url, renders into a file and quits.");
+            Console.WriteLine("  --emulate=<version>         Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
             Console.WriteLine();
-            Console.WriteLine("  -h, --help                Show this message and quits");
-            Console.WriteLine("  -t, --test                Runs a System Test and quits");
-            Console.WriteLine("  -v, --version             Prints out TrifleJS version and quits");
+            Console.WriteLine("  -h, --help                  Show this message and quits");
+            Console.WriteLine("  -t, --test                  Runs a System Test and quits");
+            Console.WriteLine("  -v, --version               Prints out TrifleJS version and quits");
             Console.WriteLine();
             Console.WriteLine("Without arguments, TrifleJS will launch in interactive mode (REPL)");
             Console.WriteLine();
@@ -71,8 +75,8 @@ namespace TrifleJS
             // Config Loop (Set IE version etc)
             foreach (string arg in configLoop)
             {
-                string[] parts = arg.Split(':');
-                switch (parts[0])
+                string[] parts = arg.Split('=');
+                switch (parts[0]) 
                 {
                     case "-?":
                     case "/?":
@@ -89,15 +93,16 @@ namespace TrifleJS
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
                         return;
                     case "--emulate":
-                        string version = arg.Replace("--emulate:", "");
-                        try
-                        {
-                            Browser.Emulate(version.ToUpper());              
-                            isVersionSet = true;
-                        }
-                        catch {
-                            Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\".", version));
-                        }
+                        isVersionSet = Browser.Emulate(arg.Replace("--emulate=", "").ToUpper()); 
+                        break;
+                    case "--proxy":
+                        Proxy.server = arg.Replace("--proxy=", "");
+                        break;
+                    case "--proxy-auth":
+                        Proxy.auth = arg.Replace("--proxy-auth=", "");
+                        break;
+                    case "--proxy-type":
+                        Proxy.type = arg.Replace("--proxy-type=", "");
                         break;
                     default:
                         commandLoop.Add(arg);
@@ -111,10 +116,15 @@ namespace TrifleJS
                 Browser.Emulate("IE9");
             }
 
+            // Set proxy information if needed
+            if (!String.IsNullOrEmpty(Proxy.server)) {
+                Proxy.Set();
+            }
+
             // Command Loop - Execution
             foreach (string arg in commandLoop)
             {
-                string[] parts = arg.Split(':');
+                string[] parts = arg.Split('=');
                 switch (parts[0]) 
                 { 
                     case "-t":
@@ -122,7 +132,7 @@ namespace TrifleJS
                         Test();
                         return;
                     case "--render":
-                        string url = arg.Replace("--render:", "");
+                        string url = arg.Replace("--render=", "");
                         Render(url);
                         return;
                     default:
@@ -151,6 +161,7 @@ namespace TrifleJS
         /// <param name="exitCode"></param>
         public static void Exit(int exitCode)
         {
+            Proxy.Backup.Restore();
 #if DEBUG
             // Debugging? Wait for input
             Console.WriteLine();

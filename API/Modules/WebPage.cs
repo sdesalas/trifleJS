@@ -84,22 +84,8 @@ namespace TrifleJS.API.Modules
             Uri uri = Browser.TryParse(url);
             if (uri != null)
             {
-                // Use HTTP method, currently only POST and GET are supported
-                switch (method) { 
-                    case "POST":
-                        // We must have some sort of payload for a POST request. 
-                        // Create one if empty
-                        if (String.IsNullOrEmpty(data)) {
-                            data = " ";
-                        }
-                        browser.Navigate(uri, "", Utils.GetBytes(data), CustomHeaders);
-                        break;
-                    case "GET":
-                        browser.Navigate(uri, "", null, CustomHeaders);
-                        break;
-                    default:
-                        throw new Exception("WebPage.open(url, method), only POST and GET methods allowed.");
-                }
+                // Navigate to URL
+                browser.Navigate(uri, method, data, CustomHeaders);
                 // Define what happens when browser finishes loading the page
                 browser.DocumentCompleted += delegate
                 {
