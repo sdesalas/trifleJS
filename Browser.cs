@@ -10,7 +10,7 @@ namespace TrifleJS
     /// <summary>
     /// Browser class that represents an IE window
     /// </summary>
-    public class Browser : System.Windows.Forms.WebBrowser
+    public class Browser : AutomatedBrowser
     {
         private const string IEEmulationPathx32 = @"SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
         private const string IEEmulationPathx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";

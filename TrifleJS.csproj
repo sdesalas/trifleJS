@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Trifle.cs" />
+    <Compile Include="AutomatedBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Browser.cs">
       <SubType>Component</SubType>
     </Compile>

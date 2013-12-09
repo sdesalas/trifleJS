@@ -72,6 +72,30 @@ namespace TrifleJS
         }
 
         /// <summary>
+        /// Gets the proxy username
+        /// </summary>
+        public static string Username {
+            get {
+                if (auth == null) {
+                    return null;
+                };
+                return auth.Split(':')[0];
+            }
+        }
+
+        /// <summary>
+        /// Gets the proxy password
+        /// </summary>
+        public static string Password {
+            get {
+                if (auth == null || !auth.Contains(":")) {
+                    return null;
+                }
+                return auth.Split(':')[1];
+            }
+        }
+
+        /// <summary>
         /// Encapsulates functionality for backing up and restoring existing proxy information
         /// </summary>
         public static class Backup

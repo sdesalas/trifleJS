@@ -18,10 +18,10 @@ namespace TrifleJS.API.Modules
 
         public WebPage() {
             this.browser = new Browser();
+            this.browser.InitializeOLE();
             this.browser.Size = new Size(1024, 800); // TODO: Remove this and set viewport on page load to full size
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
-            Open("about:blank", null);
         }
 
         /// <summary>
@@ -89,20 +89,30 @@ namespace TrifleJS.API.Modules
                 // Define what happens when browser finishes loading the page
                 browser.DocumentCompleted += delegate
                 {
-                    // Add toolset
-                    EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
-                    EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
-                    // Track unhandled errors
-                    this.browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+
+                    // DocumentCompleted is fired before window.onload and body.onload
+                    // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
+                    browser.Document.Window.AttachEventHandler("onload", delegate
                     {
-                        Handle(e.Description, e.LineNumber, e.Url);
-                        e.Handled = true;
-                    };
-                    // Continue with callback
-                    Callback.ExecuteOnce(callbackId, "success");
+                        // Add toolset
+                        EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
+                        EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
+                        // Track unhandled errors
+                        this.browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                        {
+                            Handle(e.Description, e.LineNumber, e.Url);
+                            e.Handled = true;
+                        };
+                        // Continue with callback
+                        if (!String.IsNullOrEmpty(callbackId))
+                        {
+                            Callback.ExecuteOnce(callbackId, "success");
+                        }
+                    });
+
                 };
                 // Continue with Forms application logic until ready
-                while (browser.ReadyState != WebBrowserReadyState.Complete)
+                while (browser.ReadyState != WebBrowserReadyState.Complete || browser.StatusText != "Done")
                 {
                     Application.DoEvents();
                 }
