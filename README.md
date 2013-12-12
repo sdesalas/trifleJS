@@ -19,7 +19,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 ### API Implementation Progress
 
-We are currently about 50-60% throguht the PhantomJS API.
+We are currently about 50-60% throguht the [PhantomJS API](http://phantomjs.org/api/).
 
 For detailed information on which methods are available please refer to:
 
