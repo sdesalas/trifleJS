@@ -17,13 +17,18 @@ The following is a list of features that have been ported from PhantomJS.
 
 We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage.
 
-### API Implementation Progress
+### API Implementation
 
 We are currently about 50-60% throguht the [PhantomJS API](http://phantomjs.org/api/).
 
 For detailed information on which methods are available please refer to:
 
-[http://triflejs.org](http://triflejs.org)
+[Global Methods](http://triflejs.org#post-11)
+[Object: phantom](http://triflejs.org#post-18)
+[Module: WebPage](http://triflejs.org#post-20)
+[Module: System](http://triflejs.org#post-24)
+[Module: FileSystem](http://triflejs.org#post-27)
+[Command Line Options](http://triflejs.org#post-29)
 
 Some of the big ticket items currently missing from the automation are: 
 
