@@ -47,8 +47,14 @@ This code is still very much in beta. Check again for updates.
 
 You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip) if you want to play around with the beta version. 
 
-Please be aware of the following system requirements:
+## System Requirements:
+
+|Software           | Version               |
+|-------------------|-----------------------|
+|Windows            |XP, 7+, Server 2003+   |
+|Internet Explorer  | 7+                    |
+|.NET Framework     | 3.5+                  |
 
 - Windows XP and above (including Server 2003+)
-- IE 7+
+- IE 7
 - .NET framework 3.5 and above
