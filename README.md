@@ -30,6 +30,11 @@ Some of the big ticket items currently missing from the automation are:
 - Cookies
 - IE Windows (Alert, Confirm, Prompt, SSL Certificate error, etc)
 - Mouse / Keyboard interaction
+- Childprocess support
+
+Some items that are being deliberately left out:
+
+- Support for WebDriver
 
 ### Download
 
