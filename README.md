@@ -23,12 +23,12 @@ We are currently about 50-60% throguht the [PhantomJS API](http://phantomjs.org/
 
 For detailed information on which methods are available please refer to:
 
-[Global Methods](http://triflejs.org#post-11)
-[Object: phantom](http://triflejs.org#post-18)
-[Module: WebPage](http://triflejs.org#post-20)
-[Module: System](http://triflejs.org#post-24)
-[Module: FileSystem](http://triflejs.org#post-27)
-[Command Line Options](http://triflejs.org#post-29)
+- [Global Methods](http://triflejs.org#post-11)
+- [Object: phantom](http://triflejs.org#post-18)
+- [Module: WebPage](http://triflejs.org#post-20)
+- [Module: System](http://triflejs.org#post-24)
+- [Module: FileSystem](http://triflejs.org#post-27)
+- [Command Line Options](http://triflejs.org#post-29)
 
 Some of the big ticket items currently missing from the automation are: 
 
