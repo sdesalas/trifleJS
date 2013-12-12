@@ -44,6 +44,6 @@ You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/mast
 
 Please be aware of the following system requirements:
 
-- Windows XP3 (and above, including Server 2003+)
+- Windows XP and above (including Server 2003+)
 - IE 7+
-- .NET framework 3.5 (or above)
+- .NET framework 3.5 and above
