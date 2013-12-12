@@ -51,9 +51,9 @@ You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/mast
 
 The ideal installation is Windows 7 (which includes .NET 3.5) using IE9 or IE10, however this will still work in XP or versions of windows released after 2001.
 
-|Software           | Version               |
-|-------------------|-----------------------|
-|Windows            | XP, 7+, Server 2003+  |
-|Internet Explorer  | 7+                    |
-|.NET Framework     | 3.5+                  |
+|Software           | Version                 |
+|-------------------|-------------------------|
+|Windows            | XP, 7, 8, Server 2003+  |
+|Internet Explorer  | 7, 8, 9 or 10           |
+|.NET Framework     | 3.5+                    |
 
