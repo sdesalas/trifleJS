@@ -51,10 +51,7 @@ You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/mast
 
 |Software           | Version               |
 |-------------------|-----------------------|
-|Windows            |XP, 7+, Server 2003+   |
+|Windows            | XP, 7+, Server 2003+  |
 |Internet Explorer  | 7+                    |
 |.NET Framework     | 3.5+                  |
 
-- Windows XP and above (including Server 2003+)
-- IE 7
-- .NET framework 3.5 and above
