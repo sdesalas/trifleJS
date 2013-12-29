@@ -1,4 +1,7 @@
-﻿var page = require("webpage").create();
+﻿
+// triflejs.exe ..\..\test\feature\proxy.js --proxy=localhost:8080 --proxy-auth=MacUser:123456
+
+var page = require("webpage").create();
 
 page.open("http://www.triflejs.org", function(status) {
     if (status === 'success') {

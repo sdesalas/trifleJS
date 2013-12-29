@@ -16,6 +16,17 @@ namespace TrifleJS
         private const string IEEmulationPathx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
 
         /// <summary>
+        /// Constructor
+        /// </summary>
+        public Browser() {
+            this.AuthenticateProxy += delegate(object obj, AutomatedBrowser.AthenticateProxyEventArgs e)
+            {
+                e.Username = Proxy.Username;
+                e.Password = Proxy.Password;
+            };
+        }
+
+        /// <summary>
         /// Emulate a version of IE using the relevant registry keys
         /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
         /// </summary>

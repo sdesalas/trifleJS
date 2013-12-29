@@ -2,15 +2,17 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using mshtml;
 
 namespace TrifleJS
 {
     /// <summary>
-    /// This class automates the WebBrowser control by bypassing 
-    /// common dialogs (Prompt, Confirm, Authentication, Security etc)
+    /// This class automates the WebBrowser control by bypassing common dialogs (Error, Authentication, Security etc)
+    /// It effectively tries hides away all the ugliness of MSHTML COM+ API
     /// @see http://www.journeyintocode.com/2013/08/c-webbrowser-control-proxy.html
+    /// @see http://social.msdn.microsoft.com/Forums/ie/en-US/8b0712ca-0b92-4e3d-a243-27af57a57213/idochostshowui-problem-c-webbrowser?forum=ieextensiondevelopment
     /// </summary>
-    public class AutomatedBrowser : WebBrowser, IOleClientSite, IServiceProvider, IAuthenticate
+    public class AutomatedBrowser : WebBrowser, IOleClientSite, IServiceProvider, IAuthenticate, IOleDocumentSite
     {
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern bool InternetSetOption(IntPtr hInternet, int dwOption,
@@ -85,14 +87,208 @@ namespace TrifleJS
         /// <returns></returns>
         public int Authenticate(ref IntPtr phwnd, ref IntPtr pszUsername, ref IntPtr pszPassword)
         {
-            IntPtr sUser = Marshal.StringToCoTaskMemAuto(Proxy.Username);
-            IntPtr sPassword = Marshal.StringToCoTaskMemAuto(Proxy.Password);
+            var e = new AthenticateProxyEventArgs(null, null);
+            this.OnAuthenticateProxy(e);
+
+            IntPtr sUser = Marshal.StringToCoTaskMemAuto(e.Username);
+            IntPtr sPassword = Marshal.StringToCoTaskMemAuto(e.Password);
 
             pszUsername = sUser;
             pszPassword = sPassword;
             return S_OK;
         }
 
+        #endregion
+
+        #region IOleDocumentSite methods
+
+        public void ActivateMe(ref object pViewToActivate) { }
+        
+        #endregion
+
+        #region Events
+
+        #region OnShowMessage
+
+        public class ShowMessageEventArgs : EventArgs
+        {
+            public ShowMessageEventArgs(string text, string caption, uint type, string helpFile, uint helpContext)
+            {
+            }
+
+            public bool Handled { get; set; }
+            public int Result { get; set; }
+            public uint Type { get; private set; }
+            public uint HelpContext { get; private set; }
+            public string Text { get; private set; }
+            public string Caption { get; private set; }
+            public string HelpFile { get; private set; }
+        }
+
+        protected virtual void OnShowMessage(ShowMessageEventArgs e)
+        {
+            var handler = this.Events["ShowMessage"] as EventHandler<ShowMessageEventArgs>;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<ShowMessageEventArgs> ShowMessage
+        {
+            add { this.Events.AddHandler("ShowMessage", value); }
+            remove { this.Events.RemoveHandler("ShowMessage", value); }
+        }
+
+        #endregion
+
+        #region OnAuthenticateProxy
+
+        public class AthenticateProxyEventArgs : EventArgs
+        {
+            public AthenticateProxyEventArgs(string username, string password)
+            {
+            }
+
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
+        protected virtual void OnAuthenticateProxy(AthenticateProxyEventArgs e)
+        {
+            var handler = this.Events["AuthenticateProxy"] as EventHandler<AthenticateProxyEventArgs>;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<AthenticateProxyEventArgs> AuthenticateProxy
+        {
+            add { this.Events.AddHandler("AuthenticateProxy", value); }
+            remove { this.Events.RemoveHandler("AuthenticateProxy", value); }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region AutomatedWebBrowserSite
+
+        protected override System.Windows.Forms.WebBrowserSiteBase CreateWebBrowserSiteBase()
+        {
+            return new AutomatedWebBrowserSite(this);
+        }
+
+        protected class AutomatedWebBrowserSite : WebBrowser.WebBrowserSite, IDocHostShowUI
+        {
+            private readonly AutomatedBrowser host;
+
+            public AutomatedWebBrowserSite(AutomatedBrowser host)
+                : base(host)
+            {
+                this.host = host;
+            }
+
+            #region IDocHostShowUI Members
+
+            int IDocHostShowUI.ShowMessage(IntPtr hwnd, string lpstrText,
+                string lpstrCaption, uint dwType,
+                string lpstrHelpFile, uint dwHelpContext, ref int lpResult)
+            {
+                //Initially
+                //lpResult is set 0 //S_OK
+                API.Console.warn("ShowMessage: " + lpstrCaption);
+                //Host did not display its UI. MSHTML displays its message box.
+                var e = new ShowMessageEventArgs(lpstrText, lpstrCaption, dwType, lpstrHelpFile, dwHelpContext);
+                this.host.OnShowMessage(e);
+
+                lpResult = (e.Handled) ? e.Result : 0;
+
+                return Hresults.S_OK;
+            }
+
+            int IDocHostShowUI.ShowHelp(IntPtr hwnd, string pszHelpFile, uint uCommand, uint dwData, tagPOINT ptMouse, object pDispatchObjectHit)
+            {
+                return Hresults.E_NOTIMPL;
+            }
+
+            #endregion
+
+        }
+
+        #endregion
+
+        #region Hresults
+
+        public sealed class Hresults
+        {
+            public const int NOERROR = 0;
+            public const int S_OK = 0;
+            public const int S_FALSE = 1;
+            public const int E_PENDING = unchecked((int)0x8000000A);
+            public const int E_HANDLE = unchecked((int)0x80070006);
+            public const int E_NOTIMPL = unchecked((int)0x80004001);
+            public const int E_NOINTERFACE = unchecked((int)0x80004002);
+            //ArgumentNullException. NullReferenceException uses COR_E_NULLREFERENCE
+            public const int E_POINTER = unchecked((int)0x80004003);
+            public const int E_ABORT = unchecked((int)0x80004004);
+            public const int E_FAIL = unchecked((int)0x80004005);
+            public const int E_OUTOFMEMORY = unchecked((int)0x8007000E);
+            public const int E_ACCESSDENIED = unchecked((int)0x80070005);
+            public const int E_UNEXPECTED = unchecked((int)0x8000FFFF);
+            public const int E_FLAGS = unchecked((int)0x1000);
+            public const int E_INVALIDARG = unchecked((int)0x80070057);
+
+            //Wininet
+            public const int ERROR_SUCCESS = 0;
+            public const int ERROR_FILE_NOT_FOUND = 2;
+            public const int ERROR_ACCESS_DENIED = 5;
+            public const int ERROR_INSUFFICIENT_BUFFER = 122;
+            public const int ERROR_NO_MORE_ITEMS = 259;
+
+            //Ole Errors
+            public const int OLE_E_FIRST = unchecked((int)0x80040000);
+            public const int OLE_E_LAST = unchecked((int)0x800400FF);
+            public const int OLE_S_FIRST = unchecked((int)0x00040000);
+            public const int OLE_S_LAST = unchecked((int)0x000400FF);
+            //OLECMDERR_E_FIRST = 0x80040100
+            public const int OLECMDERR_E_FIRST = unchecked((int)(OLE_E_LAST + 1));
+            public const int OLECMDERR_E_NOTSUPPORTED = unchecked((int)(OLECMDERR_E_FIRST));
+            public const int OLECMDERR_E_DISABLED = unchecked((int)(OLECMDERR_E_FIRST + 1));
+            public const int OLECMDERR_E_NOHELP = unchecked((int)(OLECMDERR_E_FIRST + 2));
+            public const int OLECMDERR_E_CANCELED = unchecked((int)(OLECMDERR_E_FIRST + 3));
+            public const int OLECMDERR_E_UNKNOWNGROUP = unchecked((int)(OLECMDERR_E_FIRST + 4));
+
+            public const int OLEOBJ_E_NOVERBS = unchecked((int)0x80040180);
+            public const int OLEOBJ_S_INVALIDVERB = unchecked((int)0x00040180);
+            public const int OLEOBJ_S_CANNOT_DOVERB_NOW = unchecked((int)0x00040181);
+            public const int OLEOBJ_S_INVALIDHWND = unchecked((int)0x00040182);
+
+            public const int DV_E_LINDEX = unchecked((int)0x80040068);
+            public const int OLE_E_OLEVERB = unchecked((int)0x80040000);
+            public const int OLE_E_ADVF = unchecked((int)0x80040001);
+            public const int OLE_E_ENUM_NOMORE = unchecked((int)0x80040002);
+            public const int OLE_E_ADVISENOTSUPPORTED = unchecked((int)0x80040003);
+            public const int OLE_E_NOCONNECTION = unchecked((int)0x80040004);
+            public const int OLE_E_NOTRUNNING = unchecked((int)0x80040005);
+            public const int OLE_E_NOCACHE = unchecked((int)0x80040006);
+            public const int OLE_E_BLANK = unchecked((int)0x80040007);
+            public const int OLE_E_CLASSDIFF = unchecked((int)0x80040008);
+            public const int OLE_E_CANT_GETMONIKER = unchecked((int)0x80040009);
+            public const int OLE_E_CANT_BINDTOSOURCE = unchecked((int)0x8004000A);
+            public const int OLE_E_STATIC = unchecked((int)0x8004000B);
+            public const int OLE_E_PROMPTSAVECANCELLED = unchecked((int)0x8004000C);
+            public const int OLE_E_INVALIDRECT = unchecked((int)0x8004000D);
+            public const int OLE_E_WRONGCOMPOBJ = unchecked((int)0x8004000E);
+            public const int OLE_E_INVALIDHWND = unchecked((int)0x8004000F);
+            public const int OLE_E_NOT_INPLACEACTIVE = unchecked((int)0x80040010);
+            public const int OLE_E_CANTCONVERT = unchecked((int)0x80040011);
+            public const int OLE_E_NOSTORAGE = unchecked((int)0x80040012);
+            public const int RPC_E_RETRY = unchecked((int)0x80010109);
+        }
         #endregion
     }
 
@@ -159,5 +355,62 @@ namespace TrifleJS
         int Authenticate(ref IntPtr phwnd, ref IntPtr pszUsername, ref IntPtr pszPassword);
     }
 
+    [ComImport, GuidAttribute("b722bcc7-4e68-101b-a2bc-00aa00404770"),
+    InterfaceType(ComInterfaceType.InterfaceIsIUnknown) ]
+    public interface IOleDocumentSite
+    {
+        void ActivateMe(ref object pViewToActivate);
+    }
+
+    [ComImport, ComVisible(true)]
+    [Guid("C4D244B0-D43E-11CF-893B-00AA00BDCE1A")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IDocHostShowUI
+    {
+        //MIDL_INTERFACE("c4d244b0-d43e-11cf-893b-00aa00bdce1a")
+        //IDocHostShowUI : public IUnknown
+        //{
+        //public:
+        //    virtual HRESULT STDMETHODCALLTYPE ShowMessage( 
+        //        /* [in] */ HWND hwnd,
+        //        /* [in] */ LPOLESTR lpstrText,
+        //        /* [in] */ LPOLESTR lpstrCaption,
+        //        /* [in] */ DWORD dwType,
+        //        /* [in] */ LPOLESTR lpstrHelpFile,
+        //        /* [in] */ DWORD dwHelpContext,
+        //        /* [out] */ LRESULT *plResult) = 0;
+
+        //    virtual HRESULT STDMETHODCALLTYPE ShowHelp( 
+        //        /* [in] */ HWND hwnd,
+        //        /* [in] */ LPOLESTR pszHelpFile,
+        //        /* [in] */ UINT uCommand,
+        //        /* [in] */ DWORD dwData,
+        //        /* [in] */ POINT ptMouse,
+        //        /* [out] */ IDispatch *pDispatchObjectHit) = 0;
+
+        //};
+        [return: MarshalAs(UnmanagedType.I4)]
+        [PreserveSig]
+        int ShowMessage(
+            IntPtr hwnd,
+            [MarshalAs(UnmanagedType.LPWStr)] string lpstrText,
+            [MarshalAs(UnmanagedType.LPWStr)] string lpstrCaption,
+            [MarshalAs(UnmanagedType.U4)] uint dwType,
+            [MarshalAs(UnmanagedType.LPWStr)] string lpstrHelpFile,
+            [MarshalAs(UnmanagedType.U4)] uint dwHelpContext,
+            [In, Out] ref int lpResult);
+
+        [return: MarshalAs(UnmanagedType.I4)]
+        [PreserveSig]
+        int ShowHelp(
+            IntPtr hwnd,
+            [MarshalAs(UnmanagedType.LPWStr)] string pszHelpFile,
+            [MarshalAs(UnmanagedType.U4)] uint uCommand,
+            [MarshalAs(UnmanagedType.U4)] uint dwData,
+            [In, MarshalAs(UnmanagedType.Struct)] tagPOINT ptMouse,
+            [Out, MarshalAs(UnmanagedType.IDispatch)] object pDispatchObjectHit);
+    }
+
     #endregion
+
 }

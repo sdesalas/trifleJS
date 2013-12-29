@@ -143,7 +143,7 @@
     <Content Include="includes\trifle\modules\WebPage.js" />
     <Content Include="test\feature\console.log.js">
     </Content>
-    <Content Include="test\feature\console.proxy.js" />
+    <Content Include="test\feature\proxy.js" />
     <Content Include="test\feature\fs.changeWorkingDirectory.js" />
     <Content Include="test\feature\page.customHeaders.js" />
     <Content Include="test\feature\page.evaluate.js" />
