@@ -127,20 +127,23 @@
   <data name="init" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\init.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="jasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="test_lib_jasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\lib\jasmine.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="jasmine_console" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="test_lib_jasmine_console" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\lib\jasmine-console.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="run_jasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="test_run_jasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\run-jasmine.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="spec_phantom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="test_spec_phantom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\spec\phantom.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="test_spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\spec\webpage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\tools.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="trifle_Callback" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\trifle\Callback.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

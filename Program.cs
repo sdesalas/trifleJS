@@ -188,15 +188,16 @@ namespace TrifleJS
                 try
                 {
                     // Load libs
-                    context.RunScript(Resources.jasmine, "lib/jasmine.js");
-                    context.RunScript(Resources.jasmine_console, "lib/jasmine-console.js");
+                    context.RunScript(Resources.test_lib_jasmine, "test/lib/jasmine.js");
+                    context.RunScript(Resources.test_lib_jasmine_console, "test/lib/jasmine-console.js");
+                    context.RunScript(Resources.test_tools, "test/tools.js");
 
                     // Load Spec
-                    context.RunScript(Resources.spec_phantom, "spec/phantom.js");
-                    context.RunScript(Resources.spec_webpage, "spec/webpage.js");
+                    context.RunScript(Resources.test_spec_phantom, "test/spec/phantom.js");
+                    context.RunScript(Resources.test_spec_webpage, "test/spec/webpage.js");
 
                     // Execute
-                    context.RunScript(Resources.run_jasmine, "run-jasmine.js");
+                    context.RunScript(Resources.test_run_jasmine, "test/run-jasmine.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed

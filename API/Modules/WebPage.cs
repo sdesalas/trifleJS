@@ -22,6 +22,7 @@ namespace TrifleJS.API.Modules
             this.browser.Size = new Size(1024, 800); // TODO: Remove this and set viewport on page load to full size
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
+            this.AddToolset();
         }
 
         /// <summary>
@@ -52,7 +53,8 @@ namespace TrifleJS.API.Modules
             get { return (this.browser != null 
                         && this.browser.Document != null 
                         && this.browser.Document.Body != null 
-                        && this.browser.Document.Body.Parent != null) ?
+                        && this.browser.Document.Body.Parent != null
+                        && this.browser.Document.Body.Parent.OuterText != null) ?
                             this.browser.Document.Body.Parent.OuterText:
                             String.Empty; }
         }
@@ -89,14 +91,12 @@ namespace TrifleJS.API.Modules
                 // Define what happens when browser finishes loading the page
                 browser.DocumentCompleted += delegate
                 {
-
                     // DocumentCompleted is fired before window.onload and body.onload
                     // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                     browser.Document.Window.AttachEventHandler("onload", delegate
                     {
-                        // Add toolset
-                        EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
-                        EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
+                        // Add IE Toolset
+                        AddToolset();
                         // Track unhandled errors
                         this.browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
                         {
@@ -121,6 +121,16 @@ namespace TrifleJS.API.Modules
             {
                 Console.log("Error opening url: " + url);
             }
+        }
+
+        /// <summary>
+        /// Adds resources needed after loading page
+        /// </summary>
+        private void AddToolset()
+        {
+            // Add toolset
+            EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
+            EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
         }
 
         /// <summary>

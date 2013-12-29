@@ -138,6 +138,26 @@ namespace TrifleJS
             {
                 Callback.Execute(id);
             }
+
+            /// <summary>
+            /// Handles javascript prompt() functionality.
+            /// </summary>
+            /// <param name="message"></param>
+            public object dialog(string dialog, string message, string defaultValue) {
+                try
+                {
+                    // Execute in V8 engine and return result
+                    object result = Program.context.Run(
+                            String.Format("WebPage.onDialog({0}, {1}, {2})", ParseOne(dialog), ParseOne(message), ParseOne(defaultValue)),
+                            "WebPage.onDialog()"
+                        );
+                    return result;
+                } catch (Exception ex) {
+                    API.Context.Handle(ex);
+                }
+                return null;
+            }
+
             /// <summary>
             /// Passes control over to page.onCallback() function (if initialized).
             /// </summary>
@@ -146,12 +166,11 @@ namespace TrifleJS
             public object callPhantom(string jsonArray) {
                 try
                 {
-                    // First, execute the code in V8 engine and obtain result
+                    // Execute in V8 engine and return result
                     object result = Program.context.Run(
                         String.Format("WebPage.onCallback({0});", jsonArray),
                         "WebPage.onCallback()"
                     );
-                    // Then, set the callPhantom.result value for output
                     return result;
                 }
                 catch (Exception ex) {

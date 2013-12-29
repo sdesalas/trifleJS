@@ -39,8 +39,12 @@ window.__tools.isScriptReady = function(callbackId) {
 }
 */
 
+/**
+* WINDOW EXTENSTIONS & OVERRIDES
+*/
+
 // Add OnCallback functionality
-callPhantom = function() {
+window.callPhantom = function() {
     window.external.xdebug('window.callPhantom(args)');
     var args = [];
     for (var i = 0; i < arguments.length; i++) {
@@ -48,3 +52,25 @@ callPhantom = function() {
     }
     return window.external.callPhantom(JSON.stringify(args));
 }
+
+// Override javascript alert
+window.alert = function(message) {
+	window.external.xdebug('window.alert()');
+	message = message + "";
+	return window.external.dialog('onAlert', message, null);
+}
+
+// Override javascript confirm
+window.confirm = function(message) {
+	window.external.xdebug('window.confirm()');
+	message = message + "";
+	return window.external.dialog('onConfirm', message, null);
+}
+
+// Override javascript prompt.
+window.prompt = function(message, defaultValue) {
+	window.external.xdebug('window.prompt()');
+	message = message + "";
+	return window.external.dialog('onPrompt', message, defaultValue || "");
+}
+

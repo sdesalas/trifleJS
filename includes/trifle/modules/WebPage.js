@@ -16,15 +16,39 @@ trifle.modules = trifle.modules || {};
 // Wrap code to avoid global vars
 (function(trifle) {
 
+	// PRIVATE: Copies properties into V8 after initializing or loading a URL into the browser
+	var getProperties = function(page) {
+		if (page) {
+			// Get/Set
+			page.customHeaders = page.customHeaders || {};
+			page.viewportSize = page.viewportSize || page.API.GetViewportSize();
+			page.zoomFactor = page.zoomFactor || 1.0;
+			// Get only
+			page.content = page.API.Content;
+            page.plainText = page.API.PlainText;
+            page.url = page.API.Url;
+            page.title = page.API.Title;
+        }
+	};
+	
+	// PRIVATE: Ensures that C# has a representative view of properties set inside V8 engine
+	var syncProperties = function(page) {
+        // Viewport Size
+        if (typeof page.viewportSize === "object") {
+			page.API.SetViewportSize(page.viewportSize.width || 0, page.viewportSize.height || 0);
+        }
+        if (typeof page.zoomFactor === "number" && page.zoomFactor > 0) {
+			page.API.ZoomFactor = page.zoomFactor;
+        }
+    };
+
     // Define Constructor
     var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = function() {
         console.xdebug("new WebPage()");
         // Instantiate a V8 WebPage object and stores it in internal API property
         this.API = trifle.API['WebPage']();
-        // Assign properties
-        this.customHeaders = {};
-        this.viewportSize = this.API.GetViewportSize();
-        this.zoomFactor = 1.0;
+        // Load properties
+		getProperties(this);
 		// Fire Initialized event
         if (this.onInitialized) {
             page.onInitialized.call(this);
@@ -63,10 +87,7 @@ trifle.modules = trifle.modules || {};
                 page.onLoadFinished.call(page, status);
             }
             // Load additional properties for current page
-            page.content = page.API.Content;
-            page.plainText = page.API.PlainText;
-            page.url = page.API.Url;
-            page.title = page.API.Title;
+			getProperties(page);
             // Execute callback
             if (callback && callback.call) {
 				return !!callback ? callback.call(page, status) : null;
@@ -80,8 +101,8 @@ trifle.modules = trifle.modules || {};
 			}
 			this.API.CustomHeaders = headers.join('');
         }
-        // Sync internal properties
-        this.syncProperties();
+        // Sync properties
+        syncProperties(this);
         // Open URL in .NET API
 		return this.API.Open(url, method, data, (new trifle.Callback(complete)).id);
     };
@@ -96,10 +117,10 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.evaluateJavaScript = function(code) {
         console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
         if (code && typeof code === "string") {
-            // Set current page (for WebPage#onCallback)
+            // Set current page (for WebPage events)
             WebPage.current = this;
-			// Sync internal properties
-			this.syncProperties();
+			// Sync properties
+			syncProperties(this);
             // Execute JS on IE host
             return this.API.EvaluateJavaScript(code);
         }
@@ -117,10 +138,10 @@ trifle.modules = trifle.modules || {};
                 }
                 args.push(arguments[i]);
             }
-            // Set current page (for WebPage#onCallback)
+            // Set current page (for WebPage events)
             WebPage.current = this;
-			// Sync internal properties
-			this.syncProperties();
+			// Sync properties
+			syncProperties(this);
             // Execute JS on IE host
             return this.API.Evaluate(func.toString(), args);
         }
@@ -131,10 +152,10 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.injectJs = function(filename) {
         console.xdebug("WebPage.prototype.injectJs(filename)");
         if (typeof filename === 'string') {
-            // Set current page (for WebPage#onCallback)
+            // Set current page (for WebPage events)
             WebPage.current = this;
-			// Sync internal properties
-			this.syncProperties();
+			// Sync properties
+			syncProperties(this);
             // Execute JS on IE host
             return this.API.InjectJs(filename);
         }
@@ -150,10 +171,10 @@ trifle.modules = trifle.modules || {};
                     callback.call(page);
                 }
             };
-            // Set current page (for WebPage#onCallback)
+            // Set current page (for WebPage events)
             WebPage.current = this;
-			// Sync internal properties
-			this.syncProperties();
+			// Sync properties
+			syncProperties(this);
             // Execute JS on IE host
             return this.API.IncludeJs(url, (new trifle.Callback(complete)).id);
         }
@@ -164,8 +185,8 @@ trifle.modules = trifle.modules || {};
     WebPage.prototype.render = function(filename) {
         console.xdebug("WebPage.prototype.render(filename)");
         if (filename) {
-			// Sync internal properties
-			this.syncProperties();
+			// Sync properties
+			syncProperties(this);
             return this.API.Render(filename)
         };
     }
@@ -173,26 +194,36 @@ trifle.modules = trifle.modules || {};
     // Render to Base64 string
     WebPage.prototype.renderBase64 = function(format) {
         console.xdebug("WebPage.prototype.renderBase64(format)");
-		// Sync internal properties
-		this.syncProperties();
+		// Sync properties
+		syncProperties(this);
         return this.API.RenderBase64(format || "PNG");
     }
-    
-    // Helper function to sync internal properties
-    WebPage.prototype.syncProperties = function() {
-        // Viewport Size
-        if (typeof this.viewportSize === "object") {
-			this.API.SetViewportSize(this.viewportSize.width || 0, this.viewportSize.height || 0);
-        }
-        if (typeof this.zoomFactor === "number" && this.zoomFactor > 0) {
-			this.API.ZoomFactor = this.zoomFactor;
-        }
-    }
+   
 
     // STATIC PROPERTIES
 
     // Currently running IE instance
     WebPage.current = null;
+    
+    // Dialog windows: onAlert, onConfirm, onPrompt 
+    WebPage.onDialog = function() {
+		console.xdebug("WebPage.onDialog('" + arguments[0] + "')");
+		var page = WebPage.current;
+		var args = []; dialog = arguments[0];
+		for (var i = 1; i < arguments.length; i ++) {
+			args.push(arguments[i]);
+		}
+		switch (dialog) {
+			case "onAlert":
+			case "onConfirm":
+			case "onPrompt":
+				if (page && page[dialog] && page[dialog].apply) {
+					return page[dialog].apply(page, args);
+				}
+				break;
+		}
+		return null;
+    }
 
     // Add static onCallback() method for event handling
     WebPage.onCallback = function(args) {
@@ -205,7 +236,7 @@ trifle.modules = trifle.modules || {};
 
     // Add static onError() method for event handling
     WebPage.onError = function(msg, line, url) {
-        console.xdebug("WebPage.onCallback(args)");
+        console.xdebug("WebPage.onError(args)");
         var page = WebPage.current;
         if (page && page.onError && page.onError.call) {
             page.onError.call(page, msg, [{ line: line, file: url}]);

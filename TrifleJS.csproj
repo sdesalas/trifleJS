@@ -135,6 +135,7 @@
     </Content>
     <Resource Include="includes\init.js" />
     <None Include="includes\trifle\ie\tools.js" />
+    <Content Include="test\feature\page.onAlert.js" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\ie\json2.js" />
     <Content Include="includes\trifle\modules\FileSystem.js" />
@@ -151,6 +152,7 @@
     <Content Include="test\feature\page.injectJs.js" />
     <Content Include="test\feature\page.js" />
     <Content Include="test\feature\page.onCallback.js" />
+    <Content Include="test\feature\page.onConfirm.js" />
     <Content Include="test\feature\page.open.js" />
     <Content Include="test\feature\page.render.js" />
     <Content Include="test\feature\page.viewportSize.js" />
@@ -168,6 +170,7 @@
     <Content Include="test\spec\phantom.js" />
     <Content Include="test\run-tests.js" />
     <Content Include="test\spec\webpage.js" />
+    <Content Include="test\tools.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
