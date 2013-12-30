@@ -33,7 +33,7 @@ For detailed information on which methods are available please refer to [triflej
 Some of the big ticket items currently missing from the automation are: 
 
 - Cookies
-- IE Windows (Alert, Confirm, Prompt, SSL Certificate error, etc)
+- IE Windows (File Upload, SSL Certificate Error)
 - Mouse / Keyboard interaction
 - WebServer and ChildProcess modules
 
