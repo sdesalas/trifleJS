@@ -157,4 +157,7 @@
   <data name="trifle_modules_WebPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\trifle\modules\WebPage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="trifle_modules_WebServer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\includes\trifle\modules\WebServer.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

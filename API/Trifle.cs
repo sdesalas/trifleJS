@@ -50,5 +50,10 @@ namespace TrifleJS.API
         {
             return new Modules.System();
         }
+
+        public Modules.WebServer WebServer()
+        {
+            return new Modules.WebServer();
+        }
     }
 }

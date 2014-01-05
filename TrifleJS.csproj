@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Modules\WebServer.cs" />
     <Compile Include="API\Trifle.cs" />
     <Compile Include="AutomatedBrowser.cs">
       <SubType>Component</SubType>
@@ -135,6 +136,7 @@
     </Content>
     <Resource Include="includes\init.js" />
     <None Include="includes\trifle\ie\tools.js" />
+    <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\page.onAlert.js" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\ie\json2.js" />
@@ -159,6 +161,7 @@
     <Content Include="test\feature\page.zoomFactor.js" />
     <Content Include="test\feature\phantom.injectJs.js" />
     <Content Include="test\feature\phantom.libraryPath.js" />
+    <Content Include="test\feature\webserver.listen.js" />
     <Content Include="test\feature\window.setInterval.js">
     </Content>
     <Content Include="test\feature\window.setTimeout.js">

@@ -149,6 +149,9 @@
         },
         system: function() {
             return new trifle.modules.System();
+        },
+        webserver: function() {
+			return new trifle.modules.WebServer();
         }
     };
 

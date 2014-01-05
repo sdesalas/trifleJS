@@ -65,7 +65,9 @@ namespace TrifleJS
 #if DEBUG
             Program.verbose = true;
 #endif
-            
+            // Check OS Support
+            CheckSupport();
+
             // No arguments? Run in interactive mode.
             if (args.Length < 1) {
                 Interactive();
@@ -156,6 +158,18 @@ namespace TrifleJS
         }
 
         /// <summary>
+        /// Checks support for various OS features
+        /// </summary>
+        private static void CheckSupport()
+        {
+            if (!System.Net.HttpListener.IsSupported)
+            {
+                API.Console.error("Windows XP SP2 or Server 2003 is required.");
+                Program.Exit(1);
+            }
+        }
+
+        /// <summary>
         /// Exits the current thread
         /// </summary>
         /// <param name="exitCode"></param>
@@ -204,6 +218,7 @@ namespace TrifleJS
                     while (true)
                     {
                         API.Window.CheckTimers();
+                        API.Modules.WebServer.ProcessRequests();
                     }
 
                 }
@@ -295,6 +310,7 @@ namespace TrifleJS
                     // This is to make sure asynchronous code gets executed
                     while (true) {
                         API.Window.CheckTimers();
+                        API.Modules.WebServer.ProcessRequests();
                     }
 
                 }
@@ -328,6 +344,7 @@ namespace TrifleJS
                 context.RunScript(Resources.trifle_modules_WebPage, "trifle.modules.WebPage.js");
                 context.RunScript(Resources.trifle_modules_FileSystem, "trifle.modules.FileSystem.js");
                 context.RunScript(Resources.trifle_modules_System, "trifle.modules.System.js");
+                context.RunScript(Resources.trifle_modules_WebServer, "trifle.modules.WebServer.js");
             }
             catch (Exception ex)
             {

@@ -206,7 +206,6 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///
         ///// Launch tests
         ///var jasmineEnv = jasmine.getEnv();
         ///
@@ -223,7 +222,7 @@ namespace TrifleJS.Properties {
         ///        newline: &apos;\n&apos;
         ///    };
         ///    msg = msg.replace(ansi.newline, &apos;&apos;).replace(ansi.none, &apos;&apos;);
-        ///    var printInColor = function(color, messag [rest of string was truncated]&quot;;.
+        ///    var printInColor = function(color, message) [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_run_jasmine {
             get {
@@ -255,11 +254,7 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to console.debug(phantom.libraryPath);
-        ///
-        ///phantom.injectJs(&quot;../../test/tools.js&quot;);
-        ///
-        ///function checkClipRect(page, clipRect) {
+        ///   Looks up a localized string similar to function checkClipRect(page, clipRect) {
         ///    expectHasProperty(page, &apos;clipRect&apos;);
         ///    it(&quot;should have clipRect with height &quot;+clipRect.height, function () {
         ///        expect(page.clipRect.height).toEqual(clipRect.height);
@@ -267,7 +262,10 @@ namespace TrifleJS.Properties {
         ///    it(&quot;should have clipRect with left &quot;+clipRect.left, function () {
         ///        expect(page.clipRect.left).toEqual(clipRect.left);
         ///    });
-        ///    it(&quot;should have clipRect with top &quot;+clipRect.top, fun [rest of string was truncated]&quot;;.
+        ///    it(&quot;should have clipRect with top &quot;+clipRect.top, function () {
+        ///        expect(page.clipRect.top).toEqual(clipRect.top);
+        ///    });
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_spec_webpage {
             get {
@@ -416,14 +414,46 @@ namespace TrifleJS.Properties {
         ///// Wrap code to avoid global vars
         ///(function(trifle) {
         ///
-        ///    // Define Constructor
-        ///    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = function() {
-        ///        console.xdebug(&quot;new WebPage()&quot;);
-        ///        // Instantiate a V8 WebPage obj [rest of string was truncated]&quot;;.
+        ///	// PRIVATE: Copies properties into V8 after initializing or loading a URL into the browser
+        ///	var getProperties = function(page) {
+        ///		if (page) {
+        ///			// Get/Set
+        ///			page.customHeaders = page.custom [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_WebPage {
             get {
                 return ResourceManager.GetString("trifle_modules_WebPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* WebServer.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Jan 2014
+        ///* 
+        ///* Defines a WebServer class representing a
+        ///* HTTP Daemon.
+        ///* 
+        ///*/
+        ///
+        ///// Initialise Namespace
+        ///this.trifle = this.trifle || {};
+        ///trifle.modules = trifle.modules || {};
+        ///
+        ///// Wrap code to avoid global vars
+        ///(function(trifle) {
+        ///
+        ///    // Define Constructor
+        ///    var WebServer = trifle.modules.WebServer = function() {
+        ///        console.xdebug(&quot;new WebServer()&quot;);
+        ///        // Instantiate a V8 WebServer object and stores it in internal API property
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string trifle_modules_WebServer {
+            get {
+                return ResourceManager.GetString("trifle_modules_WebServer", resourceCulture);
             }
         }
     }
