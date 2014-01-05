@@ -11,16 +11,15 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebServer
     {
-        private static Dictionary<string, WebServer> activeBindings = new Dictionary<string, WebServer>();
+        /// <summary>
+        /// 
+        /// </summary>
+        private static HttpListener listener;
         private static Dictionary<string, Connection> connections = new Dictionary<string, Connection>();
         private static int concurrentThreads = 0;
         private static int allowedThreads = 2;
-        private HttpListener listener;
+        private static string callbackId;
         private Uri binding;
-
-        public WebServer() {
-            listener = new HttpListener();
-        }
 
         /// <summary>
         /// Opens a HTTP listener on specific TCP bindings
@@ -29,6 +28,8 @@ namespace TrifleJS.API.Modules
         /// <param name="callbackId"></param>
         public void Listen(string binding, string callbackId) {
             // Start & Run HTTP daemon
+            listener = new HttpListener();
+            connections.Clear();
             try
             {
                 // Initialize URI for binding
@@ -39,7 +40,7 @@ namespace TrifleJS.API.Modules
                 listener.Prefixes.Add(this.binding.AbsoluteUri);
                 listener.Start();
                 Console.xdebug(String.Format("WebServer:Listening on {0} from thread {1}", binding, global::System.AppDomain.GetCurrentThreadId()));
-                activeBindings.Add(callbackId, this);
+                WebServer.callbackId = callbackId;
             }
             catch (Exception ex)
             {
@@ -61,42 +62,35 @@ namespace TrifleJS.API.Modules
         internal static void ProcessRequests()
         {
             // Loop through active TCP bindings
-            foreach (string callbackId in activeBindings.Keys)
+            if (listener != null && listener.IsListening)
             {
-                WebServer server = activeBindings[callbackId];
-                if (server != null && server.listener != null && server.listener.IsListening)
+                // Check number of threads listening to incoming connections
+                if (concurrentThreads < allowedThreads)
                 {
-                    // Check number of threads listening to incoming connections
-                    if (concurrentThreads < allowedThreads)
+                    // Add separate thread for filling up queue
+                    concurrentThreads++;
+                    listener.BeginGetContext(delegate(IAsyncResult result)
                     {
-                        // Add separate thread for filling up queue
-                        concurrentThreads++;
-                        server.listener.BeginGetContext(delegate(IAsyncResult result)
+                        try
                         {
-                            try
-                            {
-                                // Add connection to queue (asynchronously)
-                                HttpListenerContext context = server.listener.EndGetContext(result);
-                                Connection connection = new Connection(callbackId, context);
-                                Console.debug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
-                                // This will be processed in STA thread (below)
-                                // so that there are no memory conflicts in
-                                // callbacks to V8 environment.
-                                connections.Add(connection.id, connection);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.error(String.Format("Error queueing connection: {0}", ex.Message));
-                            }
-                            finally
-                            {
-                                concurrentThreads--;
-                            }
-                        }, server.listener);
-                    }
-                }
-                else {
-                    activeBindings.Remove(callbackId);
+                            // Add connection to queue (asynchronously)
+                            HttpListenerContext context = listener.EndGetContext(result);
+                            Connection connection = new Connection(WebServer.callbackId, context);
+                            Console.debug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
+                            // This will be processed in STA thread (below)
+                            // so that there are no memory conflicts in
+                            // callbacks to V8 environment.
+                            connections.Add(connection.id, connection);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.error(String.Format("Error queueing connection: {0}", ex.Message));
+                        }
+                        finally
+                        {
+                            concurrentThreads--;
+                        }
+                    }, listener);
                 }
             }
             // Process queue (in STA thread)
@@ -163,17 +157,65 @@ namespace TrifleJS.API.Modules
         
             public Request(HttpListenerRequest request) {
                 this.request = request;
+                using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                {
+                    this.rawPost = reader.ReadToEnd();
+                    if (request.ContentType != null && request.ContentType.Contains("application/x-www-form-urlencoded")) {
+                        this.post = Uri.UnescapeDataString(this.rawPost);
+                    } else {
+                        this.post = rawPost;
+                    }
+                }
             }
 
             private HttpListenerRequest request;
 
-            public string Read() {
-                string body;
-                using (StreamReader stream = new StreamReader(request.InputStream)) {
-                    body = stream.ReadToEnd();
-                }
-                return body;
+            /// <summary>
+            /// Defines the request method ('GET', 'POST', etc.)
+            /// </summary>
+            public string method {
+                get { return request.HttpMethod; }
             }
+
+            /// <summary>
+            /// The path part and query string part (if any) of the request URL
+            /// </summary>
+            public string url {
+                get { return request.Url.PathAndQuery; }
+            }
+
+            /// <summary>
+            /// The actual HTTP version
+            /// </summary>
+            public string httpVersion {
+                get { return request.ProtocolVersion.ToString(); }
+            }
+
+            /// <summary>
+            /// All of the HTTP headers as key-value pairs
+            /// </summary>
+            public Dictionary<string, object> headers {
+                get {
+                    Dictionary<string, object> result = new Dictionary<string, object>();
+                    foreach (string key in request.Headers.AllKeys) {
+                        result.Add(key, request.Headers[key]);
+                    }
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// The request body (only for 'POST' and 'PUT' method requests)
+            /// </summary>
+            public string post { get; set; }
+
+            /// <summary>
+            /// If the Content-Type header is set to 'application/x-www-form-urlencoded' 
+            /// (the default for form submissions), the original contents of post will 
+            /// be stored in this extra property (postRaw) and then post will be 
+            /// automatically updated with a URL-decoded version of the data.
+            /// </summary>
+            public string rawPost { get; set; }
 
         }
 
@@ -185,7 +227,7 @@ namespace TrifleJS.API.Modules
             public Response(HttpListenerResponse response, string connectionId) {
                 this.response = response;
                 this.connectionId = connectionId;
-                this.headers = new Dictionary<string, string>();
+                this.headers = new Dictionary<string, object>();
                 this.response.SendChunked = true;
                 this.isHeaderSent = false;
             }
@@ -213,7 +255,7 @@ namespace TrifleJS.API.Modules
                     response.Headers.Clear();
                     foreach (string key in headers.Keys)
                     {
-                        response.AddHeader(key, headers[key]);
+                        response.AddHeader(key, headers[key].ToString());
                     }
                 }
                 // Write to outgoing stream
@@ -228,7 +270,7 @@ namespace TrifleJS.API.Modules
             /// </summary>
             /// <param name="statusCode"></param>
             /// <param name="headers"></param>
-            public void writeHead(int statusCode, Dictionary<string, string> headers) {
+            public void writeHead(int statusCode, Dictionary<string, object> headers) {
                 // Set status code and headers
                 this.response.StatusCode = statusCode;
                 // Use default headers if none found
@@ -246,7 +288,6 @@ namespace TrifleJS.API.Modules
             /// <param name="name"></param>
             /// <param name="value"></param>
             public void setHeader(string name, string value) {
-                response.Headers.Add(name, value);
                 headers.Add(name, value);
             }
 
@@ -256,13 +297,13 @@ namespace TrifleJS.API.Modules
             /// <param name="name"></param>
             /// <returns></returns>
             public string header(string name) {
-                return headers[name];
+                return headers[name].ToString();
             }
 
             /// <summary>
             /// Collection of response headers to send to browser
             /// </summary>
-            public Dictionary<string, string> headers;
+            public Dictionary<string, object> headers { get; set; }
 
             /// <summary>
             /// Sets encoding for HTTP response
@@ -278,15 +319,22 @@ namespace TrifleJS.API.Modules
             }
 
             /// <summary>
-            /// Writes to buffer and closes connection
+            /// Closes connection
             /// </summary>
             public void close() {
                 response.Close();
                 connections.Remove(this.connectionId);
             }
 
-            public void closeGracefully() { 
-                
+            /// <summary>
+            /// Ensures header information is sent and closes connection
+            /// </summary>
+            public void closeGracefully() {
+                if (!this.isHeaderSent) {
+                    this.response.StatusCode = 200;
+                    this.write(Environment.NewLine);
+                }
+                this.close();
             }
         }
 
