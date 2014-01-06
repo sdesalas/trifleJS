@@ -12,6 +12,11 @@ namespace TrifleJS.API
         public static Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
 
         /// <summary>
+        /// Internal Id used for window.clearTimeout() and window.clearInterval()
+        /// </summary>
+        private static int timerId = 0;
+
+        /// <summary>
         /// Defers execution of a callback by number of milliseconds, same as window.setTimeout()
         /// </summary>
         /// <param name="callbackId">ID of the callback in JavaScript context</param>
@@ -57,9 +62,8 @@ namespace TrifleJS.API
             timer.Enabled = true;
             timer.Interval = ms;
             timer.Start();
-            int id = Environment.TickCount;
-            Window.timers.Add(id, timer);
-            return id;
+            Window.timers.Add(timerId++, timer);
+            return timerId;
         }
 
         private static void ClearTimer(int timerId) {

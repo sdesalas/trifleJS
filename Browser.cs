@@ -77,7 +77,7 @@ namespace TrifleJS
 
         public void Navigate(Uri uri, string method, string data, string customHeaders) {
             // Use HTTP method, currently only POST and GET are supported
-            switch (method)
+            switch (method.ToUpper())
             {
                 case "POST":
                     // We must have some sort of payload for a POST request. 
@@ -86,7 +86,7 @@ namespace TrifleJS
                     {
                         data = " ";
                     }
-                    base.Navigate(uri.AbsoluteUri, "", Utils.GetBytes(data), customHeaders);
+                    base.Navigate(uri.AbsoluteUri, "", Encoding.UTF8.GetBytes(data), customHeaders);
                     break;
                 case "GET":
                     base.Navigate(uri.AbsoluteUri, "", null, customHeaders);

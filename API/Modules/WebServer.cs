@@ -35,7 +35,7 @@ namespace TrifleJS.API.Modules
                 listener = new HttpListener();
                 listener.Prefixes.Add(this.binding.AbsoluteUri);
                 listener.Start();
-                Console.xdebug(String.Format("WebServer:Listening on {0} from thread {1}", binding, global::System.AppDomain.GetCurrentThreadId()));
+                Console.xdebug(String.Format("WebServer:Listening on {0}", this.binding.AbsoluteUri));
                 activeBindings.Add(callbackId, listener);
                 return true;
             }
@@ -90,7 +90,7 @@ namespace TrifleJS.API.Modules
                                 // Add connection to queue (asynchronously)
                                 HttpListenerContext context = listener.EndGetContext(result);
                                 Connection connection = new Connection(callbackId, context);
-                                Console.debug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
+                                Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
                                 // This will be processed in STA thread (below)
                                 // so that there are no memory conflicts in
                                 // callbacks to V8 environment.
@@ -129,7 +129,7 @@ namespace TrifleJS.API.Modules
                         if (connection.request != null && connection.response != null)
                         {
                             // Make callback to V8 environment
-                            Console.debug(String.Format("ListenAll:Processing request for {0}!", connectionId));
+                            Console.xdebug(String.Format("ListenAll:Processing request for {0}!", connectionId));
                             Callback.Execute(connection.callbackId, connectionId);
                         }
                     }
@@ -361,7 +361,7 @@ namespace TrifleJS.API.Modules
 
             public Connection(string callbackId, HttpListenerContext context) {
                 this.callbackId = callbackId;
-                this.id = Guid.NewGuid().ToString().Substring(0, 8);
+                this.id = Utils.newUid();
                 this.isProcessing = false;
                 this.request = new Request(context.Request);
                 this.response = new Response(context.Response, this.id);

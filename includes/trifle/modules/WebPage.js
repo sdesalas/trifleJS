@@ -60,7 +60,14 @@ trifle.modules = trifle.modules || {};
         console.xdebug("WebPage.prototype.open()");
         var page = this, a = arguments;
         // Determine the arguments to use
-        var url = a[0], method = "GET", data, callback;
+        var url = a[0], method = "GET", data, headers, callback;
+        // Using: page.open(url, method, data, callback)
+        if (typeof a[4] === "function") {
+			method = a[1];
+			data = a[2];
+			headers = a[3];
+			callback = a[4];
+        }
         // Using: page.open(url, method, data, callback)
         if (typeof a[3] === "function") {
 			method = a[1];
@@ -95,11 +102,12 @@ trifle.modules = trifle.modules || {};
         };
         // Load custom headers
         if (typeof this.customHeaders === "object") {
-			var headers = [];
+			var headerBuilder = [];
+			this.customHeaders = headers || this.customHeaders;
 			for (var prop in this.customHeaders) {
-				headers.push(prop + ': ' + this.customHeaders[prop] + '\r\n');
+				headerBuilder.push(prop + ': ' + this.customHeaders[prop] + '\r\n');
 			}
-			this.API.CustomHeaders = headers.join('');
+			this.API.CustomHeaders = headerBuilder.join('');
         }
         // Sync properties
         syncProperties(this);

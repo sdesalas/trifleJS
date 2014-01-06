@@ -13,6 +13,11 @@ namespace TrifleJS
     /// </summary>
     public class Utils
     {
+        /// <summary>
+        /// Debug message to console
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="args"></param>
         public static void Debug(object message, params object[] args)
         {
             if (Program.verbose)
@@ -31,6 +36,12 @@ namespace TrifleJS
             }
         }
 
+        /// <summary>
+        /// Tries reading a registry key, returns null if not found
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static object TryReadRegistryKey(string path, string name)
         {
             try
@@ -46,6 +57,14 @@ namespace TrifleJS
             return null;
         }
 
+        /// <summary>
+        /// Tries to write a key to registry catching any exceptions, returns true if the key was written successfully
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool TryWriteRegistryKey(string path, string name, object value, RegistryValueKind kind)
         {
             try
@@ -65,6 +84,12 @@ namespace TrifleJS
             }
         }
 
+        /// <summary>
+        /// Creates a path in the registry, including all necessary parent paths
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private static RegistryKey CreateRegistryPath(RegistryKey key, string path)
         {
             foreach (string name in path.Split('\\'))
@@ -80,6 +105,11 @@ namespace TrifleJS
             return key;
         }
 
+        /// <summary>
+        /// Converts a COM object to an array of objects
+        /// </summary>
+        /// <param name="comObject"></param>
+        /// <returns></returns>
         public static object[] COMToArray(object comObject)
         {
             List<object> output = new List<object>();
@@ -91,6 +121,11 @@ namespace TrifleJS
             return output.ToArray();
         }
 
+        /// <summary>
+        /// Converts a COM object to dictionary (useful for outputting error information)
+        /// </summary>
+        /// <param name="comObject"></param>
+        /// <returns></returns>
         public static Dictionary<string, object> COMToErrorObject(object comObject)
         {
             Dictionary<string, object> output = new Dictionary<string, object>();
@@ -102,23 +137,23 @@ namespace TrifleJS
             return output;
         }
 
+        /// <summary>
+        /// Serialises an object to JSON string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string Serialize(object obj)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
 
-        public static byte[] GetBytes(string str)
+        /// <summary>
+        /// Returns a unique ID string (16^8 = 4.3 trillion combinations)
+        /// </summary>
+        /// <returns></returns>
+        public static string newUid()
         {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-        public static string GetString(byte[] bytes)
-        {
-            char[] chars = new char[bytes.Length / sizeof(char)];
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            return new string(chars);
+            return Guid.NewGuid().ToString().Substring(0, 8);
         }
     }
 }
