@@ -173,6 +173,7 @@
     <Content Include="test\spec\phantom.js" />
     <Content Include="test\run-tests.js" />
     <Content Include="test\spec\webpage.js" />
+    <Content Include="test\spec\webserver.js" />
     <Content Include="test\tools.js" />
   </ItemGroup>
   <ItemGroup>

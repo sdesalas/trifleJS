@@ -142,6 +142,9 @@
   <data name="test_spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\spec\webpage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="test_spec_webserver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\spec\webserver.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="test_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\tools.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

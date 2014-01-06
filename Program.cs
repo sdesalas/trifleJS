@@ -208,7 +208,7 @@ namespace TrifleJS
 
                     // Load Spec
                     context.RunScript(Resources.test_spec_phantom, "test/spec/phantom.js");
-                    context.RunScript(Resources.test_spec_webpage, "test/spec/webpage.js");
+                    context.RunScript(Resources.test_spec_webserver, "test/spec/webserver.js");
 
                     // Execute
                     context.RunScript(Resources.test_run_jasmine, "test/run-jasmine.js");
@@ -217,8 +217,7 @@ namespace TrifleJS
                     // This is to make sure asynchronous code gets executed
                     while (true)
                     {
-                        API.Window.CheckTimers();
-                        API.Modules.WebServer.ProcessRequests();
+                        Program.DoEvents();
                     }
 
                 }
@@ -277,7 +276,7 @@ namespace TrifleJS
 
                 while (browser.ReadyState != System.Windows.Forms.WebBrowserReadyState.Complete)
                 {
-                    System.Windows.Forms.Application.DoEvents();
+                    Program.DoEvents();
                 }
             }
         }
@@ -309,8 +308,7 @@ namespace TrifleJS
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
                     while (true) {
-                        API.Window.CheckTimers();
-                        API.Modules.WebServer.ProcessRequests();
+                        Program.DoEvents();
                     }
 
                 }
@@ -319,6 +317,16 @@ namespace TrifleJS
                     API.Context.Handle(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Runs background events while waiting
+        /// </summary>
+        public static void DoEvents()
+        {
+            API.Window.CheckTimers();
+            API.Modules.WebServer.ProcessConnections();
+            System.Windows.Forms.Application.DoEvents();
         }
 
         /// <summary>

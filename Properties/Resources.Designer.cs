@@ -274,6 +274,30 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to describe(&quot;WebServer constructor&quot;, function() {
+        ///    it(&quot;should not exist in window&quot;, function() {
+        ///        expect(window.hasOwnProperty(&apos;WebServer&apos;)).toBeFalsy();
+        ///    });
+        ///
+        ///    it(&quot;should be a function&quot;, function() {
+        ///        var WebServer = require(&apos;webserver&apos;).create;
+        ///        expect(typeof WebServer).toEqual(&apos;function&apos;);
+        ///    });
+        ///});
+        ///
+        ///var expectedPostData = false, expectedBinaryData = false;
+        ///
+        ///function checkRequest(request, response) {
+        ///    expect(typeof request).toEqual(&apos;object&apos;);
+        ///    expect(requ [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string test_spec_webserver {
+            get {
+                return ResourceManager.GetString("test_spec_webserver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 
         ///// Add Helper Functions
         ///function expectHasFunction(o, name) {
@@ -445,11 +469,11 @@ namespace TrifleJS.Properties {
         ///// Wrap code to avoid global vars
         ///(function(trifle) {
         ///
+        ///
         ///    // Define Constructor
         ///    var WebServer = trifle.modules.WebServer = function() {
         ///        console.xdebug(&quot;new WebServer()&quot;);
-        ///        // Instantiate a V8 WebServer object and stores it in internal API property
-        /// [rest of string was truncated]&quot;;.
+        ///        // Instantiate a V8 WebServer object and stores it in internal API property [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_WebServer {
             get {

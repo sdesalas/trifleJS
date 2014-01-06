@@ -1,5 +1,6 @@
 ﻿var server = require('webserver').create();
-console.log('Starting webserver, port: ' + server.port);
+console.log('Starting webserver on port 8080');
+
 var service = server.listen(8080, function(request, response) {
 	console.log('starting connection, printing request info');
 	console.log({
@@ -25,3 +26,35 @@ var service = server.listen(8080, function(request, response) {
     response.close();
 });
 console.log('Ending');
+
+
+
+/*
+var page = require('webpage').create();
+var service = server.listen(8080, function(request, response) {
+	console.log('server started, opening page');
+	console.log({
+		method: request.method,
+		url: request.url,
+		httpVersion: request.httpVersion,
+		headers: request.headers,
+		post: request.post,
+		rawPost: request.rawPost
+	});
+    response.write('<html><body><p>Hello there!</p>');
+    response.write('<p>From port:' + server.port + '</p>');
+    response.write('<p><form action="/" method="post"><input type="text" name="name" value=""/><input type="file" name="theFile"/><input type="submit"></form></p></body></html>');
+    response.close();
+});
+
+trifle.wait(1000);
+
+
+page.open('http://localhost:8080', function(status) {
+	console.log('page opened, status: ' + status);
+	console.log('printing contents:');
+	console.log(page.plainText);
+	phantom.exit();
+});
+
+*/

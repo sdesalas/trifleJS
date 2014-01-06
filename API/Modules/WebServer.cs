@@ -11,14 +11,11 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebServer
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private static HttpListener listener;
+        private static Dictionary<string, HttpListener> activeBindings = new Dictionary<string, HttpListener>();
         private static Dictionary<string, Connection> connections = new Dictionary<string, Connection>();
         private static int concurrentThreads = 0;
-        private static int allowedThreads = 2;
-        private static string callbackId;
+        private static int allowedThreads = 3;
+        private HttpListener listener;
         private Uri binding;
 
         /// <summary>
@@ -26,10 +23,8 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="bindings"></param>
         /// <param name="callbackId"></param>
-        public void Listen(string binding, string callbackId) {
+        public bool Listen(string binding, string callbackId) {
             // Start & Run HTTP daemon
-            listener = new HttpListener();
-            connections.Clear();
             try
             {
                 // Initialize URI for binding
@@ -37,60 +32,80 @@ namespace TrifleJS.API.Modules
                 if (Int32.TryParse(binding, out port)) { this.binding = new Uri(String.Format("http://localhost:{0}/", port)); }
                 else if (!binding.Contains("http")) { this.binding = new Uri(String.Format("http//{0}", binding)); }
                 else { this.binding = new Uri(binding); }
+                listener = new HttpListener();
                 listener.Prefixes.Add(this.binding.AbsoluteUri);
                 listener.Start();
                 Console.xdebug(String.Format("WebServer:Listening on {0} from thread {1}", binding, global::System.AppDomain.GetCurrentThreadId()));
-                WebServer.callbackId = callbackId;
+                activeBindings.Add(callbackId, listener);
+                return true;
             }
             catch (Exception ex)
             {
                 Console.error(String.Format("Error listening on binding: {0}", binding));
-                return;
+                this.listener = null;
+                this.binding = null;
+                return false;
             }
         }
 
         /// <summary>
         /// The port where the server is listening
         /// </summary>
-        public int Port {
-            get { return (this.binding != null) ? this.binding.Port : 0; }
-        } 
+        public string Port {
+            get { return (this.binding != null) ? this.binding.Port.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// Shuts down the server
+        /// </summary>
+        public void Close() {
+            if (this.listener != null) {
+                this.listener.Stop();
+                this.listener = null;
+                connections.Clear();
+            }
+        }
 
         /// <summary>
         /// Processes all current requests
         /// </summary>
-        internal static void ProcessRequests()
+        internal static void ProcessConnections()
         {
             // Loop through active TCP bindings
-            if (listener != null && listener.IsListening)
+            foreach (string callbackId in activeBindings.Keys)
             {
-                // Check number of threads listening to incoming connections
-                if (concurrentThreads < allowedThreads)
+                // Check each binding for incoming connections
+                HttpListener listener = activeBindings[callbackId];
+                if (listener != null && listener.IsListening)
                 {
-                    // Add separate thread for filling up queue
-                    concurrentThreads++;
-                    listener.BeginGetContext(delegate(IAsyncResult result)
+                    // Are there enough threads listening to incoming connections?
+                    if (concurrentThreads < allowedThreads)
                     {
-                        try
+                        // Add separate thread for filling up queue
+                        concurrentThreads++;
+                        listener.BeginGetContext(delegate(IAsyncResult result)
                         {
-                            // Add connection to queue (asynchronously)
-                            HttpListenerContext context = listener.EndGetContext(result);
-                            Connection connection = new Connection(WebServer.callbackId, context);
-                            Console.debug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
-                            // This will be processed in STA thread (below)
-                            // so that there are no memory conflicts in
-                            // callbacks to V8 environment.
-                            connections.Add(connection.id, connection);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.error(String.Format("Error queueing connection: {0}", ex.Message));
-                        }
-                        finally
-                        {
-                            concurrentThreads--;
-                        }
-                    }, listener);
+                            try
+                            {
+                                // Add connection to queue (asynchronously)
+                                HttpListenerContext context = listener.EndGetContext(result);
+                                Connection connection = new Connection(callbackId, context);
+                                Console.debug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
+                                // This will be processed in STA thread (below)
+                                // so that there are no memory conflicts in
+                                // callbacks to V8 environment.
+                                connections.Add(connection.id, connection);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.error(String.Format("Error queueing connection: {0}", ex.Message));
+                            }
+                            finally
+                            {
+                                concurrentThreads--;
+                            }
+                        }, listener);
+                    }
                 }
             }
             // Process queue (in STA thread)
@@ -339,9 +354,8 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// A connection object used for queueing 
-        /// incoming connections asynchronously
-        /// and processing them on STA thread
+        /// A connection object used for queueing incoming connections
+        /// asynchronously & processing them on STA thread.
         /// </summary>
         public class Connection {
 

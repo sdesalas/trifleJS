@@ -114,7 +114,7 @@ namespace TrifleJS.API.Modules
                 // Continue with Forms application logic until ready
                 while (browser.ReadyState != WebBrowserReadyState.Complete || browser.StatusText != "Done")
                 {
-                    Application.DoEvents();
+                    Program.DoEvents();
                 }
             }
             else

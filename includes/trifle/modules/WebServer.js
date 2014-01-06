@@ -22,7 +22,8 @@ trifle.modules = trifle.modules || {};
         console.xdebug("new WebServer()");
         // Instantiate a V8 WebServer object and stores it in internal API property
         this.API = trifle.API['WebServer']();
-        this.port = 0;
+        this.port = '';
+        this.objectName = 'WebServer';
     };
     
 	// Listen for incoming requests
@@ -40,9 +41,15 @@ trifle.modules = trifle.modules || {};
 				return !!callback ? callback.call(webserver, request, response) : null;
             }
         };
-        this.API.Listen(binding, (new trifle.Callback(complete)).id);
+        var result = this.API.Listen(binding, (new trifle.Callback(complete)).id);
         this.port = this.API.Port;
+        return result;
 	};
+	
+	// Shutdown the server
+	WebServer.prototype.close = function() {
+		this.API.Close();
+	}
 
 })(this.trifle);
 

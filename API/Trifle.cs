@@ -30,7 +30,10 @@ namespace TrifleJS.API
         /// <param name="milliseconds">Milliseconds to wait for</param>
         public void Wait(int milliseconds)
         {
-            Thread.Sleep(milliseconds);
+            int now = Environment.TickCount;
+            while (Environment.TickCount < now + milliseconds) {
+                Program.DoEvents();
+            }
         }
 
         // See below. These are a set of C# mid-tier classes that can be instantiated inside 
