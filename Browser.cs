@@ -36,17 +36,21 @@ namespace TrifleJS
             try
             {
                 System.UInt32 dWord;
-                switch (ieVersion)
+                switch (ieVersion.ToUpper())
                 {
-                    case "IE10_IgnoreDoctype": dWord = 0x2711u;
+                    case "IE11_IGNOREDOCTYPE": dWord = 0x2AF9u;
+                        break;
+                    case "IE11": dWord = 0x2AF8u;
+                        break;
+                    case "IE10_IGNOREDOCTYPE": dWord = 0x2711u;
                         break;
                     case "IE10": dWord = 0x02710u;
                         break;
-                    case "IE9_IgnoreDoctype": dWord = 0x270Fu;
+                    case "IE9_IGNOREDOCTYPE": dWord = 0x270Fu;
                         break;
                     case "IE9": dWord = 0x2328u;
                         break;
-                    case "IE8_IgnoreDoctype": dWord = 0x22B8u;
+                    case "IE8_IGNOREDOCTYPE": dWord = 0x22B8u;
                         break;
                     case "IE8": dWord = 0x1F40u;
                         break;
@@ -65,7 +69,7 @@ namespace TrifleJS
 #endif
             }
             catch {
-                Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\".", ieVersion));
+                Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\" or \"IE11\".", ieVersion));
                 return false;
             }
             return true;
