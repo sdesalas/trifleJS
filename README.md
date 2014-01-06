@@ -35,7 +35,7 @@ Some of the big ticket items currently missing from the automation are:
 - Cookies
 - IE Windows (File Upload, SSL Certificate Error)
 - Mouse / Keyboard interaction
-- WebServer and ChildProcess modules
+- ChildProcess module
 
 Some items that are being deliberately left out:
 
