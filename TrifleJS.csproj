@@ -70,6 +70,9 @@
     <Compile Include="API\Console.cs" />
     <Compile Include="API\Modules\FileSystem.cs" />
     <Compile Include="API\Context.cs" />
+    <Compile Include="IgnoreCertErrorBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,6 +140,7 @@
     <Resource Include="includes\init.js" />
     <None Include="includes\trifle\ie\tools.js" />
     <Content Include="includes\trifle\modules\WebServer.js" />
+    <Content Include="test\feature\opts.ignore-ssl.js" />
     <Content Include="test\feature\page.onAlert.js" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\ie\json2.js" />
@@ -145,7 +149,7 @@
     <Content Include="includes\trifle\modules\WebPage.js" />
     <Content Include="test\feature\console.log.js">
     </Content>
-    <Content Include="test\feature\proxy.js" />
+    <Content Include="test\feature\opts.proxy.js" />
     <Content Include="test\feature\fs.changeWorkingDirectory.js" />
     <Content Include="test\feature\page.customHeaders.js" />
     <Content Include="test\feature\page.evaluate.js" />

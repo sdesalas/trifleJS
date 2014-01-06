@@ -38,12 +38,12 @@ function checkRequest(request, response) {
         if (request.headers["Content-Type"] && request.headers["Content-Type"] === "application/x-www-form-urlencoded") {
             expect(typeof request.post).toEqual('object');
             expect(request.post).toEqual(expectedPostData);
-            expect(request.hasOwnProperty('postRaw')).toBeTruthy();
+            expect(request.postRaw).toBeTruthy();
             expect(typeof request.postRaw).toEqual('string');
         } else {
             expect(typeof request.post).toEqual('string');
             expect(request.post).toNotEqual(expectedPostData);
-            expect(request.hasOwnProperty('postRaw')).toBeFalsy();
+            expect(request.postRaw).toBeFalsy();
         }
         expectedPostData = false;
     }

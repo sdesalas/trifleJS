@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using TrifleJS.Properties;
 
 namespace TrifleJS
@@ -33,11 +36,12 @@ namespace TrifleJS
             Console.WriteLine("Usage: triflejs.exe [options] somescript.js [argument [argument [...]]]");
             Console.WriteLine();
             Console.WriteLine("Options: ");
-            Console.WriteLine("  --debug                     Prints additional warning and debug messages.");
-            Console.WriteLine("  --proxy=address:port        Specifies proxy server to use.");
-            Console.WriteLine("  --proxy-auth=user:passw     Authentication information for the proxy.");
-            Console.WriteLine("  --render=<url>              Opens a url, renders into a file and quits.");
-            Console.WriteLine("  --emulate=<version>         Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
+            Console.WriteLine("  --debug                           Prints additional warning and debug messages.");
+            //Console.WriteLine("  --ignore-ssl-errors=[true|false]  Ignores SSL errors (cert expired, invalid etc). Defaults to 'false'.");
+            Console.WriteLine("  --proxy=[address:port]            Specifies proxy server to use.");
+            Console.WriteLine("  --proxy-auth=[user:passw]         Authentication information for the proxy.");
+            Console.WriteLine("  --render=[url]                    Opens a url, renders into a file and quits.");
+            Console.WriteLine("  --emulate=[version]               Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
             Console.WriteLine();
             Console.WriteLine("  -h, --help                  Show this message and quits");
             Console.WriteLine("  -t, --test                  Runs a System Test and quits");
@@ -105,6 +109,11 @@ namespace TrifleJS
                         break;
                     case "--proxy-type":
                         Proxy.type = arg.Replace("--proxy-type=", "");
+                        break;
+                    case "--ignore-ssl-errors":
+                        if (arg.Replace("--ignore-ssl-errors=", "").ToLower().Equals("true")) {
+                            // TODO
+                        }
                         break;
                     default:
                         commandLoop.Add(arg);

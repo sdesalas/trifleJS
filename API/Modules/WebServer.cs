@@ -108,18 +108,16 @@ namespace TrifleJS.API.Modules
                     }
                 }
             }
-            // Process queue (in STA thread)
-            string[] processQueue = new string[connections.Count];
+
+            // Process queue (in STA thread) to avoid COM memory issues
             try
             {
                 // Sometimes a new connection gets inserted
                 // into the queue asyncronously, causing
-                // the statement below to fail.
+                // the new List<string>() statement below to fail.
                 // In these cases we just ignore the error
                 // and wait for the next pass to read the queue.
-                connections.Keys.CopyTo(processQueue, 0);
-                // Loop through connections in process queue
-                foreach (string connectionId in processQueue)
+                foreach (string connectionId in new List<string>(connections.Keys))
                 {
                     Connection connection = connections[connectionId];
                     if (connection != null && !connection.isProcessing)
@@ -176,7 +174,16 @@ namespace TrifleJS.API.Modules
                 {
                     this.rawPost = reader.ReadToEnd();
                     if (request.ContentType != null && request.ContentType.Contains("application/x-www-form-urlencoded")) {
-                        this.post = Uri.UnescapeDataString(this.rawPost);
+                        Dictionary<string, object> post = new Dictionary<string, object>();
+                        string[] fields = this.rawPost.Split('&');
+                        Array.Sort<string>(fields);
+                        foreach(string field in fields) {
+                            string[] fieldData = field.Split('=');
+                            if (fieldData.Length > 1) {
+                                post.Add(fieldData[0], fieldData[1]);
+                            }
+                        }
+                        this.post = post;
                     } else {
                         this.post = rawPost;
                     }
@@ -222,7 +229,7 @@ namespace TrifleJS.API.Modules
             /// <summary>
             /// The request body (only for 'POST' and 'PUT' method requests)
             /// </summary>
-            public string post { get; set; }
+            public object post { get; set; }
 
             /// <summary>
             /// If the Content-Type header is set to 'application/x-www-form-urlencoded' 

@@ -7,18 +7,25 @@ using mshtml;
 namespace TrifleJS
 {
     /// <summary>
-    /// This class automates the WebBrowser control by bypassing common dialogs (Error, Authentication, Security etc)
-    /// It effectively tries hides away all the ugliness of MSHTML COM+ API
+    /// This class automates the WebBrowser control by bypassing common dialogs (Error, Authentication, Security etc).
+    /// It effectively tries hides away all the ugliness of MSHTML COM+ API.
+    /// This is an abstract class and its intended use is as a base class for another webbrowser class to inherit from.
     /// @see http://www.journeyintocode.com/2013/08/c-webbrowser-control-proxy.html
     /// @see http://social.msdn.microsoft.com/Forums/ie/en-US/8b0712ca-0b92-4e3d-a243-27af57a57213/idochostshowui-problem-c-webbrowser?forum=ieextensiondevelopment
+    /// @see http://jiangsheng.net/2013/07/17/howto-ignoring-web-browser-certificate-errors-in-webbrowser-host/
     /// </summary>
-    public class AutomatedBrowser : WebBrowser, IOleClientSite, IServiceProvider, IAuthenticate, IOleDocumentSite
+    public abstract class AutomatedBrowser : WebBrowser, IOleDocumentSite, IOleClientSite, IServiceProvider, IAuthenticate
     {
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern bool InternetSetOption(IntPtr hInternet, int dwOption,
             IntPtr lpBuffer, int lpdwBufferLength);
-        private Guid IID_IAuthenticate = new Guid("79eac9d0-baf9-11ce-8c82-00aa004ba90b");
+        internal static Guid IID_IAuthenticate = new Guid("79eac9d0-baf9-11ce-8c82-00aa004ba90b");
+        internal static Guid IID_IHttpSecurity = new Guid("79eac9d7-bafa-11ce-8c82-00aa004ba90b");
+        internal static Guid IID_IWindowForBindingUI = new Guid("79eac9d5-bafa-11ce-8c82-00aa004ba90b");
         private const int INET_E_DEFAULT_ACTION = unchecked((int)0x800C0011);
+        private const int E_NOINTERFACE = unchecked((int)0x80004002);
+        private const int RPC_E_RETRY = unchecked((int)0x80010109);
+        private const int S_FALSE = 1;
         private const int S_OK = unchecked((int)0x00000000);
 
         /// <summary>
@@ -36,6 +43,7 @@ namespace TrifleJS
             oc.SetClientSite(this as IOleClientSite);
         }
 
+
         #region IOleClientSite Members
 
         public void SaveObject() { }
@@ -44,7 +52,7 @@ namespace TrifleJS
 
         public void GetContainer(object ppContainer)
         {
-            ppContainer = this.Container;
+            ppContainer = this.Site.Container;
         }
 
         public void ShowObject() { }
@@ -59,6 +67,14 @@ namespace TrifleJS
 
         public int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject)
         {
+            if (guidService == IID_IAuthenticate && riid == IID_IAuthenticate)
+            {
+                ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IAuthenticate));
+                return S_OK;
+            }
+            ppvObject = IntPtr.Zero;
+            return E_NOINTERFACE;
+            /*
             int nRet = guidService.CompareTo(IID_IAuthenticate);
             if (nRet == 0)
             {
@@ -71,7 +87,7 @@ namespace TrifleJS
             }
 
             ppvObject = new IntPtr();
-            return INET_E_DEFAULT_ACTION;
+            return INET_E_DEFAULT_ACTION;*/
         }
 
         #endregion
@@ -182,9 +198,9 @@ namespace TrifleJS
             return new AutomatedWebBrowserSite(this);
         }
 
-        protected class AutomatedWebBrowserSite : WebBrowser.WebBrowserSite, IDocHostShowUI
+        protected class AutomatedWebBrowserSite : WebBrowserSite, IServiceProvider, IDocHostShowUI, IHttpSecurity, IWindowForBindingUI
         {
-            private readonly AutomatedBrowser host;
+            private AutomatedBrowser host;
 
             public AutomatedWebBrowserSite(AutomatedBrowser host)
                 : base(host)
@@ -213,6 +229,52 @@ namespace TrifleJS
             int IDocHostShowUI.ShowHelp(IntPtr hwnd, string pszHelpFile, uint uCommand, uint dwData, tagPOINT ptMouse, object pDispatchObjectHit)
             {
                 return Hresults.E_NOTIMPL;
+            }
+
+            #endregion
+
+            #region IServiceProvider Members
+
+            public int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject)
+            {
+                if (riid == IID_IHttpSecurity)
+                {
+                    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IHttpSecurity));
+                    return S_OK;
+                }
+                if (riid == IID_IWindowForBindingUI)
+                {
+                    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(IWindowForBindingUI));
+                    return S_OK;
+                }
+                ppvObject = IntPtr.Zero;
+                return E_NOINTERFACE;
+            }
+
+            #endregion
+
+            #region IHttpSecurity
+
+            public int GetWindow(ref Guid rguidReason, ref IntPtr phwnd)
+            {
+                if (rguidReason == IID_IHttpSecurity
+                    || rguidReason == IID_IWindowForBindingUI)
+                {
+                    phwnd = this.host.Handle;
+                    return S_OK;
+                }
+                else
+                {
+                    phwnd = IntPtr.Zero;
+                    return S_FALSE;
+                }
+            }
+
+            public int OnSecurityProblem(uint dwProblem)
+            {
+                //ignore errors
+                //undocumented return code, does not work on IE6
+                return S_OK;
             }
 
             #endregion
@@ -354,6 +416,28 @@ namespace TrifleJS
         [PreserveSig]
         int Authenticate(ref IntPtr phwnd, ref IntPtr pszUsername, ref IntPtr pszPassword);
     }
+
+    [ComImport()]
+    [ComVisible(true)]
+    [Guid("79eac9d5-bafa-11ce-8c82-00aa004ba90b")]
+    [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IWindowForBindingUI
+    {
+        [return: MarshalAs(UnmanagedType.I4)]
+        [PreserveSig]
+        int GetWindow([In] ref Guid rguidReason, [In, Out] ref IntPtr phwnd);
+    }
+
+    [ComImport()]
+    [ComVisible(true)]
+    [Guid("79eac9d7-bafa-11ce-8c82-00aa004ba90b")]
+    [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IHttpSecurity : IWindowForBindingUI
+    {
+        [PreserveSig]
+        int OnSecurityProblem([In, MarshalAs(UnmanagedType.U4)] uint dwProblem);
+    }
+
 
     [ComImport, GuidAttribute("b722bcc7-4e68-101b-a2bc-00aa00404770"),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown) ]

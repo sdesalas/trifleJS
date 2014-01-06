@@ -1,9 +1,9 @@
 ﻿
-// triflejs.exe ..\..\test\feature\proxy.js --proxy=localhost:8080 --proxy-auth=MacUser:123456
+// triflejs.exe ..\..\test\feature\opts.ignore-ssl.js --ignore-ssl-errors=true
 
 var page = require("webpage").create();
 
-page.open("http://www.triflejs.org", function(status) {
+page.open("https://localhost", function(status) {
     if (status === 'success') {
         page.render("triflejs.org.png");
         console.log('Page rendered');
@@ -12,4 +12,3 @@ page.open("http://www.triflejs.org", function(status) {
     }
     phantom.exit();
 });
-
