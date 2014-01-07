@@ -180,7 +180,7 @@ namespace TrifleJS.API.Modules
                         foreach(string field in fields) {
                             string[] fieldData = field.Split('=');
                             if (fieldData.Length > 1) {
-                                post.Add(fieldData[0], fieldData[1]);
+                                post.Add(fieldData[0], Uri.UnescapeDataString(field.Replace(fieldData[0], "")));
                             }
                         }
                         this.post = post;
