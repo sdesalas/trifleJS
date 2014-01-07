@@ -9,7 +9,7 @@ The API is coded as a port of [PhantomJS](http://phantomjs.org). Basically, if y
 
 It supports different version of IE interchangeably depending on the current version installed (IE9 can emulate IE7, IE8 or IE9 but not IE10).
 
-    C:\> TrifleJS.exe --emulate=IE8 --render:http://whatbrowser.org/
+    C:\> TrifleJS.exe --emulate=IE8 --render=http://whatbrowser.org/
 
 ![IE 8](https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png "Running as IE 8")
 
