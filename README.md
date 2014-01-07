@@ -9,7 +9,7 @@ The API is coded as a port of [PhantomJS](http://phantomjs.org). Basically, if y
 
 It supports different version of IE interchangeably depending on the current version installed (IE9 can emulate IE7, IE8 or IE9 but not IE10).
 
-    C:\> TrifleJS.exe --emulate:IE8 --render:http://whatbrowser.org/
+    C:\> TrifleJS.exe --emulate=IE8 --render:http://whatbrowser.org/
 
 ![IE 8](https://raw.github.com/sdesalas/trifleJS/master/Docs/whatbrowser.org.IE8.png "Running as IE 8")
 
@@ -28,6 +28,7 @@ For detailed information on which methods are available please refer to [triflej
 - [Module: WebPage](http://triflejs.org#post-20)
 - [Module: System](http://triflejs.org#post-24)
 - [Module: FileSystem](http://triflejs.org#post-27)
+- [Module: WebServer](http://triflejs.org#post-63)
 - [Command Line Options](http://triflejs.org#post-29)
 
 Some of the big ticket items currently missing from the automation are: 
