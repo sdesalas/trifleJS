@@ -90,6 +90,29 @@
         version: API.trifle.Version,
         wait: function(ms) {
             return API.trifle.Wait(ms || 0);
+        },
+        extendModule: function(config) {
+            if (!config || !config.name || trifle.API[config.name]) {
+                throw new Error("Module does not exist: " + ((config) ? config.name : "NULL"));
+            }
+            return function() {
+                var API = trifle.API[name]();
+                // Execute constructor on API context
+                if (config.constructor) {
+                    config.constructor.call(API);
+                }
+                // Add methods with pointer to original API call
+                if (config.methods) {
+                    for (var prop in config.methods) {
+                        var original = API[prop];
+                        API[prop] = function() {
+                            return config.methods[prop].call(original, arguments);
+                        };
+                    }
+                }
+                // Return the API
+                return API;
+            }
         }
     };
 
