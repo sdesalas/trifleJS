@@ -17,22 +17,18 @@ trifle.modules = trifle.modules || {};
 (function(trifle) {
 
 
-    // Define Constructor
-    var System = trifle.modules.System = function() {
-        console.xdebug("new System()");
-        // Instantiate a V8 System object and stores it in internal API property
-        this.API = trifle.API['System']();
-        // Populate other properties
-        this.args = this.API.Args;
-        this.pid = this.API.PID;
-        this.platform = 'phantom';
-        this.env = this.API.Env;
-        this.os = {
-			name: this.API.Name,
-			architecture: this.API.Architecture,
-			version: this.API.Version
-        };
-    }
+    // Define Module
+    var System = trifle.modules.System = trifle.extend({
+    
+		// Derives functionality from System.cs
+		module: trifle.API.System,
+		
+		// Constructor
+		init: function() {
+			console.xdebug("new System()");
+        }
+        
+    });
 
 
 })(this.trifle);

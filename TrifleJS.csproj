@@ -165,6 +165,7 @@
     <Content Include="test\feature\page.zoomFactor.js" />
     <Content Include="test\feature\phantom.injectJs.js" />
     <Content Include="test\feature\phantom.libraryPath.js" />
+    <Content Include="test\feature\system.js" />
     <Content Include="test\feature\webserver.listen.js" />
     <Content Include="test\feature\window.setInterval.js">
     </Content>

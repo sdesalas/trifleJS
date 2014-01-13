@@ -14,14 +14,14 @@ namespace TrifleJS.API.Modules
         /// Changes the current working directory
         /// </summary>
         /// <param name="path"></param>
-        public void ChangeWorkingDirectory(string path) {
+        public void changeWorkingDirectory(string path) {
             if (Directory.Exists(path)) Environment.CurrentDirectory = path;
         }
 
         /// <summary>
         /// Gets the current working directory
         /// </summary>
-        public string WorkingDirectory {
+        public string workingDirectory {
             get { return Environment.CurrentDirectory; }
         }
 
@@ -30,7 +30,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public string Absolute(string path)
+        public string absolute(string path)
         {
             if (Directory.Exists(path))
             {
@@ -48,7 +48,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public string[] List(string path)
+        public string[] list(string path)
         {
             if (Directory.Exists(path))
             {
@@ -62,7 +62,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public long Size(string path)
+        public long size(string path)
         {
             if (File.Exists(path))
             {
@@ -76,8 +76,8 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool Exists(string path) {
-            return IsFile(path) || IsDirectory(path);
+        public bool exists(string path) {
+            return isFile(path) || isDirectory(path);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool IsFile(string path) {
+        public bool isFile(string path) {
             return File.Exists(path);
         }
 
@@ -94,7 +94,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool IsDirectory(string path) {
+        public bool isDirectory(string path) {
             return Directory.Exists(path);
         }
 
@@ -103,7 +103,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public string Read(string path)
+        public string read(string path)
         {
             if (File.Exists(path))
             {
@@ -116,7 +116,7 @@ namespace TrifleJS.API.Modules
         /// Deletes a file
         /// </summary>
         /// <param name="path"></param>
-        public void Remove(string path)
+        public void remove(string path)
         {
             if (File.Exists(path))
             {

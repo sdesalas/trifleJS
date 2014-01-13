@@ -23,7 +23,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="bindings"></param>
         /// <param name="callbackId"></param>
-        public bool Listen(string binding, string callbackId) {
+        public bool _listen(string binding, string callbackId) {
             // Start & Run HTTP daemon
             try
             {
@@ -51,14 +51,21 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// The port where the server is listening
         /// </summary>
-        public string Port {
+        public string port {
             get { return (this.binding != null) ? this.binding.Port.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// PhantomJS API tests require an objectName property, not sure why.
+        /// </summary>
+        public string objectName {
+            get { return "WebServer"; }
         }
 
         /// <summary>
         /// Shuts down the server
         /// </summary>
-        public void Close() {
+        public void close() {
             if (this.listener != null) {
                 this.listener.Stop();
                 this.listener = null;
@@ -141,7 +148,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="connectionId"></param>
         /// <returns></returns>
-        public Request GetRequest(string connectionId) {
+        public Request _getRequest(string connectionId) {
             Connection connection = connections[connectionId];
             if (connection != null) {
                 return connection.request;
@@ -154,7 +161,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="connectionId"></param>
         /// <returns></returns>
-        public Response GetResponse(string connectionId) {
+        public Response _getResponse(string connectionId) {
             Connection connection = connections[connectionId];
             if (connection != null)
             {

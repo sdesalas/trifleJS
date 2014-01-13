@@ -9,13 +9,24 @@ namespace TrifleJS.API.Modules
 {
     /// <summary>
     /// Defines a set of system tools 
+    /// @see https://github.com/ariya/phantomjs/wiki/API-Reference-System
     /// </summary>
     public class System
     {
         /// <summary>
+        /// Constructor
+        /// </summary>
+        public System() {
+            this.os = new Dictionary<string, string>();
+            this.os.Add("architecture", GetArchitecture());
+            this.os.Add("name", "windows");
+            this.os.Add("version", GetVersion());
+        }
+
+        /// <summary>
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
-        public static string[] Args
+        public string[] args
         {
             get { return Program.args; }
         }
@@ -23,38 +34,39 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Returns the Thread ID for the currently executing OS process.
         /// </summary>
-        public static string PID {
+        public string pid {
             get { return AppDomain.GetCurrentThreadId().ToString(); }
         }
 
         /// <summary>
         /// Returns a list of environmental variables
         /// </summary>
-        public static IDictionary Env {
+        public IDictionary env {
             get {
                 return Environment.GetEnvironmentVariables();
             }
         }
 
         /// <summary>
-        /// Gets OS architecture (32/64 bit)
+        /// Internal platform, always "phantomjs"
         /// </summary>
-        public string Architecture {
-            get { return GetArchitecture(); }
+        public string platform {
+            get {
+                return "phantomjs";
+            }
+        }
+
+        private string _blah;
+        public string blah(string text) {
+            this._blah = text;
+            return text;
         }
 
         /// <summary>
-        /// Gets OS name (windows)
+        /// Operating system information
         /// </summary>
-        public string Name {
-            get { return "windows"; }
-        }
-
-        /// <summary>
-        /// Gets OS Version (XP/Vista/7 etc)
-        /// </summary>
-        public string Version {
-            get { return GetVersion(); }
+        public Dictionary<string, string> os {
+            get; set;
         }
 
         private string GetArchitecture() { 
