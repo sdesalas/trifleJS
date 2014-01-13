@@ -90,6 +90,24 @@
         version: API.trifle.Version,
         wait: function(ms) {
             return API.trifle.Wait(ms || 0);
+        },
+        // extends a module class
+        extend: function(config) {
+            if (!config || !config.module || !config.module.call) {
+                throw new Error('trifle.extend() called incorrectly');
+            }
+            return function() {
+                var API = config.module();
+                if (config.init) {
+                    config.init.apply(API, arguments);
+                }
+                if (config.methods) {
+                    for(var method in config.methods) {
+                        API[method] = config.methods[method];
+                    }
+                }
+                return API;
+            }
         }
     };
 
