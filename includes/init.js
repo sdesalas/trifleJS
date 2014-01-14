@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
 * init.js
 *
 * By: Steven de Salas
@@ -174,7 +174,7 @@
     };
 
     // Defines require() method
-    var require = GLOBAL.require = function(name) {
+    var require = GLOBAL.require = function (name) {
 
         if (!exports[name]) {
             console.error('require() -- Invalid module: ' + name);
@@ -182,9 +182,9 @@
         }
 
         var module = exports[name]();
-        module.create = function() {
+        module.create = function () {
             return this;
-        }
+        };
 
         return module;
     }
