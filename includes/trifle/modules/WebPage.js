@@ -11,202 +11,163 @@
 
 // Initialise Namespace
 this.trifle = this.trifle || {};
-trifle.modules = trifle.modules || {};
+this.trifle.modules = this.trifle.modules || {};
 
 // Wrap code to avoid global vars
-(function(trifle) {
+(function (trifle) {
 
-	// PRIVATE: Copies properties into V8 after initializing or loading a URL into the browser
-	var getProperties = function(page) {
-		if (page) {
-			// Get/Set
-			page.customHeaders = page.customHeaders || {};
-			page.viewportSize = page.viewportSize || page.API.GetViewportSize();
-			page.zoomFactor = page.zoomFactor || 1.0;
-			// Get only
-			page.content = page.API.Content;
-            page.plainText = page.API.PlainText;
-            page.url = page.API.Url;
-            page.title = page.API.Title;
-        }
-	};
-	
-	// PRIVATE: Ensures that C# has a representative view of properties set inside V8 engine
-	var syncProperties = function(page) {
-        // Viewport Size
-        if (typeof page.viewportSize === "object") {
-			page.API.SetViewportSize(page.viewportSize.width || 0, page.viewportSize.height || 0);
-        }
-        if (typeof page.zoomFactor === "number" && page.zoomFactor > 0) {
-			page.API.ZoomFactor = page.zoomFactor;
-        }
-    };
+    // Define Module
+    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = trifle.extend({
+		
+		// Derives functionality from WebPage.cs
+		module: trifle.API.WebPage,
 
-    // Define Constructor
-    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = function() {
-        console.xdebug("new WebPage()");
-        // Instantiate a V8 WebPage object and stores it in internal API property
-        this.API = trifle.API['WebPage']();
-        // Load properties
-		getProperties(this);
-		// Fire Initialized event
-        if (this.onInitialized) {
-            page.onInitialized.call(this);
-        }
-    };
-
-    // Open URL
-    WebPage.prototype.open = function() {
-        console.xdebug("WebPage.prototype.open()");
-        var page = this, a = arguments;
-        // Determine the arguments to use
-        var url = a[0], method = "GET", data, headers, callback;
-        // Using: page.open(url, method, data, callback)
-        if (typeof a[4] === "function") {
-			method = a[1];
-			data = a[2];
-			headers = a[3];
-			callback = a[4];
-        }
-        // Using: page.open(url, method, data, callback)
-        if (typeof a[3] === "function") {
-			method = a[1];
-			data = a[2];
-			callback = a[3];
-        }
-        // Using: page.open(url, method, callback)
-        else if (typeof a[2] === "function") {
-			method = a[1];
-			callback = a[2];
-        }
-        // Using: page.open(url, callback)
-        else if (typeof a[1] === "function") {
-			callback = a[1];
-        }
-        // Fire LoadStarted event
-        if (this.onLoadStarted) {
-            page.onLoadStarted.call(this);
-        }
-        // Instantiate Callback
-        var complete = function(status) {
-            // Fire LoadFinished event
-            if (page.onLoadFinished) {
-                page.onLoadFinished.call(page, status);
-            }
-            // Load additional properties for current page
-			getProperties(page);
-            // Execute callback
-            if (callback && callback.call) {
-				return !!callback ? callback.call(page, status) : null;
-            }
-        };
-        // Load custom headers
-        if (typeof this.customHeaders === "object") {
-			var headerBuilder = [];
-			this.customHeaders = headers || this.customHeaders;
-			for (var prop in this.customHeaders) {
-				headerBuilder.push(prop + ': ' + this.customHeaders[prop] + '\r\n');
+        // Constructor
+		init: function() {
+			console.xdebug("new WebPage()");
+			// Properties
+			this.objectName = "WebPage";
+			// Fire Initialized event
+			if (this.onInitialized) {
+				this.onInitialized.call(this);
 			}
-			this.API.CustomHeaders = headerBuilder.join('');
-        }
-        // Sync properties
-        syncProperties(this);
-        // Open URL in .NET API
-		return this.API.Open(url, method, data, (new trifle.Callback(complete)).id);
-    };
+		},
+		
+		// Additional methods
+		methods: {
+
+            // Opens a URL
+			open: function() {
+				console.xdebug("WebPage.prototype.open()");
+				var page = this, a = arguments;
+				// Determine the arguments to use
+				var url = a[0], method = "GET", data, headers, callback;
+				// Using: page.open(url, method, data, callback)
+				if (typeof a[4] === "function") {
+					method = a[1];
+					data = a[2];
+					headers = a[3];
+					callback = a[4];
+				}
+				// Using: page.open(url, method, data, callback)
+				if (typeof a[3] === "function") {
+					method = a[1];
+					data = a[2];
+					callback = a[3];
+				}
+				// Using: page.open(url, method, callback)
+				else if (typeof a[2] === "function") {
+					method = a[1];
+					callback = a[2];
+				}
+				// Using: page.open(url, callback)
+				else if (typeof a[1] === "function") {
+					callback = a[1];
+				}
+				// Fire LoadStarted event
+				if (this.onLoadStarted) {
+					page.onLoadStarted.call(this);
+				}
+				// Instantiate Callback
+				var complete = function(status) {
+					// Fire LoadFinished event
+					if (page.onLoadFinished) {
+						page.onLoadFinished.call(page, status);
+					}
+					// Execute callback
+					if (callback && callback.call) {
+						return !!callback ? callback.call(page, status) : null;
+					}
+				};
+				// Open URL in .NET API
+				return this._open(url, method, data, (new trifle.Callback(complete)).id);
+			},
+
+            // Executes a JavaScript code string in the browser
+			evaluateJavaScript: function(code) {
+				console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
+				if (code && typeof code === "string") {
+					// Set current page (for WebPage events)
+					WebPage.current = this;
+					// Execute JS on IE host
+					return this._evaluateJavaScript(code);
+				}
+			},
+
+
+            // Executes a javascript function inside the browser
+			evaluate: function(func) {
+				console.xdebug("WebPage.prototype.evaluate(func)");
+				if (typeof func === 'function') {
+					var args = [];
+					for (var i = 1; i < arguments.length; i++) {
+						// Fix undefined (coming up as null)
+						if (arguments[i] === undefined) {
+							arguments[i] = "{{undefined}}";
+						}
+						args.push(arguments[i]);
+					}
+					// Set current page (for WebPage events)
+					WebPage.current = this;
+					// Execute JS on IE host
+					return this._evaluate(func.toString(), args);
+				}
+				return null;
+			},
+
+            // Injects a local JavaScript file into the browser
+			injectJs: function(filename) {
+				console.xdebug("WebPage.prototype.injectJs(filename)");
+				if (typeof filename === 'string') {
+					// Set current page (for WebPage events)
+					WebPage.current = this;
+					// Execute JS on IE host
+					return this._injectJs(filename);
+				}
+			},
+
+            // Includes a JS file from remote URL and executes it on the browser
+			includeJs: function(url, callback) {
+				console.xdebug("WebPage.prototype.includeJs(url, callback)");
+				var page = this;
+				if (typeof url === 'string') {
+					var complete = function() {
+						if (callback && callback.call) {
+							callback.call(page);
+						}
+					};
+					// Set current page (for WebPage events)
+					WebPage.current = this;
+					// Execute JS on IE host
+					return this._includeJs(url, (new trifle.Callback(complete)).id);
+				}
+			},
+
+            /**
+             * Renders screen to a file
+             * @param filename
+             * @return {*}
+             */
+			render: function(filename) {
+				console.xdebug("WebPage.prototype.render(filename)");
+				if (filename) {
+					return this._render(filename)
+				};
+			},
+
+            /**
+             * Renders screen to base64 string
+             * @param format
+             * @return {*}
+             */
+			renderBase64: function(format) {
+				console.xdebug("WebPage.prototype.renderBase64(format)");
+				return this._renderBase64(format || "PNG");
+			}
+				
+		}
     
-    // Closes the webpage and releases memory
-    WebPage.prototype.close = function() {
-        console.xdebug("WebPage.prototype.close()");
-		this.API.Close();
-    }
-
-    // Evaluate JS
-    WebPage.prototype.evaluateJavaScript = function(code) {
-        console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
-        if (code && typeof code === "string") {
-            // Set current page (for WebPage events)
-            WebPage.current = this;
-			// Sync properties
-			syncProperties(this);
-            // Execute JS on IE host
-            return this.API.EvaluateJavaScript(code);
-        }
-    };
-
-    // Evaluate Function
-    WebPage.prototype.evaluate = function(func) {
-        console.xdebug("WebPage.prototype.evaluate(func)");
-        if (typeof func === 'function') {
-            var args = [];
-            for (var i = 1; i < arguments.length; i++) {
-                // Fix undefined (coming up as null)
-                if (arguments[i] === undefined) {
-                    arguments[i] = "{{undefined}}";
-                }
-                args.push(arguments[i]);
-            }
-            // Set current page (for WebPage events)
-            WebPage.current = this;
-			// Sync properties
-			syncProperties(this);
-            // Execute JS on IE host
-            return this.API.Evaluate(func.toString(), args);
-        }
-        return null;
-    };
-
-    // Inject JS file
-    WebPage.prototype.injectJs = function(filename) {
-        console.xdebug("WebPage.prototype.injectJs(filename)");
-        if (typeof filename === 'string') {
-            // Set current page (for WebPage events)
-            WebPage.current = this;
-			// Sync properties
-			syncProperties(this);
-            // Execute JS on IE host
-            return this.API.InjectJs(filename);
-        }
-    }
-
-    // Include remote JS
-    WebPage.prototype.includeJs = function(url, callback) {
-        console.xdebug("WebPage.prototype.includeJs(url, callback)");
-        var page = this;
-        if (typeof url === 'string') {
-            var complete = function() {
-                if (callback && callback.call) {
-                    callback.call(page);
-                }
-            };
-            // Set current page (for WebPage events)
-            WebPage.current = this;
-			// Sync properties
-			syncProperties(this);
-            // Execute JS on IE host
-            return this.API.IncludeJs(url, (new trifle.Callback(complete)).id);
-        }
-    }
-
-
-    // Render File
-    WebPage.prototype.render = function(filename) {
-        console.xdebug("WebPage.prototype.render(filename)");
-        if (filename) {
-			// Sync properties
-			syncProperties(this);
-            return this.API.Render(filename)
-        };
-    }
-
-    // Render to Base64 string
-    WebPage.prototype.renderBase64 = function(format) {
-        console.xdebug("WebPage.prototype.renderBase64(format)");
-		// Sync properties
-		syncProperties(this);
-        return this.API.RenderBase64(format || "PNG");
-    }
-   
+    });
 
     // STATIC PROPERTIES
 

@@ -14,7 +14,7 @@ this.trifle = this.trifle || {};
 trifle.modules = trifle.modules || {};
 
 // Wrap code to avoid global vars
-(function(trifle) {
+(function (trifle) {
 
     // Define Module
     var WebServer = trifle.modules.WebServer = trifle.extend({
@@ -25,11 +25,13 @@ trifle.modules = trifle.modules || {};
 		// Constructor
 		init: function() {
 			console.xdebug("new WebServer()");
+			// Properties
+			this.objectName = "WebServer";
         },
         
         // Additional methods
         methods: {
-        
+
 			// Listen for incoming requests
 			listen: function(binding, callback) {
 				console.xdebug("Webserver.prototype.listen(binding, callback)");

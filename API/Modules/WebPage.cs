@@ -18,38 +18,43 @@ namespace TrifleJS.API.Modules
 
         public WebPage() {
             this.browser = new Browser();
-            this.browser.InitializeOLE();
-            this.browser.Size = new Size(1024, 800); // TODO: Remove this and set viewport on page load to full size
+            this.browser.Size = new Size(800, 600); 
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
-            this.AddToolset();
+            if (this.browser.Url.ToString().Equals("about:blank")) {
+                this.AddToolset();
+            }
+            // Initialize properties
+            this.customHeaders = new Dictionary<string, object>();
+            this.zoomFactor = 1;
+
         }
 
         /// <summary>
         /// Returns the title of the current page
         /// </summary>
-        public string Title {
+        public string title {
             get { return (this.browser != null) ? this.browser.DocumentTitle : String.Empty; }
         }
 
         /// <summary>
         /// Returns the current url
         /// </summary>
-        public string Url {
+        public string url {
             get { return (this.browser != null && this.browser.Url != null) ? this.browser.Url.AbsoluteUri : String.Empty; }
         }
 
         /// <summary>
         /// Gets the HTML content of the document
         /// </summary>
-        public string Content {
+        public string content {
             get { return (this.browser != null) ? this.browser.DocumentText : String.Empty; }
         }
 
         /// <summary>
         /// Gets the Plain Text content of the document
         /// </summary>
-        public string PlainText {
+        public string plainText {
             get { return (this.browser != null 
                         && this.browser.Document != null 
                         && this.browser.Document.Body != null 
@@ -62,15 +67,23 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// List of key/value pairs for custom headers to send to the server
         /// </summary>
-        public string CustomHeaders { get; set; }
+        public Dictionary<string, object> customHeaders { get; set; }
 
         /// <summary>
-        /// Opens a url using GET request and executes a callback
+        /// A string of HTTP headers
         /// </summary>
-        /// <param name="url">URL location</param>
-        /// <param name="callbackId">id of the callback to execute</param>
-        public void Open(string url, string callbackId) {
-            Open(url, "GET", null, callbackId);
+        private string ParsedHeaders {
+            get {
+                StringBuilder output = new StringBuilder();
+                if (customHeaders != null)
+                {
+                    foreach (string key in customHeaders.Keys)
+                    {
+                        output.AppendLine(String.Format("{0}:{1}\r\n", key, customHeaders[key]));
+                    }
+                }
+                return output.ToString();
+            }
         }
 
         /// <summary>
@@ -80,17 +93,18 @@ namespace TrifleJS.API.Modules
         /// <param name="method"></param>
         /// <param name="data"></param>
         /// <param name="callbackId"></param>
-        public void Open(string url, string method, string data, string callbackId) {
-            Console.log("Opening " + url);
+        public void _open(string url, string method, string data, string callbackId) {
             // Check the URL
             Uri uri = Browser.TryParse(url);
             if (uri != null)
             {
                 // Navigate to URL
-                browser.Navigate(uri, method, data, CustomHeaders);
+                browser.Navigate(uri, method, data, ParsedHeaders);
                 // Define what happens when browser finishes loading the page
                 browser.DocumentCompleted += delegate
                 {
+                    // Set size to document size
+                    browser.Size = browser.Document.Window.Size; 
                     // DocumentCompleted is fired before window.onload and body.onload
                     // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                     browser.Document.Window.AttachEventHandler("onload", delegate
@@ -129,8 +143,8 @@ namespace TrifleJS.API.Modules
         private void AddToolset()
         {
             // Add toolset
-            EvaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
-            EvaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
+            _evaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
+            _evaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
         }
 
         /// <summary>
@@ -162,7 +176,7 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Closes the page and releases memory
         /// </summary>
-        public void Close() {
+        public void close() {
             this.browser.Dispose();
             this.browser = null;
         }
@@ -172,7 +186,7 @@ namespace TrifleJS.API.Modules
         /// @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
         /// </summary>
         /// <param name="code">code to inject into browser window</param>
-        public void EvaluateJavaScript(string code)
+        public void _evaluateJavaScript(string code)
         {
             HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
             if (head != null)
@@ -196,14 +210,14 @@ namespace TrifleJS.API.Modules
         /// <param name="function">javascript function to execute</param>
         /// <param name="args">arguments to pass the the function</param>
         /// <returns></returns>
-        public object Evaluate(string function, object[] args)
+        public object _evaluate(string function, object[] args)
         {
             string[] input;
             if (args == null) { input = new string[] {}; }
             else { input = Callback.Parse(args); }
             string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
             string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
-            EvaluateJavaScript(script);
+            _evaluateJavaScript(script);
             object result = browser.Document.InvokeScript(guid);
             return result;
         }
@@ -214,7 +228,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="url">URL of javascript file</param>
         /// <param name="callbackId"></param>
-        public void IncludeJs(string url, string callbackId)
+        public void _includeJs(string url, string callbackId)
         {
             Uri uri = Browser.TryParse(url);
             if (uri != null)
@@ -244,9 +258,9 @@ namespace TrifleJS.API.Modules
         /// Injects a JavaScript file into current active window
         /// </summary>
         /// <param name="filename">path of the javascript file to inject</param>
-        public void InjectJs(string filename) {
+        public void _injectJs(string filename) {
             if (File.Exists(filename)) {
-                EvaluateJavaScript(File.ReadAllText(filename));
+                _evaluateJavaScript(File.ReadAllText(filename));
             }
         }
 
@@ -254,9 +268,9 @@ namespace TrifleJS.API.Modules
         /// Takes a screenshot and saves into a file path
         /// </summary>
         /// <param name="filename">path where the screenshot is saved</param>
-        public void Render(string filename)
+        public void _render(string filename)
         {
-            browser.Render(filename, ZoomFactor);
+            browser.Render(filename, zoomFactor);
         }
 
         /// <summary>
@@ -264,9 +278,9 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public string RenderBase64(string format)
+        public string _renderBase64(string format)
         {
-            using (var pic = browser.Render(ZoomFactor))
+            using (var pic = browser.Render(zoomFactor))
             {
                 MemoryStream stream = new MemoryStream();
                 switch (format.ToUpper())
@@ -286,38 +300,51 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// Get size of the page for the layout process.
+        /// Get/Set Viewport size for layout process
         /// </summary>
-        public Dictionary<string, int> GetViewportSize()
-        {
-            return new Dictionary<string, int>() { 
-                {"width", browser.Size.Width},
-                {"height", browser.Size.Height}
-            };
-        }
-
-        /// <summary>
-        /// Sets the viewport size for the layout process
-        /// </summary>
-        /// <param name="size"></param>
-        public void SetViewportSize(int width, int height)
-        {
-            try
-            {
-                width = width > 0 ? width : browser.Size.Width;
-                height = height > 0 ? height : browser.Size.Height;
-                if (width != browser.Size.Width || height != browser.Size.Height)
-                {
-                    browser.Size = new Size(width, height);
-                }
+        public Dictionary<string, object> viewportSize {
+            get {
+                return new Dictionary<string, object>() { 
+                    {"width", browser.Size.Width},
+                    {"height", browser.Size.Height}
+                };
             }
-            catch { }
+            set {
+                try
+                {
+                    int width = browser.Size.Width;
+                    int height = browser.Size.Height;
+                    // Loop through input values and check width + height
+                    foreach (string key in value.Keys)
+                    {
+                        try
+                        {
+                            switch (key)
+                            {
+                                case "width":
+                                    width = Convert.ToInt32(value[key]);
+                                    break;
+                                case "height":
+                                    height = Convert.ToInt32(value[key]);
+                                    break;
+                            }
+                        }
+                        catch { }
+                    }
+                    // Check if anythings changed
+                    if (width != browser.Size.Width || height != browser.Size.Height)
+                    {
+                        browser.Size = new Size(width, height);
+                    }
+                }
+                catch { }
+            }
         }
 
         /// <summary>
         /// The scaling factor for WebPage.Render() and WebPage.RenderBase64()
         /// </summary>
-        public double ZoomFactor { get; set; }
+        public double zoomFactor;
 
     }
 }

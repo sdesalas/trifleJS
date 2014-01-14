@@ -56,13 +56,6 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// PhantomJS API tests require an objectName property, not sure why.
-        /// </summary>
-        public string objectName {
-            get { return "WebServer"; }
-        }
-
-        /// <summary>
         /// Shuts down the server
         /// </summary>
         public void close() {
