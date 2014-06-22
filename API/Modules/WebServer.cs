@@ -11,11 +11,10 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebServer
     {
-        private static Dictionary<string, HttpListener> activeBindings = new Dictionary<string, HttpListener>();
-        private static Dictionary<string, Connection> connections = new Dictionary<string, Connection>();
+        private static Dictionary<string, Server> processes = new Dictionary<string, Server>();
         private static int concurrentThreads = 0;
         private static int allowedThreads = 3;
-        private HttpListener listener;
+        private Server server;
         private Uri binding;
 
         /// <summary>
@@ -32,17 +31,17 @@ namespace TrifleJS.API.Modules
                 if (Int32.TryParse(binding, out port)) { this.binding = new Uri(String.Format("http://localhost:{0}/", port)); }
                 else if (!binding.Contains("http")) { this.binding = new Uri(String.Format("http//{0}", binding)); }
                 else { this.binding = new Uri(binding); }
-                listener = new HttpListener();
-                listener.Prefixes.Add(this.binding.AbsoluteUri);
-                listener.Start();
-                Console.xdebug(String.Format("WebServer:Listening on {0}", this.binding.AbsoluteUri));
-                activeBindings.Add(callbackId, listener);
+                server = new Server();
+                server.listener.Prefixes.Add(this.binding.AbsoluteUri);
+                server.listener.Start();
+                Console.xdebug(String.Format("WebServer Listening on {0}", this.binding.AbsoluteUri));
+                processes.Add(callbackId, server);
                 return true;
             }
             catch (Exception ex)
             {
                 Console.error(String.Format("Error listening on binding: {0}", binding));
-                this.listener = null;
+                this.server = null;
                 this.binding = null;
                 return false;
             }
@@ -59,10 +58,8 @@ namespace TrifleJS.API.Modules
         /// Shuts down the server
         /// </summary>
         public void close() {
-            if (this.listener != null) {
-                this.listener.Stop();
-                this.listener = null;
-                connections.Clear();
+            if (this.server != null) {
+                this.server.ShutDown();
             }
         }
 
@@ -72,69 +69,142 @@ namespace TrifleJS.API.Modules
         internal static void ProcessConnections()
         {
             // Loop through active TCP bindings
-            foreach (string callbackId in activeBindings.Keys)
+            foreach (string callbackId in new List<string>(processes.Keys))
             {
-                // Check each binding for incoming connections
-                HttpListener listener = activeBindings[callbackId];
-                if (listener != null && listener.IsListening)
+                // Check each server for incoming connections
+                Server server = processes[callbackId];
+                if (server != null && server.listener != null)
                 {
-                    // Are there enough threads listening to incoming connections?
-                    if (concurrentThreads < allowedThreads)
+                    // Is it listening?
+                    if (server.listener.IsListening)
                     {
-                        // Add separate thread for filling up queue
-                        concurrentThreads++;
-                        listener.BeginGetContext(delegate(IAsyncResult result)
+                        // Are there enough threads listening to incoming connections?
+                        if (concurrentThreads < allowedThreads)
                         {
-                            try
+                            // Add separate thread for filling up queue
+                            concurrentThreads++;
+                            server.listener.BeginGetContext(delegate(IAsyncResult result)
                             {
-                                // Add connection to queue (asynchronously)
-                                HttpListenerContext context = listener.EndGetContext(result);
-                                Connection connection = new Connection(callbackId, context);
-                                Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
-                                // This will be processed in STA thread (below)
-                                // so that there are no memory conflicts in
-                                // callbacks to V8 environment.
-                                connections.Add(connection.id, connection);
+                                try
+                                {
+                                    // Check again if we are listening 
+                                    // (might have been disconnected in meantime)
+                                    if (server.listener != null)
+                                    {
+                                        // Add connection to queue (asynchronously)
+                                        HttpListenerContext context = server.listener.EndGetContext(result);
+                                        Connection connection = new Connection(callbackId, context);
+                                        //Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
+                                        // This will be processed in STA thread (below)
+                                        // so that there are no memory conflicts in
+                                        // callbacks to V8 environment.
+                                        server.connections.Add(connection.id, connection);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.error(String.Format("Error queueing connection: {0}", ex.Message));
+                                }
+                                finally
+                                {
+                                    concurrentThreads--;
+                                }
+                            }, server.listener);
+                        }
+                        // Process incoming connection queue
+                        // (in STA thread to avoid COM memory issues)
+                        try
+                        {
+                            // Sometimes a new connection gets inserted
+                            // into the queue asyncronously, causing
+                            // the new List<string>() statement below to fail.
+                            // In these cases we just ignore the error
+                            // and wait for the next pass to read the queue.
+                            foreach(string connectionId in new List<string>(server.connections.Keys)) {
+                                Connection connection = server.connections[connectionId];
+                                if (connection != null && !connection.isProcessing)
+                                {
+                                    // Start processing
+                                    connection.isProcessing = true;
+                                    if (connection.request != null && connection.response != null)
+                                    {
+                                        // Make callback to V8 environment
+                                        Console.xdebug(String.Format("Processing connection {0}..", connectionId));
+                                        Callback.Execute(connection.callbackId, connectionId);
+                                    }
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.error(String.Format("Error queueing connection: {0}", ex.Message));
-                            }
-                            finally
-                            {
-                                concurrentThreads--;
-                            }
-                        }, listener);
+                        } catch  {}
+                    }
+                    else { 
+                        // Not listening? Shutdown and remove from process queue..
+                        server.ShutDown();
+                        processes.Remove(callbackId);
                     }
                 }
             }
+        }
 
-            // Process queue (in STA thread) to avoid COM memory issues
-            try
+        /// <summary>
+        /// Finds a connection in the list of active server processes
+        /// </summary>
+        /// <param name="connectionId"></param>
+        /// <returns></returns>
+        private static Connection Find(string connectionId)
+        { 
+            Connection result = null;
+            // Loop through active TCP bindings
+            foreach (string callbackId in new List<string>(processes.Keys))
             {
-                // Sometimes a new connection gets inserted
-                // into the queue asyncronously, causing
-                // the new List<string>() statement below to fail.
-                // In these cases we just ignore the error
-                // and wait for the next pass to read the queue.
-                foreach (string connectionId in new List<string>(connections.Keys))
+                // Check each server for incoming connections
+                Server server = processes[callbackId];
+                if (server != null && server.listener != null)
                 {
-                    Connection connection = connections[connectionId];
-                    if (connection != null && !connection.isProcessing)
+                    try
                     {
-                        // Start processing
-                        connection.isProcessing = true;
-                        if (connection.request != null && connection.response != null)
+                        foreach (string id in new List<string>(server.connections.Keys))
                         {
-                            // Make callback to V8 environment
-                            Console.xdebug(String.Format("ListenAll:Processing request for {0}!", connectionId));
-                            Callback.Execute(connection.callbackId, connectionId);
+                            if (id == connectionId)
+                            {
+                                result = server.connections[id];
+                            }
                         }
                     }
+                    catch { }
                 }
             }
-            catch { }
+            return result;
         }
+
+        /// <summary>
+        /// Removes a connection in the list of active server processes
+        /// </summary>
+        /// <param name="connectionId"></param>
+        /// <returns></returns>
+        private static void Remove(string connectionId)
+        {
+            // Loop through active TCP bindings
+            foreach (string callbackId in new List<string>(processes.Keys))
+            {
+                // Check each server for incoming connections
+                Server server = processes[callbackId];
+                if (server != null && server.listener != null)
+                {
+                    try
+                    {
+                        foreach (string id in new List<string>(server.connections.Keys))
+                        {
+                            if (id == connectionId)
+                            {
+                                server.connections.Remove(id);
+                            }
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets the request object for a connection
@@ -142,7 +212,7 @@ namespace TrifleJS.API.Modules
         /// <param name="connectionId"></param>
         /// <returns></returns>
         public Request _getRequest(string connectionId) {
-            Connection connection = connections[connectionId];
+            Connection connection = Find(connectionId);
             if (connection != null) {
                 return connection.request;
             }
@@ -155,12 +225,33 @@ namespace TrifleJS.API.Modules
         /// <param name="connectionId"></param>
         /// <returns></returns>
         public Response _getResponse(string connectionId) {
-            Connection connection = connections[connectionId];
+            Connection connection = Find(connectionId);
             if (connection != null)
             {
                 return connection.response;
             }
             return null;
+        }
+
+        /// <summary>
+        /// An internal class representing the server object
+        /// </summary>
+        private class Server {
+            public Server() {
+                this.listener = new HttpListener();
+            }
+            public Server(HttpListener listener) {
+                this.listener = listener;
+            }
+            public void ShutDown() {
+                connections.Clear();
+                if (this.listener != null) {
+                    this.listener.Stop();
+                    this.listener = null;
+                }
+            }
+            public HttpListener listener;
+            public Dictionary<string, Connection> connections = new Dictionary<string, Connection>();
         }
 
         /// <summary>
@@ -345,7 +436,7 @@ namespace TrifleJS.API.Modules
             /// </summary>
             public void close() {
                 response.Close();
-                connections.Remove(this.connectionId);
+                WebServer.Remove(this.connectionId);
             }
 
             /// <summary>

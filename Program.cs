@@ -143,7 +143,7 @@ namespace TrifleJS
                 { 
                     case "-t":
                     case "--test":
-                        Test();
+                        UnitTest();
                         Exit(0);
                         return;
                     case "--render":

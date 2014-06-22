@@ -108,6 +108,9 @@
         wait: function(ms) {
             return API.trifle.Wait(ms || 0);
         },
+        doEvents: function() {
+			return API.doEvents();
+        },
         // extends a module class
         extend: function(config) {
             if (!config || !config.module || !config.module.call) {

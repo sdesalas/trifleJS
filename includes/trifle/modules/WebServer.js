@@ -38,7 +38,6 @@ trifle.modules = trifle.modules || {};
 				var API = this;
 				// Instantiate Callback
 				var complete = function(connectionId) {
-					console.log('Processing connection: ' + connectionId);
 					// Get Request & Response
 					var request = API._getRequest(connectionId);
 					var response = API._getResponse(connectionId);

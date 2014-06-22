@@ -46,5 +46,11 @@ assert.section = function(name) {
 	this.sectionname = name;
 }
 
+assert.waitFor = function(condition) {
+	while(condition !== true) {
+		trifle.doEvents();
+	}
+}
+
 console.xdebug = function() {};
 

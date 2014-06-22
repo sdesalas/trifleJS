@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.Threading;
 
 namespace TrifleJS.API
@@ -34,6 +35,13 @@ namespace TrifleJS.API
             while (Environment.TickCount < now + milliseconds) {
                 Program.DoEvents();
             }
+        }
+
+        /// <summary>
+        /// Runs any events waiting in the queue;
+        /// </summary>
+        public void DoEvents() {
+            Program.DoEvents();
         }
 
         // See below. These are a set of C# mid-tier classes that can be instantiated inside 

@@ -39,12 +39,21 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	assert.section('Simple page loading.');
 	
-	var server = require('webserver').create();
+	var server = require('webserver').create(), loaded = false;
 	server.listen(8898, function(request, response) {
 		response.write("request handled");
-	}); 
+		response.close();
+	});
 	
-	server.close();
+	trifle.wait(500);
+	page.open('http://localhost:8898', function() { loaded = true; });
+	
+	assert.waitFor(loaded);
+	assert(page.plainText === "request handled", 'page.open(url) can load a simple request');
+	//server.close();
+	
+	
+	
 
 });
 
