@@ -26,6 +26,11 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Gets the file separator for windows OS
+        /// </summary>
+        public string separator { get { return "\\";  } }
+
+        /// <summary>
         /// Gets the absolute path for a file or directory
         /// </summary>
         /// <param name="path"></param>

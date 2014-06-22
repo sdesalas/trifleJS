@@ -21,7 +21,7 @@ namespace TrifleJS.API.Modules
             this.browser.Size = new Size(800, 600); 
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
-            if (this.browser.Url.ToString().Equals("about:blank")) {
+            if (this.url == "about:blank") {
                 this.AddToolset();
             }
             // Initialize properties

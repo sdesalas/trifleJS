@@ -56,6 +56,22 @@
             if (typeof id === 'number') {
                 window.API.ClearInterval(id);
             }
+        },
+        addEventListener: function(event, callback, useCapture) {
+			if (event == "DOMContentLoaded") {
+				setTimeout(function () {
+					var page = WebPage.current;
+					// Check if its ready
+					if (page.content) {
+						callback();
+					} else {
+						// No? Add event listener
+						page.onLoadFinished = function(status) {
+							callback();
+						}
+					}
+				}, 1);
+			}
         }
     };
 
@@ -65,6 +81,7 @@
     GLOBAL.setInterval = window.setInterval;
     GLOBAL.clearTimeout = window.clearTimeout;
     GLOBAL.clearInterval = window.clearInterval;
+    GLOBAL.addEventListener = window.addEventListener;
 
     // Initialise phantom object
     var phantom = GLOBAL.phantom = {

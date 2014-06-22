@@ -58,6 +58,12 @@ namespace TrifleJS
         [STAThread]
         static void Main(string[] args)
         {
+            // Commence
+#if DEBUG
+            Program.args = args;
+            Program.verbose = true;
+            Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
+#endif
             // Define environment
             bool isExecuted = false;
             bool isVersionSet = false;
@@ -65,10 +71,7 @@ namespace TrifleJS
             List<string> commandLoop = new List<string>();
             API.Phantom.OutputEncoding = "UTF-8";
             API.Phantom.CookiesEnabled = true;
-            Program.args = args;
-#if DEBUG
-            Program.verbose = true;
-#endif
+
             // Check OS Support
             CheckSupport();
 
