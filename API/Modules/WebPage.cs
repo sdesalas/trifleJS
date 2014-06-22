@@ -18,7 +18,7 @@ namespace TrifleJS.API.Modules
 
         public WebPage() {
             this.browser = new Browser();
-            this.browser.Size = new Size(800, 600); 
+            this.browser.Size = new Size(400, 300); 
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
             if (this.url == "about:blank") {
@@ -50,6 +50,16 @@ namespace TrifleJS.API.Modules
         public string content {
             get { return (this.browser != null) ? this.browser.DocumentText : String.Empty; }
         }
+
+        /// <summary>
+        /// Navigation (back)
+        /// </summary>
+        public bool canGoBack { get; set; }
+
+        /// <summary>
+        /// Navigation (forward)
+        /// </summary>
+        public bool canGoForward { get; set; }
 
         /// <summary>
         /// Gets the Plain Text content of the document

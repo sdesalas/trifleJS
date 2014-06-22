@@ -143,7 +143,7 @@ namespace TrifleJS
                 { 
                     case "-t":
                     case "--test":
-                        UnitTest();
+                        Test();
                         Exit(0);
                         return;
                     case "--render":
@@ -252,7 +252,6 @@ namespace TrifleJS
             Console.WriteLine("============================================");
             Console.WriteLine("TrifleJS -- Unit Tests");
             Console.WriteLine("============================================");
-            Console.WriteLine();
 
             using (Program.context = Initialise())
             {
@@ -262,6 +261,7 @@ namespace TrifleJS
                     context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
                     // Execute Specs
+                    context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
                     context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
 
                     // Finish

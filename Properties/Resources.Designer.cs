@@ -328,11 +328,12 @@ namespace TrifleJS.Properties {
         ///   Looks up a localized string similar to 
         ///console.log();
         ///console.log(&apos;-------------------------------&apos;);
-        ///console.log(&apos;TESTING COMPLETED&apos;);
+        ///console.log(&apos;  TESTING COMPLETED&apos;);
         ///console.log(&apos;-------------------------------&apos;);
-        ///console.log(&apos;Total Tests: &apos; + assert.n);
-        ///console._do(&apos;color&apos;, &apos;green&apos;, &apos;Total Passed: &apos; + assert.pass);
-        ///console.error(&apos;Total Failed: &apos; + assert.fail);
+        ///console.log(&apos;Total Tests: &apos; + assert.count);
+        ///console.API.color(&apos;green&apos;, &apos;Total Passed: &apos; + assert.pass.count);
+        ///console.API.color(&apos;red&apos;, &apos;Total Failed: &apos; + assert.fail.count);
+        ///console.log();
         ///.
         /// </summary>
         internal static string test_unit_finish {
@@ -342,21 +343,39 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to describe(&quot;WebPage constructor&quot;, function() {
-        ///    it(&quot;should exist in window&quot;, function() {
-        ///        expect(window.hasOwnProperty(&apos;WebPage&apos;)).toBeTruthy();
-        ///    });
+        ///   Looks up a localized string similar to assert.suite(&apos;FS.JS&apos;);
         ///
-        ///    it(&quot;should be a function&quot;, function() {
-        ///        expect(typeof window.WebPage).toEqual(&apos;function&apos;);
-        ///    });
-        ///});
+        ///assert.section(&apos;Instantiation&apos;);
         ///
+        ///var page = require(&quot;fs&quot;);
+        ///assert(typeof page === &apos;object&apos;, &apos;require(&quot;fs&quot;) returns an object&apos;);
         ///
+        ///assert.section(&apos;Properties&apos;);
         ///
+        ///assert(fs.workingDirectory != null, &apos;fs.workingDirectory is not null&apos;);
+        ///assert(fs.workingDirectory.indexOf(&quot;:\\&quot;), &apos;fs.workingDirectory&apos; has something that looks like a path);
+        ///assert(fs.separator === &quot;\\&quot;, &apos;fs.separator is a windows backslash&apos;);.
+        /// </summary>
+        internal static string test_unit_spec_fs {
+            get {
+                return ResourceManager.GetString("test_unit_spec_fs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///assert.suite(&apos;WEBPAGE.JS&apos;);
         ///
+        ///assert.section(&apos;Instantiation&apos;);
         ///
-        ///.
+        ///assert(this.hasOwnProperty(&apos;WebPage&apos;), &apos;this.WebPage exists&apos;);
+        ///assert(typeof this.WebPage === &apos;function&apos;, &apos;this.WebPage is a function&apos;);
+        ///assert(window.hasOwnProperty(&apos;WebPage&apos;), &apos;window.WebPage exists&apos;);
+        ///assert(typeof window.WebPage === &apos;function&apos;, &apos;window.WebPage is a function&apos;);
+        ///var page = require(&quot;webpage&quot;).create();
+        ///assert(typeof page === &apos;object&apos;, &apos;require(&quot;webpage&quot;).create() returns an object&apos;);
+        ///
+        ///assert.section(&apos;Properties bef [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_webpage {
             get {
@@ -368,15 +387,25 @@ namespace TrifleJS.Properties {
         ///   Looks up a localized string similar to 
         ///var assert = function(condition, message) {
         ///	assert.n++;
+        ///	assert.count++;
         ///    if (condition !== true) {
-        ///       console._do(&apos;color&apos;, &apos;red&apos;, n + &apos;. FAILS: &apos; + (message || &apos;(no message)&apos;) + &apos;&lt;br/&gt;&apos;);
-        ///       assert.pass++;
+        ///       assert.fail(assert.n + &apos;. FAILS: &apos; + (message || &apos;(no message)&apos;) + &apos;.&apos;);
+        ///       assert.fail.count++;
         ///    } else {
-        ///       console._do(&apos;colo&apos;, &apos;green&apos;, n + &apos;. PASS: &apos; + (message || &apos;(no message)&apos;) + &apos;&lt;br/&gt;&apos;);
-        ///       assert.fail++;
+        ///       assert.pass(assert.n + &apos;. PASS: &apos; + (message || &apos;(no message)&apos;) + &apos;.&apos;);
+        ///       assert.pass.count++;
         ///    }
         ///}
-        ///assert.n = 0;.
+        ///
+        ///assert.count = 0;
+        ///
+        ///assert.pass = function(message) {
+        ///	console.API.color(&apos;green&apos;, message);
+        ///}
+        ///
+        ///assert.pass.count = 0;
+        ///
+        ///assert.fail = function(message) [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_tools {
             get {
