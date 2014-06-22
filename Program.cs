@@ -143,7 +143,8 @@ namespace TrifleJS
                 { 
                     case "-t":
                     case "--test":
-                        Test();
+                        UnitTest();
+                        Exit(0);
                         return;
                     case "--render":
                         string url = arg.Replace("--render=", "");
@@ -198,17 +199,16 @@ namespace TrifleJS
         }
 
         /// <summary>
-        /// Runs system tests
+        /// Runs compatibility tests
         /// </summary>
         static void Test() {
 
             Console.WriteLine();
             Console.WriteLine("============================================");
-            Console.WriteLine("TrifleJS -- System Test");
+            Console.WriteLine("TrifleJS -- Phantom Compatibility Test");
             Console.WriteLine("============================================");
             Console.WriteLine();
 
-            // Initialize and start console read loop;
             using (Program.context = Initialise())
             {
                 try
@@ -216,14 +216,15 @@ namespace TrifleJS
                     // Load libs
                     context.RunScript(Resources.test_lib_jasmine, "test/lib/jasmine.js");
                     context.RunScript(Resources.test_lib_jasmine_console, "test/lib/jasmine-console.js");
-                    context.RunScript(Resources.test_tools, "test/tools.js");
+                    context.RunScript(Resources.test_tools, "test/phantom/tools.js");
 
                     // Load Spec
-                    context.RunScript(Resources.test_spec_phantom, "test/spec/phantom.js");
-                    context.RunScript(Resources.test_spec_webserver, "test/spec/webserver.js");
+                    context.RunScript(Resources.test_spec_phantom, "test/phantom/phantom.js");
+                    context.RunScript(Resources.test_spec_webserver, "test/phantom/webserver.js");
+                    context.RunScript(Resources.test_spec_webserver, "test/phantom/webpage.js");
 
                     // Execute
-                    context.RunScript(Resources.test_run_jasmine, "test/run-jasmine.js");
+                    context.RunScript(Resources.test_run_jasmine, "test/phantom/run-jasmine.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -240,6 +241,48 @@ namespace TrifleJS
                 }
             }
         }
+
+        /// <summary>
+        /// Runs unit tests
+        /// </summary>
+        static void UnitTest()
+        {
+
+            Console.WriteLine();
+            Console.WriteLine("============================================");
+            Console.WriteLine("TrifleJS -- Unit Tests");
+            Console.WriteLine("============================================");
+            Console.WriteLine();
+
+            using (Program.context = Initialise())
+            {
+                try
+                {
+                    // Load libs
+                    context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
+
+                    // Execute Specs
+                    context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
+
+                    // Finish
+                    context.RunScript(Resources.test_unit_finish, "test/unit/finish.js");
+
+                    // Keep running until told to stop
+                    // This is to make sure asynchronous code gets executed
+                    while (true)
+                    {
+                        Program.DoEvents();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions
+                    API.Context.Handle(ex);
+                }
+            }
+        }
+
 
         /// <summary>
         /// Run TrifleJS in interactive mode

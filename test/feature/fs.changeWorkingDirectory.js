@@ -1,5 +1,9 @@
 ﻿
 var fs = require('fs');
 
-fs.changeWorkingDirectory(phantom.libraryPath);
+console.log("Current Working Dir: " + fs.workingDirectory);
+fs.changeWorkingDirectory("C:/");
+console.log("Current Working Dir: " + fs.workingDirectory);
+
+phantom.exit();
 
