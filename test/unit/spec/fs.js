@@ -56,10 +56,22 @@ assert.suite('FS MODULE', function() {
 	assert(typeof stream.write === 'function', 'stream.write() is defined');
 	assert(typeof stream.writeLine === 'function', 'stream.writeLine() is defined');
 
-	assert(stream.read() === 'here is some text', 'file stream can be read sucessfully');
+	assert(stream.read() === 'original text', 'file stream can be read sucessfully');
+	stream.close();
 
-	stream.write('here is some more text');
+	assert.section('File Operations using fs');
 
-	assert(stream.read() === 'here is some more text', 'file stream can be written to sucessfully');
+	assert(fs.read(path) === 'original text', 'fs.read() can read text sucessfully');
+
+	fs.write(path, 'some new text', 'w');
+	
+	assert(fs.read(path) === 'some new text', 'fs.write() can write text sucessfully');
+
+	fs.write(path, ', extra text', 'a');
+
+	assert(fs.read(path) === 'some new text, extra text', 'fs.write() can append text sucessfully');
+
+	// reset file to original
+	fs.write(path, 'original text');
 
 });

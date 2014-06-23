@@ -253,6 +253,8 @@ namespace TrifleJS
             Console.WriteLine("TrifleJS -- Unit Tests");
             Console.WriteLine("============================================");
 
+            Program.verbose = false; 
+
             using (Program.context = Initialise())
             {
                 try

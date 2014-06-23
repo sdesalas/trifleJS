@@ -52,5 +52,3 @@ assert.waitFor = function(condition) {
 	}
 }
 
-console.xdebug = function() {};
-

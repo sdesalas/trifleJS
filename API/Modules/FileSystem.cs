@@ -233,6 +233,15 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Writes text content to a file
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        public void write(string path, string content) {
+            write(path, content, "w");
+        }
+
+        /// <summary>
         /// Deletes a file
         /// </summary>
         /// <param name="path"></param>
