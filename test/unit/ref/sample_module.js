@@ -1,4 +1,6 @@
 ﻿
 
 exports.ok = true;
-exports.id = module.id;
+exports.module = module;
+exports.require = require;
+

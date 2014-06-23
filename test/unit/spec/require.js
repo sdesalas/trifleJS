@@ -19,7 +19,8 @@ assert.suite('REQUIRE', function() {
     var path = '../../test/unit/ref/sample_module';
     var sample_module = require(path);
     assert(typeof sample_module === 'object', 'a sample_module can be instantiated without an extension');
-    assert(!!sample_module.id, 'a sample_module has an id property');
+    assert(!!sample_module.module, 'a sample_module has a module argument passed in');
+    assert(!!sample_module.module.id, 'the module argument in a sample_module has an id');
     assert(sample_module.ok === true, 'sample_module.ok is set to true');
 
     path = '../../test/unit/ref/sample_module.js';
@@ -29,7 +30,6 @@ assert.suite('REQUIRE', function() {
 
     var sample_module2 = require(path);
     assert(typeof sample_module2 === 'object', 'a sample_module can be instantiated a second time');
-    assert(!!sample_module2.id, 'a sample_module has an id property when instatiated a second time');
     assert(sample_module2.ok === true, 'sample_module.ok is set to true when instantiated a second time');
 	assert(sample_module === sample_module2, 'module returns same object when instantiated a second time');
 
