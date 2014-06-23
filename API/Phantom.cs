@@ -72,6 +72,32 @@ namespace TrifleJS.API
         }
 
         /// <summary>
+        /// Loads a module
+        /// </summary>
+        /// <param name="js"></param>
+        public static void LoadModule(string name, string src) {
+            try 
+            {
+                // Fix the path separator
+                name = name.Replace("\\", "\\\\");
+                string code = "(function(require, exports, module) {" +
+                        src +
+                        "}.call({}," + 
+                        "require," +
+                        "require.cache['" + name + "'].exports," +
+                        "require.cache['" + name + "']" +
+                        "));";
+                Program.context.Run(
+                        code
+                   );
+            } 
+            catch (Exception ex) 
+            {
+                Context.Handle(ex);   
+            }
+        }
+
+        /// <summary>
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
         public static string[] Args {

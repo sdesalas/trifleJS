@@ -58,20 +58,20 @@
             }
         },
         addEventListener: function(event, callback, useCapture) {
-			if (event == "DOMContentLoaded") {
-				setTimeout(function () {
-					var page = WebPage.current;
-					// Check if its ready
-					if (page.content) {
-						callback();
-					} else {
-						// No? Add event listener
-						page.onLoadFinished = function(status) {
-							callback();
-						}
-					}
-				}, 1);
-			}
+            if (event == "DOMContentLoaded") {
+                setTimeout(function() {
+                    var page = WebPage.current;
+                    // Check if its ready
+                    if (page.content) {
+                        callback();
+                    } else {
+                        // No? Add event listener
+                        page.onLoadFinished = function(status) {
+                            callback();
+                        }
+                    }
+                }, 1);
+            }
         }
     };
 
@@ -109,7 +109,7 @@
             return API.trifle.Wait(ms || 0);
         },
         doEvents: function() {
-			return API.doEvents();
+            return API.doEvents();
         },
         // extends a module class
         extend: function(config) {
@@ -122,7 +122,7 @@
                     config.init.apply(API, arguments);
                 }
                 if (config.methods) {
-                    for(var method in config.methods) {
+                    for (var method in config.methods) {
                         API[method] = config.methods[method];
                     }
                 }
@@ -178,36 +178,71 @@
 
     // Loading module framework
     // @see http://wiki.commonjs.org/wiki/Modules/1.1.1
-    var exports = GLOBAL.exports = {
-        webpage: function() {
-            return new trifle.modules.WebPage();
-        },
-        fs: function() {
-            return new trifle.modules.FileSystem();
-        },
-        system: function() {
-            return new trifle.modules.System();
-        },
-        webserver: function() {
-			return new trifle.modules.WebServer();
-        }
-    };
+    var require = GLOBAL.require = function(module) {
 
-    // Defines require() method
-    var require = GLOBAL.require = function (name) {
-
-        if (!exports[name]) {
-            console.error('require() -- Invalid module: ' + name);
-            return;
+        // Initialise if required
+        if (typeof require.cache.initialise === 'function') {
+            require.cache.initialise.call({});
         }
 
-        var module = exports[name]();
-        module.create = function () {
-            return this;
-        };
+        // Look in cache for built-in modules and such
+        if (require.cache && require.cache[module]) {
+            return require.cache[module].exports;
+        }
 
-        return module;
+        // Try load from file system
+        var fs = new trifle.modules.FileSystem();
+
+        // Is it a file path?
+        if (fs.exists(module)) {
+            // Add to cache and load
+            var path = module;
+            require.cache[path] = { id: path, exports: {} };
+            phantom.API.LoadModule(path, fs.read(path));
+            return require.cache[path].exports;
+
+        // Is it a file path without the extension?
+        } else if (fs.exists(module + '.js')) {
+            // Add to cache and load
+            var path = module + '.js';
+            require.cache[path] = { id: path, exports: {} };
+            phantom.API.LoadModule(path, fs.read(path));
+            return require.cache[path].exports;
+
+        } else {
+            console.error('Cannot find module "' + module + '"');
+        }
+
     }
+
+    // Define preloaded exports
+    require.cache = {
+        initialise: function() {
+            require.cache = {
+                fs: {
+                    id: 'fs', 
+                    exports: new trifle.modules.FileSystem()
+                },
+                system: {
+                    id: 'system', 
+                    exports: new trifle.modules.System()
+                },
+                webpage: {
+                    id: 'webpage', 
+                    exports: {
+                        create: function() { return  new trifle.modules.WebPage(); }
+                    }
+                },
+                webserver: {
+                    id: 'webserver', 
+                    exports: {
+                        create: function() { return new trifle.modules.WebServer(); }
+                    }
+                }
+            }
+        },
+    }
+
 
 
 })(this);

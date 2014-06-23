@@ -139,6 +139,9 @@
     </Content>
     <Resource Include="includes\init.js" />
     <None Include="includes\trifle\ie\tools.js" />
+    <Content Include="examples\universe.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
     <Content Include="test\feature\page.onAlert.js" />
@@ -180,7 +183,9 @@
     <Content Include="test\spec\webpage.js" />
     <Content Include="test\spec\webserver.js" />
     <Content Include="test\unit\finish.js" />
+    <Content Include="test\unit\ref\sample_module.js" />
     <Content Include="test\unit\spec\fs.js" />
+    <Content Include="test\unit\spec\require.js" />
     <Content Include="test\unit\spec\webpage.js" />
     <Content Include="test\tools.js" />
     <Content Include="test\unit\tools.js" />
@@ -191,6 +196,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="test\casper\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

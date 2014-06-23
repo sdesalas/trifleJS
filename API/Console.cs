@@ -76,7 +76,7 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static object Parse(object value)
+        public static object Parse(object value)
         {
             if (value == null)
             {
@@ -86,6 +86,8 @@ namespace TrifleJS.API
             switch (type)
             {
                 case "System.String":
+                    // Fix path separator
+                    return ((String)value).Replace("\\", "\\\\");
                 case "System.Boolean":
                 case "System.Int32":
                 case "System.Int64":

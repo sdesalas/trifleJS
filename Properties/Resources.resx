@@ -154,6 +154,9 @@
   <data name="test_unit_spec_fs" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\unit\spec\fs.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="test_unit_spec_require" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\spec\require.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="test_unit_spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\unit\spec\webpage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
