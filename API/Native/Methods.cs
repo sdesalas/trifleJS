@@ -2,11 +2,12 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using IWshRuntimeLibrary;
 
-namespace TrifleJS
+namespace TrifleJS.API.Native
 {
     // @see http://stackoverflow.com/questions/5006825/converting-webbrowser-document-to-a-bitmap
-    class NativeMethods
+    internal class Methods
     {
         [ComImport]
         [Guid("0000010D-0000-0000-C000-000000000046")]
@@ -52,6 +53,22 @@ namespace TrifleJS
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Follows a shortcut file programmatically
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string ResolveLink(string path) {
+            try
+            {
+                IWshShell wsh = new WshShellClass();
+                IWshShortcut sc = (IWshShortcut)wsh.CreateShortcut(path);
+                return sc.TargetPath;
+            }
+            catch { }
+            return "";
         }
     }
 }

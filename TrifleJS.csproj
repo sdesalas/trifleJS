@@ -73,7 +73,7 @@
     <Compile Include="IgnoreCertErrorBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="API\Native\Methods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="API\Modules\System.cs" />
@@ -174,14 +174,14 @@
     </Content>
     <Content Include="test\feature\window.setTimeout.js">
     </Content>
-    <Content Include="test\run-jasmine.js" />
+    <Content Include="test\phantom\run-jasmine.js" />
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
     <Content Include="test\lib\jasmine.js" />
-    <Content Include="test\spec\phantom.js" />
-    <Content Include="test\run-tests.js" />
-    <Content Include="test\spec\webpage.js" />
-    <Content Include="test\spec\webserver.js" />
+    <Content Include="test\phantom\spec\phantom.js" />
+    <Content Include="test\phantom\run-tests.js" />
+    <Content Include="test\phantom\spec\webpage.js" />
+    <Content Include="test\phantom\spec\webserver.js" />
     <Content Include="test\unit\finish.js" />
     <Content Include="test\unit\ref\fs.txt">
       <SubType>Form</SubType>
@@ -190,7 +190,7 @@
     <Content Include="test\unit\spec\fs.js" />
     <Content Include="test\unit\spec\require.js" />
     <Content Include="test\unit\spec\webpage.js" />
-    <Content Include="test\tools.js" />
+    <Content Include="test\phantom\tools.js" />
     <Content Include="test\unit\tools.js" />
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +199,16 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="test\casper\" />

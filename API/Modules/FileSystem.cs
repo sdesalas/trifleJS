@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
 
 namespace TrifleJS.API.Modules
 {
@@ -37,7 +38,11 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public string absolute(string path)
         {
-            return Path.GetFullPath(path);
+            if (Directory.Exists(path) || File.Exists(path))
+            {
+                return Path.GetFullPath(path);
+            }
+            throw new Exception("Cannot find path: " + path);
         }
 
         /// <summary>
@@ -46,7 +51,11 @@ namespace TrifleJS.API.Modules
         /// <param name="path"></param>
         /// <returns></returns>
         public bool isAbsolute(string path) {
-            return Path.IsPathRooted(path);
+            if (Directory.Exists(path) || File.Exists(path))
+            {
+                return Path.IsPathRooted(path);
+            }
+            return false;
         }
 
         /// <summary>
@@ -56,7 +65,7 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public bool isExecutable(string path) {
             string ext = Path.GetExtension(path).ToLower();
-            if (ext == "exe" || ext == "bat" || ext == "com") {
+            if (ext == ".exe" || ext == ".bat" || ext == ".com") {
                 return true;
             }
             return false;
@@ -69,16 +78,13 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public bool isLink(string path)
         {
-            FileAttributes attr = FileAttributes.Normal;
-            if (File.Exists(path)) {
-                attr = File.GetAttributes(path);
-            }
-            if (Directory.Exists(path)) {
-                attr = new DirectoryInfo(path).Attributes;
-            }
-            if ((attr & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+            FileInfo file = new FileInfo(path);
+            if (file.Exists)
             {
-                return true;
+                if (!String.IsNullOrEmpty(Native.Methods.ResolveLink(file.FullName)))
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -152,6 +158,67 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Creates a new directory.
+        /// </summary>
+        /// <param name="path"></param>
+        public void makeDirectory(string path) {
+            try
+            {
+                Directory.CreateDirectory(path);
+            }
+            catch
+            {
+                throw new Exception("Cannot create path: " + path);
+            }
+        }
+
+        /// <summary>
+        /// Creates a directory including any missing parent directories.
+        /// </summary>
+        /// <param name="path"></param>
+        public void makeTree(string path) {
+            Directory.CreateDirectory(path);
+        }
+
+        /// <summary>
+        /// Removes a directory if it is empty
+        /// </summary>
+        /// <param name="path"></param>
+        public void removeDirectory(string path) {
+            if (Directory.Exists(path)) Directory.Delete(path);
+        }
+
+        /// <summary>
+        /// Removes the specified path and everything in it.
+        /// </summary>
+        /// <param name="path"></param>
+        public void removeTree(string path) {
+            if (Directory.Exists(path)) Directory.Delete(path, true);
+            if (File.Exists(path)) File.Delete(path);
+        }
+
+        /// <summary>
+        /// Copies all files from the source path to the destination path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public void copyTree(string source, string destination) {
+            if (Directory.Exists(source) && !String.IsNullOrEmpty(destination))
+            {
+                char[] invalid = Path.GetInvalidPathChars();
+                if (destination.IndexOfAny(Path.GetInvalidPathChars()) < 0)
+                {
+                    Process proc = new Process();
+                    proc.StartInfo.UseShellExecute = true;
+                    proc.StartInfo.FileName = @"xcopy.exe";
+                    proc.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\" /E /I /Y", source, destination);
+                    proc.Start();
+                    proc.WaitForExit(1000 * 60 * 10); // 10 minutes max
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the size of a file
         /// </summary>
         /// <param name="path"></param>
@@ -163,6 +230,15 @@ namespace TrifleJS.API.Modules
                 return new FileInfo(path).Length;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Returns the target of a symbolic link.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public string readLink(string path) {
+            return Native.Methods.ResolveLink(path);
         }
 
         /// <summary>
@@ -274,7 +350,23 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="path"></param>
         public void touch(string path) {
-            File.AppendText(String.Empty);
+            if (File.Exists(path))
+            {
+                File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
+            }
+        }
+
+        /// <summary>
+        /// Returns the date the file was last modified
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public DateTime? lastModified(string path) {
+            FileInfo file = new FileInfo(path);
+            if (file.Exists) {
+                return file.LastWriteTime;
+            }
+            return null;
         }
 
         /// <summary>

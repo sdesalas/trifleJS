@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Drawing;
+using TrifleJS.API.Native;
 
 namespace TrifleJS
 {
@@ -161,7 +162,7 @@ namespace TrifleJS
         /// <returns></returns>
         public Bitmap Render(int width, int height) {
             Bitmap output = new Bitmap(width, height);
-            NativeMethods.GetImage(this.ActiveXInstance, output, Color.White);
+            Methods.GetImage(this.ActiveXInstance, output, Color.White);
             return output;
         }
 
