@@ -212,6 +212,8 @@ namespace TrifleJS.API.Modules
                     proc.StartInfo.UseShellExecute = true;
                     proc.StartInfo.FileName = @"xcopy.exe";
                     proc.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\" /E /I /Y", source, destination);
+                    proc.StartInfo.UseShellExecute = true;
+                    proc.StartInfo.CreateNoWindow = true;
                     proc.Start();
                     proc.WaitForExit(1000 * 60 * 10); // 10 minutes max
                 }
@@ -394,6 +396,7 @@ namespace TrifleJS.API.Modules
                         reader = new StreamReader(file, Encoding.UTF8);
                         break;
                     case "w":
+                    case "w+":
                         file = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write);
                         writer = new StreamWriter(file, Encoding.UTF8);
                         break;
@@ -406,6 +409,8 @@ namespace TrifleJS.API.Modules
                         writer = new StreamWriter(file);
                         break;
                     case "rw":
+                    case "rwa":
+                    case "rw+":
                         file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                         reader = new StreamReader(file, Encoding.UTF8);
                         writer = new StreamWriter(file, Encoding.UTF8);
@@ -425,7 +430,7 @@ namespace TrifleJS.API.Modules
                 }
                 // Appending? (ie rw+) Seek to end.
                 if (mode.IndexOf("a") > 0 || mode.IndexOf("+") > 0) {
-                    file.Seek(0, SeekOrigin.End);
+                    file.Seek(file.Length, SeekOrigin.Begin);
                 }
             }
 
@@ -440,8 +445,17 @@ namespace TrifleJS.API.Modules
                     throw new Exception("Cannot read from file: " + path);
                 }
                 if (file.CanWrite) { flush(); }
-                file.Seek(0, SeekOrigin.Begin);
-                return reader.ReadToEnd();
+                // TODO: We should be able to handle f.read(int) 
+                //if (length == null)
+                //{
+                    file.Seek(0, SeekOrigin.Begin);
+                    return reader.ReadToEnd();
+                //}
+                //else {
+                //    char[] buffer = new char[length.Value];
+                //    reader.Read(buffer, Convert.ToInt32(file.Position), length.Value);
+                //    return buffer.ToString();
+                //}
             }
 
             /// <summary>
@@ -477,7 +491,7 @@ namespace TrifleJS.API.Modules
             /// <param name="data"></param>
             public void writeLine(string data)
             {
-                write(data + Environment.NewLine);
+                write(data + "\n");
             }
 
             /// <summary>
@@ -495,7 +509,7 @@ namespace TrifleJS.API.Modules
             /// Moves to a certain position into a stream.
             /// </summary>
             /// <param name="pos"></param>
-            public void seek(long pos) 
+            public void seek(int pos) 
             {
                 if (file != null) file.Seek(pos, SeekOrigin.Begin);
             }
@@ -515,7 +529,7 @@ namespace TrifleJS.API.Modules
             /// </summary>
             /// <returns></returns>
             public bool atEnd() { 
-                if (reader != null) return reader.EndOfStream; 
+                if (file != null) return file.Position == file.Length;
                 return false; 
             }
         }

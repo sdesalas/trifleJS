@@ -31,16 +31,26 @@ namespace TrifleJS.API.Modules
                 if (Int32.TryParse(binding, out port)) { this.binding = new Uri(String.Format("http://localhost:{0}/", port)); }
                 else if (!binding.Contains("http")) { this.binding = new Uri(String.Format("http//{0}", binding)); }
                 else { this.binding = new Uri(binding); }
-                server = new Server();
-                server.listener.Prefixes.Add(this.binding.AbsoluteUri);
-                server.listener.Start();
+                if (server != null && server.listener != null)
+                {
+                    // Server already exists, add a new binding & callback
+                    server.listener.Stop();
+                    server.listener.Prefixes.Add(this.binding.AbsoluteUri);
+                    server.listener.Start();
+                    processes.Add(callbackId, server);
+                } else {
+                    // No server, create a new instance.
+                    server = new Server();
+                    server.listener.Prefixes.Add(this.binding.AbsoluteUri);
+                    server.listener.Start();
+                    processes.Add(callbackId, server);
+                }
                 Console.xdebug(String.Format("WebServer Listening on {0}", this.binding.AbsoluteUri));
-                processes.Add(callbackId, server);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.error(String.Format("Error listening on binding: {0}", binding));
+                // Console.error(String.Format("Error listening on binding: {0}", binding));
                 this.server = null;
                 this.binding = null;
                 return false;

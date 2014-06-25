@@ -186,11 +186,15 @@
     <Content Include="test\unit\ref\fs.txt">
       <SubType>Form</SubType>
     </Content>
+    <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
     <Content Include="test\unit\spec\fs.js" />
     <Content Include="test\unit\spec\require.js" />
     <Content Include="test\unit\spec\webpage.js" />
     <Content Include="test\phantom\tools.js" />
+    <Content Include="test\unit\spec\webserver.js">
+      <SubType>Form</SubType>
+    </Content>
     <Content Include="test\unit\tools.js" />
   </ItemGroup>
   <ItemGroup>

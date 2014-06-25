@@ -162,15 +162,24 @@ assert.suite('FS MODULE', function() {
 	assert.section('File Functions');
 	// --------------------------------------------
 
+	var size = fs.size(textfile);
+
 	assert(fs.read(textfile) === 'original text', 'fs.read() can read text sucessfully');
 
 	fs.write(textfile, 'some new text', 'w');	
 
 	assert(fs.read(textfile) === 'some new text', 'fs.write() can write text sucessfully');
+	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when writing')
+
+	assert(typeof size === 'number', 'fs.size() returns a number');
+	assert(size === 16, 'fs.size() returns number of bytes in a file');
+	assert(fs.size(workingDirectory) === -1, 'fs.size() returns -1 for directories');
 
 	fs.write(textfile, ', extra text', 'a');
 
 	assert(fs.read(textfile) === 'some new text, extra text', 'fs.write() can append text sucessfully');
+	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when appending')
+	assert(fs.size(textfile) > size, 'fs.size() file size increases when appended to');
 
 	fs.remove(textfile);
 
@@ -183,21 +192,80 @@ assert.suite('FS MODULE', function() {
 	fs.touch(linkfile);
 	assert(fs.lastModified(linkfile) > lastModified, 'fs.touch() updates the last modified timestamp');
 
-
 	// --------------------------------------------
 	assert.section('Stream object');
 	// --------------------------------------------
 
-	var stream = fs.open(textfile, "r");
+	var pos, stream = fs.open(textfile, "r");
 
-	assert(stream.read() === 'original text', 'file stream can be read sucessfully');
+	assert(fs.isReadable(textfile) === false, 'fs.open(file, "r") keeps a read lock on file when reading');
+	assert(fs.isWritable(textfile) === false, 'fs.open(file, "r") keeps a write lock on file when reading');
+	assert(stream.read() === 'original text', 'fs.open(file, "r") can read file sucessfully');
 
 	stream.close();
 	stream = null;
 
+	assert(fs.isWritable(textfile) === true, 'stream.close() releases lock after reading.')
+
+	stream = fs.open(textfile, "w");
+
+	assert(stream.atEnd() === false, 'fs.open(file, "w") does not move writer to end of the stream');
+	assert(fs.isReadable(textfile) === false, 'fs.open(file, "w") keeps a read lock on file when writing');
+	assert(fs.isWritable(textfile) === false, 'fs.open(file, "w") keeps a write lock on file when writing');
+
+	stream.write('some new text');
+	stream.close();
+	stream = null;
+
+	assert(fs.read(textfile) === "some new text", 'stream.write() can write to file successfully');
+	assert(fs.isWritable(textfile) === true, 'stream.close() releases write lock after writing');
+
+	stream = fs.open(textfile, "a");
+
+	assert(stream.atEnd() === true, 's.open(file, "a") moves writer to end of the stream');
+	assert(fs.isReadable(textfile) === false, 'fs.open(file, "a") keeps a read lock on file when appending');
+	assert(fs.isWritable(textfile) === false, 'fs.open(file, "a") keeps a write lock on file when appending');
+
+	stream.write(', more text');
+	stream.close();
+	stream = null;
+
+	assert(fs.read(textfile) === "some new text, more text", 'stream.write() can write to file successfully');
+	assert(fs.isWritable(textfile) === true, 'stream.close() releases write lock after appending');
 
 	// reset file to original
 	fs.remove(textfile);
 	fs.write(textfile, 'original text');
 
+	stream = fs.open(textfile, "rw+");
+
+	assert(stream.atEnd() === true, 'fs.open(file, "rw+") moves writer to end of the stream');
+	assert(fs.isReadable(textfile) === false, 'fs.open(file, "rw+") keeps a read lock on file when writing');
+	assert(fs.isWritable(textfile) === false, 'fs.open(file, "rw+") keeps a write lock on file when writing');
+
+	stream.writeLine(', appended text');
+	var content = stream.read();
+	console.log(content);
+
+	stream.close();
+	stream = null;
+
+	//aassert(content === "original text, appended text\n", 'fs.open(file, "rw+") should be able to both append and read a file');
+	assert(fs.isWritable(textfile) === true, 'stream.close() releases write lock after appending.');
+	assert(fs.isReadable(textfile) === true, 'stream.close() releases read lock after appending.');
+
+	stream = fs.open(textfile, "w");
+	stream.seek(fs.size(textfile));
+
+	assert(stream.atEnd() === true, 'fs.seek() can position the cursor at the end of file');
+
+	stream.close();
+	stream = null;
+
 });
+
+// TEARDOWN
+
+// reset file to original
+fs.remove(textfile);
+fs.write(textfile, 'original text');

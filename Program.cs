@@ -264,7 +264,8 @@ namespace TrifleJS
 
                     // Execute Specs
                     context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
-                    context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
+                    context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
+                    //context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
                     //context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
 
                     // Finish
@@ -407,6 +408,7 @@ namespace TrifleJS
                 // Initialise host env
                 context.RunScript(Resources.init, "init.js");
                 context.RunScript(Resources.trifle_Callback, "trifle.Callback.js");
+                //API.Phantom.LoadModule("fs", Resources.trifle_modules_FileSystem);
                 context.RunScript(Resources.trifle_modules_WebPage, "trifle.modules.WebPage.js");
                 context.RunScript(Resources.trifle_modules_FileSystem, "trifle.modules.FileSystem.js");
                 context.RunScript(Resources.trifle_modules_System, "trifle.modules.System.js");

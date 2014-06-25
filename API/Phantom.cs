@@ -98,6 +98,22 @@ namespace TrifleJS.API
         }
 
         /// <summary>
+        /// Creates a webpage object
+        /// </summary>
+        /// <returns></returns>
+        public static Modules.WebPage createWebPage() {
+            return new Modules.WebPage();
+        }
+
+        /// <summary>
+        /// Creates a webserver object
+        /// </summary>
+        /// <returns></returns>
+        public static Modules.WebServer createWebServer() { 
+            return new Modules.WebServer();
+        }
+
+        /// <summary>
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
         public static string[] Args {
