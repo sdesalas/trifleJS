@@ -32,7 +32,7 @@
         setTimeout: function(callback, ms) {
             console.xdebug('window.setTimeout(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                window.API.SetTimeout((new trifle.Callback(function() {
+                return window.API.SetTimeout((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
@@ -46,7 +46,7 @@
         setInterval: function(callback, ms) {
             console.xdebug('window.setInterval(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                window.API.SetInterval((new trifle.Callback(function() {
+                return window.API.SetInterval((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }

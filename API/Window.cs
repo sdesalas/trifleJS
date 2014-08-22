@@ -62,7 +62,7 @@ namespace TrifleJS.API
             timer.Enabled = true;
             timer.Interval = ms;
             timer.Start();
-            Window.timers.Add(timerId++, timer);
+            Window.timers.Add(++timerId, timer);
             return timerId;
         }
 
