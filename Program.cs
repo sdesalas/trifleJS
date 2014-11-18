@@ -59,8 +59,8 @@ namespace TrifleJS
         static void Main(string[] args)
         {
             // Commence
-#if DEBUG
             Program.args = args;
+#if DEBUG
             Program.verbose = true;
             Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
 #endif
