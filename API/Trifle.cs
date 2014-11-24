@@ -37,15 +37,8 @@ namespace TrifleJS.API
             }
         }
 
-        /// <summary>
-        /// Runs any events waiting in the queue;
-        /// </summary>
-        public void DoEvents() {
-            Program.DoEvents();
-        }
-
-        // See below. These are a set of C# mid-tier classes that can be instantiated inside 
-        // the javascript engine as CommonJS Modules.
+        // These are a set of C# mid-tier classes that can be instantiated
+        // inside the javascript engine as CommonJS Modules.
 
         public Modules.WebPage WebPage()
         {

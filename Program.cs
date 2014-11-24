@@ -263,10 +263,10 @@ namespace TrifleJS
                     context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
                     // Execute Specs
-                    context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
-                    context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
+                    //context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
                     //context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
-                    //context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
+                    //context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
+                    context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
 
                     // Finish
                     context.RunScript(Resources.test_unit_finish, "test/unit/finish.js");
@@ -386,6 +386,7 @@ namespace TrifleJS
             API.Window.CheckTimers();
             API.Modules.WebServer.ProcessConnections();
             System.Windows.Forms.Application.DoEvents();
+            GC.Collect();
         }
 
         /// <summary>

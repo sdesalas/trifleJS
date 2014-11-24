@@ -66,7 +66,7 @@ assert.section = function(name) {
 
 assert.waitFor = function(condition) {
 	while(condition !== true) {
-		trifle.doEvents();
+		trifle.wait(1);
 	}
 }
 
