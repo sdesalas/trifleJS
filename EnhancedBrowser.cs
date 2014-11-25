@@ -7,14 +7,13 @@ using mshtml;
 namespace TrifleJS
 {
     /// <summary>
-    /// This class automates the WebBrowser control by bypassing common dialogs (Error, Authentication, Security etc).
-    /// It effectively tries hides away all the ugliness of MSHTML COM+ API.
-    /// This is an abstract class and its intended use is as a base class for another webbrowser class to inherit from.
+    /// This class enhances the WebBrowser control by automating certain OLE dialogs
+    /// (Error, Authentication, Security etc).
     /// @see http://www.journeyintocode.com/2013/08/c-webbrowser-control-proxy.html
     /// @see http://social.msdn.microsoft.com/Forums/ie/en-US/8b0712ca-0b92-4e3d-a243-27af57a57213/idochostshowui-problem-c-webbrowser?forum=ieextensiondevelopment
     /// @see http://jiangsheng.net/2013/07/17/howto-ignoring-web-browser-certificate-errors-in-webbrowser-host/
     /// </summary>
-    public abstract class AutomatedBrowser : WebBrowser, IOleDocumentSite, IOleClientSite, IServiceProvider, IAuthenticate
+    public class EnhancedBrowser : Browser, IOleDocumentSite, IOleClientSite, IServiceProvider, IAuthenticate
     {
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern bool InternetSetOption(IntPtr hInternet, int dwOption,
@@ -29,20 +28,26 @@ namespace TrifleJS
         private const int S_OK = unchecked((int)0x00000000);
 
         /// <summary>
-        /// Initializes OLE objects necessary for 
-        /// bypassing prompt dialogs
+        /// Creates an IE browser enhanced with additional OLE support
         /// </summary>
-        public void InitializeOLE()
+        public EnhancedBrowser()
         {
-            this.Navigate("about:blank");
-            while (this.ReadyState != WebBrowserReadyState.Complete) {
+            Navigate("about:blank");
+            while (this.ReadyState != WebBrowserReadyState.Complete)
+            {
                 Application.DoEvents();
             }
+            // Add OLE objects necessary for bypassing prompt dialogs
             object obj = this.ActiveXInstance;
             IOleObject oc = obj as IOleObject;
             oc.SetClientSite(this as IOleClientSite);
+            // Add Support for bypassing Proxy Authentication dialog
+            AuthenticateProxy += delegate(object sender, EnhancedBrowser.AthenticateProxyEventArgs e)
+            {
+                e.Username = Proxy.Username;
+                e.Password = Proxy.Password;
+            };
         }
-
 
         #region IOleClientSite Members
 
@@ -191,18 +196,18 @@ namespace TrifleJS
 
         #endregion
 
-        #region AutomatedWebBrowserSite
+        #region EnhancedWebBrowserSite
 
         protected override System.Windows.Forms.WebBrowserSiteBase CreateWebBrowserSiteBase()
         {
-            return new AutomatedWebBrowserSite(this);
+            return new EnhancedWebBrowserSite(this);
         }
 
-        protected class AutomatedWebBrowserSite : WebBrowserSite, IServiceProvider, IDocHostShowUI, IHttpSecurity, IWindowForBindingUI
+        protected class EnhancedWebBrowserSite : WebBrowserSite, IServiceProvider, IDocHostShowUI, IHttpSecurity, IWindowForBindingUI
         {
-            private AutomatedBrowser host;
+            private EnhancedBrowser host;
 
-            public AutomatedWebBrowserSite(AutomatedBrowser host)
+            public EnhancedWebBrowserSite(EnhancedBrowser host)
                 : base(host)
             {
                 this.host = host;

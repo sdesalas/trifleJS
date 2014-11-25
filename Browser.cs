@@ -11,21 +11,10 @@ namespace TrifleJS
     /// <summary>
     /// Browser class that represents an IE window
     /// </summary>
-    public class Browser : AutomatedBrowser
+    public class Browser : WebBrowser
     {
         private const string IEEmulationPathx32 = @"SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
         private const string IEEmulationPathx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public Browser() {
-            this.AuthenticateProxy += delegate(object obj, AutomatedBrowser.AthenticateProxyEventArgs e)
-            {
-                e.Username = Proxy.Username;
-                e.Password = Proxy.Password;
-            };
-        }
 
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys

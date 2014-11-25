@@ -14,11 +14,11 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebPage
     {
-        private Browser browser;
+        private EnhancedBrowser browser;
 
         public WebPage() {
-            this.browser = new Browser();
-            this.browser.Size = new Size(400, 300); 
+            this.browser = new EnhancedBrowser();
+            this.browser.Size = new Size(600, 400); 
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
             if (this.url == "about:blank") {
@@ -27,8 +27,15 @@ namespace TrifleJS.API.Modules
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
-
+            this.clipRect = new Dictionary<string, object>() {
+                { "top", 0 },
+                { "left", 0 },
+                { "width", 0 },
+                { "height", 0 }
+            };
         }
+
+        #region Main Properties (title, url etc)
 
         /// <summary>
         /// Returns the title of the current page
@@ -95,6 +102,10 @@ namespace TrifleJS.API.Modules
                 return output.ToString();
             }
         }
+
+        #endregion
+
+        #region Main Methods (open, evaluate etc)
 
         /// <summary>
         /// Opens a URL using a specific HTTP method with a corresponding payload
@@ -274,6 +285,10 @@ namespace TrifleJS.API.Modules
             }
         }
 
+        #endregion
+
+        #region Rendering Functionality
+
         /// <summary>
         /// Takes a screenshot and saves into a file path
         /// </summary>
@@ -354,7 +369,33 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// The scaling factor for WebPage.Render() and WebPage.RenderBase64()
         /// </summary>
-        public double zoomFactor;
+        public double zoomFactor {get; set;}
+
+        /// <summary>
+        /// Rectangle used for clipping
+        /// </summary>
+        public Dictionary<string, object> clipRect { get; set; }
+
+        /// <summary>
+        /// Turns clipRect property into a Rectangle type
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle ClipRect
+        {
+            get
+            {
+                int top = 0, left = 0, width = 0, height = 0;
+                if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
+                if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
+                if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
+                if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
+                if (width == 0) width = browser.Document.Window.Size.Width;
+                if (height == 0) height = browser.Document.Window.Size.Height;
+                return new Rectangle(top, left, width, height);
+            }
+        }
+
+        #endregion
 
     }
 }

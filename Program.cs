@@ -409,7 +409,6 @@ namespace TrifleJS
                 // Initialise host env
                 context.RunScript(Resources.init, "init.js");
                 context.RunScript(Resources.trifle_Callback, "trifle.Callback.js");
-                //API.Phantom.LoadModule("fs", Resources.trifle_modules_FileSystem);
                 context.RunScript(Resources.trifle_modules_WebPage, "trifle.modules.WebPage.js");
                 context.RunScript(Resources.trifle_modules_FileSystem, "trifle.modules.FileSystem.js");
                 context.RunScript(Resources.trifle_modules_System, "trifle.modules.System.js");

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6130407F-322B-4E41-AFDB-FCF1C17D6C19}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -60,7 +60,7 @@
   <ItemGroup>
     <Compile Include="API\Modules\WebServer.cs" />
     <Compile Include="API\Trifle.cs" />
-    <Compile Include="AutomatedBrowser.cs">
+    <Compile Include="EnhancedBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Browser.cs">
@@ -144,6 +144,7 @@
     </Content>
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
+    <Content Include="test\feature\page.clipRect.js" />
     <Content Include="test\feature\page.onAlert.js" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\ie\json2.js" />
@@ -163,6 +164,7 @@
     <Content Include="test\feature\page.onCallback.js" />
     <Content Include="test\feature\page.onConfirm.js" />
     <Content Include="test\feature\page.open.js" />
+    <Content Include="test\feature\page.open.x2.js" />
     <Content Include="test\feature\page.render.js" />
     <Content Include="test\feature\page.viewportSize.js" />
     <Content Include="test\feature\page.zoomFactor.js" />
