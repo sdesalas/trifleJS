@@ -262,12 +262,9 @@ namespace TrifleJS.API.Modules
                     while (loading || browser.StatusText != "Done")
                     {
                         // Run events while waiting
-                        Program.DoEvents();
+                        Trifle.Wait(50);
                     }
                 }
-                //while(history.Count > historyPosition) { history.Pop(); }
-                //history.Push(url);
-                //historyPosition++;
             }
             else
             {
@@ -349,8 +346,14 @@ namespace TrifleJS.API.Modules
         /// Goes back to previous page in history
         /// </summary>
         public void goBack() {
-            if (browser != null && browser.History != null ) {
+            if (browser.CanGoBack)
+            {
                 browser.GoBack();
+                do
+                {
+                    // Run events while waiting
+                    Trifle.Wait(50);
+                } while (loading);
             }
         }
 
@@ -359,9 +362,31 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public void goForward()
         {
-            if (browser != null && browser.History != null)
+            if (browser.CanGoForward)
             {
                 browser.GoForward();
+                do
+                {
+                    // Run events while waiting
+                    Trifle.Wait(50);
+                } while (loading);
+            }
+        }
+
+        /// <summary>
+        /// Goes back or forward through history 
+        /// </summary>
+        /// <param name="index"></param>
+        public void go(int index)
+        {
+            if (index != 0 && browser.History != null)
+            {
+                browser.History.Go(index);
+                do
+                {
+                    // Run events while waiting
+                    Trifle.Wait(50);
+                } while (loading);
             }
         }
 

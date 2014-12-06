@@ -29,7 +29,7 @@ namespace TrifleJS.API
         /// Suspends current thread
         /// </summary>
         /// <param name="milliseconds">Milliseconds to wait for</param>
-        public void Wait(int milliseconds)
+        public static void Wait(int milliseconds)
         {
             int now = Environment.TickCount;
             while (Environment.TickCount < now + milliseconds) {

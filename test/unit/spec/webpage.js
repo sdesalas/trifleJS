@@ -98,12 +98,9 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.canGoBack === true, 'page.canGoBack is true');	
 	assert(page.canGoForward === false, 'page.canGoForward is false');
 	
-	/*
 	assert.section('Navigating through history');
 
 	page.goBack();
-	
-	assert.waitFor(page.loading === false);
 	
 	page.render('back.png');
 	
@@ -112,13 +109,20 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	page.goForward();
 	
-	assert.waitFor(page.loading === false);
-
 	page.render('forward.png');
 	
-	assert(page.canGoBack === true, 'page.canGoBack is true');	
-	assert(page.canGoForward === false, 'page.canGoForward is false');
-*/
+	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward');	
+	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward');
+
+	page.go(-1);
+	
+	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back using go(-1)');	
+	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back using go(-1)');
+
+	page.go(1);
+	
+	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward using go(1)');	
+	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward using go(1)');
 
 	// Finish serving web pages
 	server.close();
