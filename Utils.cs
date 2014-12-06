@@ -20,7 +20,7 @@ namespace TrifleJS
         /// <param name="args"></param>
         public static void Debug(object message, params object[] args)
         {
-            if (Program.verbose)
+            if (Program.Verbose)
             {
                 ConsoleColor normalColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;

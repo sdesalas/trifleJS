@@ -18,7 +18,7 @@ namespace TrifleJS.API.Modules
 
         public WebPage() {
             this.browser = new EnhancedBrowser();
-            this.browser.Size = new Size(600, 400); 
+            this.browser.Size = new Size(400, 300); 
             this.browser.ScrollBarsEnabled = false;
             this.browser.ObjectForScripting = new Callback.External(this);
             if (this.url == "about:blank") {
@@ -119,43 +119,80 @@ namespace TrifleJS.API.Modules
             Uri uri = Browser.TryParse(url);
             if (uri != null)
             {
-                // Navigate to URL
+                // Navigate to URL and set handler for completion
+                // Remove any DocumentCompleted listeners from last round
                 browser.Navigate(uri, method, data, ParsedHeaders);
-                // Define what happens when browser finishes loading the page
-                browser.DocumentCompleted += delegate
-                {
-                    // Set size to document size
-                    browser.Size = browser.Document.Window.Size; 
-                    // DocumentCompleted is fired before window.onload and body.onload
-                    // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
-                    browser.Document.Window.AttachEventHandler("onload", delegate
+                browser.DocumentCompleted -= DocumentCompleted;
+                browser.DocumentCompleted += DocumentCompleted;
+                // Add callback to execution stack
+                AddCallback(callbackId, "success");
+                // Check if we are not already in the event loop
+                if (!Program.InEventLoop) {
+                    // Loading?
+                    while (browser.ReadyState != WebBrowserReadyState.Complete || browser.StatusText != "Done")
                     {
-                        // Add IE Toolset
-                        AddToolset();
-                        // Track unhandled errors
-                        this.browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
-                        {
-                            Handle(e.Description, e.LineNumber, e.Url);
-                            e.Handled = true;
-                        };
-                        // Continue with callback
-                        if (!String.IsNullOrEmpty(callbackId))
-                        {
-                            Callback.ExecuteOnce(callbackId, "success");
-                        }
-                    });
-
-                };
-                // Continue with Forms application logic until ready
-                while (browser.ReadyState != WebBrowserReadyState.Complete || browser.StatusText != "Done")
-                {
-                    Program.DoEvents();
+                        // Run events while waiting
+                        Program.DoEvents();
+                    }
                 }
             }
             else
             {
                 Console.log("Error opening url: " + url);
             }
+        }
+
+        /// <summary>
+        /// A stack of callbacks in the V8 context that need to
+        /// be executed (or are in the process of being executed)
+        /// </summary>
+        private static Stack<KeyValuePair<string, object[]>> stack = new Stack<KeyValuePair<string, object[]>>();
+
+        /// <summary>
+        /// Adds a V8 callback to the execution stack
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
+        private static void AddCallback(string id, params object[] args)
+        {
+            stack.Push(new KeyValuePair<string, object[]>(id, args));
+        }
+
+        /// <summary>
+        /// Executes a V8 callback at the top of the stack
+        /// </summary>
+        /// <param name="id"></param>
+        private static void RemoveCallback()
+        {
+            if (stack.Count > 0)
+            {
+                var callback = stack.Pop();
+                if (!String.IsNullOrEmpty(callback.Key))
+                    Callback.ExecuteOnce(callback.Key, callback.Value);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for actions needed after when the page completes loading.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args) {
+            // DocumentCompleted is fired before window.onload and body.onload
+            // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
+            browser.Document.Window.AttachEventHandler("onload", delegate
+            {
+                // Add IE Toolset
+                AddToolset();
+                // Track unhandled errors
+                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                {
+                    Handle(e.Description, e.LineNumber, e.Url);
+                    e.Handled = true;
+                };
+                // Execute callback at top of the stack
+                RemoveCallback();
+            });
         }
 
         /// <summary>
@@ -179,7 +216,7 @@ namespace TrifleJS.API.Modules
             try
             {
                 string script = String.Format("WebPage.onError(\"{0}\", {1}, \"{2}\");", description, line, uri);
-                isHandled = Convert.ToBoolean(Program.context.Run(script, "WebPage.onError()"));
+                isHandled = Convert.ToBoolean(Program.Context.Run(script, "WebPage.onError()"));
             }
             catch (Exception ex2)
             {
@@ -198,8 +235,10 @@ namespace TrifleJS.API.Modules
         /// Closes the page and releases memory
         /// </summary>
         public void close() {
-            this.browser.Dispose();
-            this.browser = null;
+            throw new Exception("not implemented");
+            stack.Clear();
+            browser.Dispose();
+            browser = null;
         }
 
         /// <summary>

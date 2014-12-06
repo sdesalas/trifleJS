@@ -48,7 +48,7 @@ namespace TrifleJS.API.Modules
                 Console.xdebug(String.Format("WebServer Listening on {0}", this.binding.AbsoluteUri));
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 // Console.error(String.Format("Error listening on binding: {0}", binding));
                 this.server = null;

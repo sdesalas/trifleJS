@@ -71,7 +71,7 @@ namespace TrifleJS.API
         /// </summary>
         public static Context Current
         {
-            get { return Program.context; }
+            get { return Program.Context; }
         }
 
         /// <summary>

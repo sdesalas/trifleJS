@@ -47,7 +47,7 @@ namespace TrifleJS
                         id,
                         String.Join(",", Parse(arguments))
                     );
-                Program.context.Run(cmd, "Callback#" + id);
+                Program.Context.Run(cmd, "Callback#" + id);
             }
             catch (Exception ex) {
                 API.Context.Handle(ex);
@@ -147,7 +147,7 @@ namespace TrifleJS
                 try
                 {
                     // Execute in V8 engine and return result
-                    object result = Program.context.Run(
+                    object result = Program.Context.Run(
                             String.Format("WebPage.onDialog({0}, {1}, {2})", ParseOne(dialog), ParseOne(message), ParseOne(defaultValue)),
                             "WebPage.onDialog()"
                         );
@@ -167,7 +167,7 @@ namespace TrifleJS
                 try
                 {
                     // Execute in V8 engine and return result
-                    object result = Program.context.Run(
+                    object result = Program.Context.Run(
                         String.Format("WebPage.onCallback({0});", jsonArray),
                         "WebPage.onCallback()"
                     );

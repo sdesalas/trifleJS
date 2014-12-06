@@ -33,11 +33,11 @@ namespace TrifleJS.API
         /// <param name="filename"></param>
         /// <returns></returns>
         public bool InjectJs(string filename) {
-            if (Program.context.Find(filename) != null)
+            if (Program.Context.Find(filename) != null)
             {
                 try
                 {
-                    Program.context.RunFile(filename);
+                    Program.Context.RunFile(filename);
                     return true;
                 }
                 catch (Exception ex)
@@ -87,7 +87,7 @@ namespace TrifleJS.API
                         "require.cache['" + name + "'].exports," +
                         "require.cache['" + name + "']" +
                         "));";
-                Program.context.Run(
+                Program.Context.Run(
                         code
                    );
             } 
@@ -117,7 +117,7 @@ namespace TrifleJS.API
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
         public static string[] Args {
-            get { return Program.args; }
+            get { return Program.Args; }
         }
 
         /// <summary>

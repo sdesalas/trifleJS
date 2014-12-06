@@ -12,9 +12,10 @@ namespace TrifleJS
 {
     class Program
     {
-        public static API.Context context;
-        public static string[] args;
-        public static bool verbose = false;
+        public static API.Context Context { get; set; }
+        public static string[] Args { get; set; }
+        public static bool Verbose { get; set; }
+        public static bool InEventLoop { get; set; }
 
         /// <summary>
         /// Help message
@@ -59,9 +60,9 @@ namespace TrifleJS
         static void Main(string[] args)
         {
             // Commence
-            Program.args = args;
+            Program.Args = args;
 #if DEBUG
-            Program.verbose = true;
+            Program.Verbose = true;
             Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
 #endif
             // Define environment
@@ -94,7 +95,7 @@ namespace TrifleJS
                         Help();
                         return;
                     case "--debug":
-                        Program.verbose = true;
+                        Program.Verbose = true;
                         break;
                     case "-v":
                     case "--version":
@@ -209,22 +210,22 @@ namespace TrifleJS
             Console.WriteLine("============================================");
             Console.WriteLine();
 
-            using (Program.context = Initialise())
+            using (Program.Context = Initialise())
             {
                 try
                 {
                     // Load libs
-                    context.RunScript(Resources.test_lib_jasmine, "test/lib/jasmine.js");
-                    context.RunScript(Resources.test_lib_jasmine_console, "test/lib/jasmine-console.js");
-                    context.RunScript(Resources.test_phantom_tools, "test/phantom/tools.js");
+                    Context.RunScript(Resources.test_lib_jasmine, "test/lib/jasmine.js");
+                    Context.RunScript(Resources.test_lib_jasmine_console, "test/lib/jasmine-console.js");
+                    Context.RunScript(Resources.test_phantom_tools, "test/phantom/tools.js");
 
                     // Load Spec
-                    context.RunScript(Resources.test_phantom_spec_phantom, "test/phantom/phantom.js");
-                    context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webserver.js");
-                    context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webpage.js");
+                    Context.RunScript(Resources.test_phantom_spec_phantom, "test/phantom/phantom.js");
+                    Context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webserver.js");
+                    Context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webpage.js");
 
                     // Execute
-                    context.RunScript(Resources.test_run_jasmine, "test/phantom/run-jasmine.js");
+                    Context.RunScript(Resources.test_run_jasmine, "test/phantom/run-jasmine.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -253,23 +254,23 @@ namespace TrifleJS
             Console.WriteLine("TrifleJS -- Unit Tests");
             Console.WriteLine("============================================");
 
-            Program.verbose = false; 
+            Program.Verbose = false; 
 
-            using (Program.context = Initialise())
+            using (Program.Context = Initialise())
             {
                 try
                 {
                     // Load libs
-                    context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
+                    Context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
                     // Execute Specs
                     //context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
                     //context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
                     //context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
-                    context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
+                    Context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
 
                     // Finish
-                    context.RunScript(Resources.test_unit_finish, "test/unit/finish.js");
+                    Context.RunScript(Resources.test_unit_finish, "test/unit/finish.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -294,14 +295,14 @@ namespace TrifleJS
         static void Interactive()
         {
             // Initialize and start console read loop;
-            using (Program.context = Initialise()) 
+            using (Program.Context = Initialise()) 
             {
                 while (true)
                 {
                     Console.Write("triflejs> ");
                     try
                     {
-                        API.Console.log(context.Run(Console.ReadLine(), "REPL"));
+                        API.Console.log(Context.Run(Console.ReadLine(), "REPL"));
                     }
                     catch (Exception ex)
                     {
@@ -354,7 +355,7 @@ namespace TrifleJS
             }
 
             //Initialize a context
-            using (Program.context = Initialise())
+            using (Program.Context = Initialise())
             {
                 // Set Library Path
                 API.Phantom.LibraryPath = new FileInfo(filename).DirectoryName;
@@ -362,7 +363,7 @@ namespace TrifleJS
                 try
                 {
                     // Run the script
-                    context.RunFile(filename);
+                    Context.RunFile(filename);
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -379,14 +380,18 @@ namespace TrifleJS
         }
 
         /// <summary>
-        /// Runs background events while waiting
+        /// Runs background events while waiting, 
+        /// make sure that we track when we are on the 
+        /// event loop to avoid recursion.
         /// </summary>
         public static void DoEvents()
         {
+            Program.InEventLoop = true;
+            GC.Collect();
             API.Window.CheckTimers();
             API.Modules.WebServer.ProcessConnections();
             System.Windows.Forms.Application.DoEvents();
-            GC.Collect();
+            Program.InEventLoop = false;
         }
 
         /// <summary>

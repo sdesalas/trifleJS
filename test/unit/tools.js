@@ -53,15 +53,18 @@ assert.suite = function(name, callback) {
 	try {
 		callback();
 	} catch (e) {
-		assert.fail(e.Message);
+		assert.fail(e);
 	}
 }
 
-assert.section = function(name) {
+assert.section = function(name, callback) {
 	console.log();
 	console.log(' ' + this.suitename + ' - ' + name);
 	console.log();
 	this.sectionname = name;
+	if (typeof callback === 'function') {
+		callback();
+	}
 }
 
 assert.waitFor = function(condition) {

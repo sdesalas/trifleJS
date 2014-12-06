@@ -28,7 +28,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public string[] args
         {
-            get { return Program.args; }
+            get { return Program.Args; }
         }
 
         /// <summary>
