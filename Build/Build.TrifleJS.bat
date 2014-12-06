@@ -40,6 +40,7 @@ IF EXIST "%CompilePath%\TrifleJS.exe" (
 :: Prepare & Zip Release
 XCOPY %CompilePath%\*.* %MergePath% /Y /E
 DEL %MergePath%\TrifleJS.exe /Q
+DEL %MergePath%\Interop.IWshRuntimeLibrary.dll /Q
 DEL %MergePath%\Microsoft.mshtml.dll /Q
 DEL %MergePath%\Newtonsoft.Json.dll /Q
 
