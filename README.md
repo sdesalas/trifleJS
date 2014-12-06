@@ -1,7 +1,7 @@
 trifleJS 0.3
 =========
 
-A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine).
+A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript Engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine)).
 
 The API is coded as a port of [PhantomJS](http://phantomjs.org). Basically, if you have used phantom before then you already know how to use TrifleJS.
 
@@ -19,9 +19,11 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 ### API Implementation
 
-We are currently about 60% throguht the [PhantomJS API](http://phantomjs.org/api/).
+We are currently about 57% throguht the [PhantomJS API](http://phantomjs.org/api/).
 
-For detailed information on which methods are available please refer to [triflejs.org](http://triflejs.org):
+- [API Status](http://triflejs.org#post-112)
+
+More information on each component is available on [triflejs.org](http://triflejs.org):
 
 - [Global Methods](http://triflejs.org#post-11)
 - [Object: phantom](http://triflejs.org#post-18)
