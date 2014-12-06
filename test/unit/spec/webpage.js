@@ -61,7 +61,6 @@ assert.suite('WEBPAGE MODULE', function() {
 		
 		assert.waitFor(loaded);
 		try {responseData = JSON.parse(page.plainText); } catch (e) {}
-		console.log(responseData);
 		assert(responseData !== null && responseData.success, 'page.open(url) can load a simple request');
 	
 	});
@@ -106,7 +105,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	
 	assert.waitFor(page.loading === false);
 	
-		page.render('back.png');
+	page.render('back.png');
 	
 	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
 	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');

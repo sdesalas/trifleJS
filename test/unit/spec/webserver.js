@@ -76,3 +76,4 @@ assert.suite('WEBSERVER MODULE', function() {
 });
 
 // TEARDOWN
+server.close()
