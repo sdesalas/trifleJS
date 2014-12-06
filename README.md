@@ -15,7 +15,7 @@ It supports different version of IE interchangeably depending on the current ver
 
 The following is a list of features that have been ported from PhantomJS. 
 
-We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage.
+We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage and provides only marginal benefit.
 
 ### API Implementation
 
