@@ -19,7 +19,7 @@ namespace TrifleJS.API
             {
                 return new Dictionary<string, int> { 
                     {"major", 0},
-                    {"minor", 3},
+                    {"minor", 4},
                     {"patch", 0}
                 };
             }
