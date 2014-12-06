@@ -1,4 +1,4 @@
-trifleJS 0.3
+trifleJS 0.4
 =========
 
 A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript Engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine)).
@@ -15,13 +15,13 @@ It supports different version of IE interchangeably depending on the current ver
 
 The following is a list of features that have been ported from PhantomJS. 
 
-We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage.
+We are targetting version 1.7 as webdriver support (added in v 1.8) is too much work to put in at this stage and provides only marginal benefit.
 
 ### API Implementation
 
-We are currently about 57% throguht the [PhantomJS API](http://phantomjs.org/api/).
+We are a bit over half-way throguht the [PhantomJS API](http://phantomjs.org/api/).
 
-- [API Status (57%)](http://triflejs.org#post-112)
+- [API Status (58%)](http://triflejs.org#post-112)
 
 More information on each component is available on [triflejs.org](http://triflejs.org):
 
