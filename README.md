@@ -1,5 +1,4 @@
-trifleJS 0.4
-=========
+![trifjeJS](https://raw.github.com/sdesalas/trifleJS/master/Docs/logo-260x260px.png "trifleJS")
 
 A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript Engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine)).
 
@@ -44,7 +43,7 @@ Some items that are being deliberately left out:
 
 - Support for WebDriver
 
-### Download
+### Download v0.4
 
 This code is still very much in beta. Check again for updates.
 
