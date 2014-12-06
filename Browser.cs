@@ -87,6 +87,13 @@ namespace TrifleJS
         }
 
         /// <summary>
+        /// Gets the history for the current document
+        /// </summary>
+        public HtmlHistory History {
+            get { return (Document != null && Document.Window != null) ? Document.Window.History : null; }
+        }
+
+        /// <summary>
         /// Waits until window finishes loading and then takes a screenshot
         /// </summary>
         /// <param name="fileName">path where the screenshot is saved</param>

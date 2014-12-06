@@ -24,6 +24,10 @@ namespace TrifleJS.API.Modules
             if (this.url == "about:blank") {
                 this.AddToolset();
             }
+            // Wait for about blank
+            while (loading) {
+                Program.DoEvents();
+            }
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
@@ -57,16 +61,6 @@ namespace TrifleJS.API.Modules
         public string content {
             get { return (this.browser != null) ? this.browser.DocumentText : String.Empty; }
         }
-
-        /// <summary>
-        /// Navigation (back)
-        /// </summary>
-        public bool canGoBack { get; set; }
-
-        /// <summary>
-        /// Navigation (forward)
-        /// </summary>
-        public bool canGoForward { get; set; }
 
         /// <summary>
         /// Gets the Plain Text content of the document
@@ -105,95 +99,7 @@ namespace TrifleJS.API.Modules
 
         #endregion
 
-        #region Main Methods (open, evaluate etc)
-
-        /// <summary>
-        /// Opens a URL using a specific HTTP method with a corresponding payload
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="method"></param>
-        /// <param name="data"></param>
-        /// <param name="callbackId"></param>
-        public void _open(string url, string method, string data, string callbackId) {
-            // Check the URL
-            Uri uri = Browser.TryParse(url);
-            if (uri != null)
-            {
-                // Navigate to URL and set handler for completion
-                // Remove any DocumentCompleted listeners from last round
-                browser.Navigate(uri, method, data, ParsedHeaders);
-                browser.DocumentCompleted -= DocumentCompleted;
-                browser.DocumentCompleted += DocumentCompleted;
-                // Add callback to execution stack
-                AddCallback(callbackId, "success");
-                // Check if we are not already in the event loop
-                if (!Program.InEventLoop) {
-                    // Loading?
-                    while (browser.ReadyState != WebBrowserReadyState.Complete || browser.StatusText != "Done")
-                    {
-                        // Run events while waiting
-                        Program.DoEvents();
-                    }
-                }
-            }
-            else
-            {
-                Console.log("Error opening url: " + url);
-            }
-        }
-
-        /// <summary>
-        /// A stack of callbacks in the V8 context that need to
-        /// be executed (or are in the process of being executed)
-        /// </summary>
-        private static Stack<KeyValuePair<string, object[]>> stack = new Stack<KeyValuePair<string, object[]>>();
-
-        /// <summary>
-        /// Adds a V8 callback to the execution stack
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="args"></param>
-        private static void AddCallback(string id, params object[] args)
-        {
-            stack.Push(new KeyValuePair<string, object[]>(id, args));
-        }
-
-        /// <summary>
-        /// Executes a V8 callback at the top of the stack
-        /// </summary>
-        /// <param name="id"></param>
-        private static void RemoveCallback()
-        {
-            if (stack.Count > 0)
-            {
-                var callback = stack.Pop();
-                if (!String.IsNullOrEmpty(callback.Key))
-                    Callback.ExecuteOnce(callback.Key, callback.Value);
-            }
-        }
-
-        /// <summary>
-        /// Event handler for actions needed after when the page completes loading.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args) {
-            // DocumentCompleted is fired before window.onload and body.onload
-            // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
-            browser.Document.Window.AttachEventHandler("onload", delegate
-            {
-                // Add IE Toolset
-                AddToolset();
-                // Track unhandled errors
-                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
-                {
-                    Handle(e.Description, e.LineNumber, e.Url);
-                    e.Handled = true;
-                };
-                // Execute callback at top of the stack
-                RemoveCallback();
-            });
-        }
+        #region Scripting
 
         /// <summary>
         /// Adds resources needed after loading page
@@ -236,7 +142,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public void close() {
             throw new Exception("not implemented");
-            stack.Clear();
+            callbackStack.Clear();
             browser.Dispose();
             browser = null;
         }
@@ -323,6 +229,150 @@ namespace TrifleJS.API.Modules
                 _evaluateJavaScript(File.ReadAllText(filename));
             }
         }
+
+        #region Navigation
+
+        private Stack<string> history = new Stack<string>();
+        private int historyPosition = 0;
+
+        /// <summary>
+        /// Opens a URL using a specific HTTP method with a corresponding payload
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
+        /// <param name="callbackId"></param>
+        public void _open(string url, string method, string data, string callbackId)
+        {
+            // Check the URL
+            Uri uri = Browser.TryParse(url);
+            if (uri != null)
+            {
+                // Navigate to URL and set handler for completion
+                // Remove any DocumentCompleted listeners from last round
+                browser.Navigate(uri, method, data, ParsedHeaders);
+                browser.DocumentCompleted -= DocumentCompleted;
+                browser.DocumentCompleted += DocumentCompleted;
+                // Add callback to execution stack
+                AddCallback(callbackId, "success");
+                // Check if we are not already in the event loop
+                if (!Program.InEventLoop)
+                {
+                    // Loading?
+                    while (loading || browser.StatusText != "Done")
+                    {
+                        // Run events while waiting
+                        Program.DoEvents();
+                    }
+                }
+                //while(history.Count > historyPosition) { history.Pop(); }
+                //history.Push(url);
+                //historyPosition++;
+            }
+            else
+            {
+                Console.log("Error opening url: " + url);
+            }
+        }
+
+        /// <summary>
+        /// A stack of callbacks in the V8 context that need to
+        /// be executed (or are in the process of being executed)
+        /// </summary>
+        private static Stack<KeyValuePair<string, object[]>> callbackStack = new Stack<KeyValuePair<string, object[]>>();
+
+        /// <summary>
+        /// Adds a V8 callback to the execution stack
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
+        private static void AddCallback(string id, params object[] args)
+        {
+            callbackStack.Push(new KeyValuePair<string, object[]>(id, args));
+        }
+
+        /// <summary>
+        /// Executes a V8 callback at the top of the stack
+        /// </summary>
+        /// <param name="id"></param>
+        private static void RemoveCallback()
+        {
+            if (callbackStack.Count > 0)
+            {
+                var callback = callbackStack.Pop();
+                if (!String.IsNullOrEmpty(callback.Key))
+                    Callback.ExecuteOnce(callback.Key, callback.Value);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for actions needed after when the page completes loading.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args)
+        {
+            // DocumentCompleted is fired before window.onload and body.onload
+            // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
+            browser.Document.Window.AttachEventHandler("onload", delegate
+            {
+                // Add IE Toolset
+                AddToolset();
+                // Track unhandled errors
+                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                {
+                    Handle(e.Description, e.LineNumber, e.Url);
+                    e.Handled = true;
+                };
+                // Execute callback at top of the stack
+                RemoveCallback();
+            });
+        }
+
+        /// <summary>
+        /// Navigation (back)
+        /// </summary>
+        public bool canGoBack
+        {
+            get { return (this.browser != null) ? this.browser.CanGoBack : false; }
+        }
+
+        /// <summary>
+        /// Navigation (forward)
+        /// </summary>
+        public bool canGoForward
+        {
+            get { return (this.browser != null) ? this.browser.CanGoForward : false; }
+        }
+
+        /// <summary>
+        /// Goes back to previous page in history
+        /// </summary>
+        public void goBack() {
+            if (browser != null && browser.History != null ) {
+                browser.GoBack();
+            }
+        }
+
+        /// <summary>
+        /// Goes forward to next page in history
+        /// </summary>
+        public void goForward()
+        {
+            if (browser != null && browser.History != null)
+            {
+                browser.GoForward();
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the browser is loading
+        /// </summary>
+        public bool loading {
+            get { return (browser != null) ? browser.ReadyState != WebBrowserReadyState.Complete : false; }
+        }
+
+        #endregion
 
         #endregion
 

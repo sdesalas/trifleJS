@@ -10,6 +10,11 @@ assert.suite('WEBPAGE MODULE', function() {
 	var page = require("webpage").create();
 	assert(typeof page === 'object', 'require("webpage").create() returns an object');
 
+	assert.section('Method availability');
+
+	assert(typeof page.goBack === 'function', 'page.goBack() method available');
+	assert(typeof page.goForward === 'function', 'page.goForward() method available');
+
 	assert.section('Properties before loading');
 
 	assert(page.canGoBack === false, 'page.canGoBack is false');
@@ -26,7 +31,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	//assert(page.frameUrl === 'about:blank', 'page.frameUrl is "about:blank"');
 	//assert(page.framesCount === 0, 'page.framesCount is 0');
 	//assert(page.libraryPath != null, 'page.libraryPath is not null');
-	//assert(page.loading === false, 'page.loading is false');
+	assert(page.loading === false, 'page.loading is false');
 	//assert(page.plainText === '', 'page.plainText is an empty string');
 	//assert(page.scrollPosition != null && page.scrollPosition.left === 0, 'page.scrollPosition.left is 0');
 	//assert(page.scrollPosition != null && page.scrollPosition.top === 0, 'page.scrollPosition.top is 0');
@@ -36,6 +41,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.zoomFactor === 1, 'page.zoomFactor is 1');
 	//assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
 	//assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
+
 
 	// Instantiate a web server to check that pages are loading
 	var server = require('webserver').create();
@@ -88,6 +94,32 @@ assert.suite('WEBPAGE MODULE', function() {
 	
 	});
 	
+	assert.section('Properties after loading');
+	
+	assert(page.canGoBack === true, 'page.canGoBack is true');	
+	assert(page.canGoForward === false, 'page.canGoForward is false');
+	
+	/*
+	assert.section('Navigating through history');
+
+	page.goBack();
+	
+	assert.waitFor(page.loading === false);
+	
+		page.render('back.png');
+	
+	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
+	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');
+
+	page.goForward();
+	
+	assert.waitFor(page.loading === false);
+
+	page.render('forward.png');
+	
+	assert(page.canGoBack === true, 'page.canGoBack is true');	
+	assert(page.canGoForward === false, 'page.canGoForward is false');
+*/
 
 	// Finish serving web pages
 	server.close();
