@@ -1,4 +1,4 @@
-trifleJS 0.3
+trifleJS 0.4
 =========
 
 A headless Internet Explorer browser using the [.NET WebBrowser Class](http://msdn.microsoft.com/en-us/library/system.windows.forms.webbrowser.aspx) with a Javascript API running on the [V8 JavaScript Engine](http://en.wikipedia.org/wiki/V8_(JavaScript_engine)).
