@@ -33,9 +33,14 @@ trifle.modules = trifle.modules || {};
         methods: {
 
 			// Listen for incoming requests
-			listen: function(binding, callback) {
-				console.xdebug("Webserver.prototype.listen(binding, callback)");
+			listen: function(binding, opts, callback) {
+				console.xdebug("Webserver.prototype.listen(binding, opts, callback)");
 				var API = this;
+				if (typeof callback === 'undefined' && typeof opts === 'function') {
+					callback = opts;
+					opts = {};
+				}
+				
 				// Instantiate Callback
 				var complete = function(connectionId) {
 					// Get Request & Response

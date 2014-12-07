@@ -22,7 +22,7 @@ var service = server.listen(8080, function(request, response) {
     response.setHeader('header3', 'header3');
     response.write('<html><body><p>Hello there!</p>');
     response.write('<p>From port:' + server.port + '</p>');
-    response.write('<p><form action="/" method="post"><input type="text" name="name" value=""/><input type="file" name="theFile"/><input type="submit"></form></p></body></html>');
+    response.write('<p><form action="/" method="post">Name:<input type="text" name="name" value=""/><br/><input type="file" name="theFile"/><input type="submit"></form></p></body></html>');
     response.close();
 });
 console.log('Ending');

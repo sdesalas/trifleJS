@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Web;
 
 namespace TrifleJS.API.Modules
 {
@@ -11,48 +13,45 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebServer
     {
-        private static Dictionary<string, Server> processes = new Dictionary<string, Server>();
-        private static int concurrentThreads = 0;
-        private static int allowedThreads = 3;
-        private Server server;
-        private Uri binding;
+        private static Dictionary<string, Listener> processes = new Dictionary<string, Listener>();
+        private static int threadsPerListener = 3;
+
+        public WebServer() 
+        {
+            port = String.Empty;
+        }
 
         /// <summary>
         /// Opens a HTTP listener on specific TCP bindings
         /// </summary>
         /// <param name="bindings"></param>
         /// <param name="callbackId"></param>
-        public bool _listen(string binding, string callbackId) {
+        public bool _listen(string uri, string callbackId) {
             // Start & Run HTTP daemon
             try
             {
                 // Initialize URI for binding
-                int port;
-                if (Int32.TryParse(binding, out port)) { this.binding = new Uri(String.Format("http://localhost:{0}/", port)); }
-                else if (!binding.Contains("http")) { this.binding = new Uri(String.Format("http//{0}", binding)); }
-                else { this.binding = new Uri(binding); }
-                if (server != null && server.listener != null)
+                int port; Uri binding;
+                if (Int32.TryParse(uri, out port)) { binding = new Uri(String.Format("http://localhost:{0}/", port)); }
+                else if (!uri.Contains("http")) { binding = new Uri(String.Format("http//{0}", uri)); }
+                else { binding = new Uri(uri); }
+                uri = binding.AbsoluteUri;
+                // Already using binding? Replace it.
+                if (processes.ContainsKey(uri))
                 {
-                    // Server already exists, add a new binding & callback
-                    server.listener.Stop();
-                    server.listener.Prefixes.Add(this.binding.AbsoluteUri);
-                    server.listener.Start();
-                    processes.Add(callbackId, server);
-                } else {
-                    // No server, create a new instance.
-                    server = new Server();
-                    server.listener.Prefixes.Add(this.binding.AbsoluteUri);
-                    server.listener.Start();
-                    processes.Add(callbackId, server);
+                    processes[uri].Stop();
+                    processes.Remove(uri);
                 }
-                Console.xdebug(String.Format("WebServer Listening on {0}", this.binding.AbsoluteUri));
+                Listener listener = new Listener(callbackId);
+                listener.listener.Prefixes.Add(uri);
+                listener.listener.Start();
+                processes.Add(uri, listener);
+                this.port = binding.Port.ToString();
+                Console.xdebug(String.Format("WebServer Listening on {0}", uri));
                 return true;
             }
             catch
             {
-                // Console.error(String.Format("Error listening on binding: {0}", binding));
-                this.server = null;
-                this.binding = null;
                 return false;
             }
         }
@@ -60,17 +59,16 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// The port where the server is listening
         /// </summary>
-        public string port {
-            get { return (this.binding != null) ? this.binding.Port.ToString() : ""; }
-        }
+        public string port { get; set; }
 
         /// <summary>
         /// Shuts down the server
         /// </summary>
         public void close() {
-            if (this.server != null) {
-                this.server.ShutDown();
+            foreach (Listener listener in processes.Values) {
+                listener.Stop();
             }
+            processes.Clear();
         }
 
         /// <summary>
@@ -79,36 +77,39 @@ namespace TrifleJS.API.Modules
         internal static void ProcessConnections()
         {
             // Loop through active TCP bindings
-            foreach (string callbackId in new List<string>(processes.Keys))
+            foreach (string uri in new List<string>(processes.Keys))
             {
                 // Check each server for incoming connections
-                Server server = processes[callbackId];
-                if (server != null && server.listener != null)
+                Listener listener = processes[uri];
+                if (listener != null && listener.listener != null)
                 {
                     // Is it listening?
-                    if (server.listener.IsListening)
+                    if (listener.listener.IsListening)
                     {
                         // Are there enough threads listening to incoming connections?
-                        if (concurrentThreads < allowedThreads)
+                        if (listener.threads < threadsPerListener)
                         {
                             // Add separate thread for filling up queue
-                            concurrentThreads++;
-                            server.listener.BeginGetContext(delegate(IAsyncResult result)
+                            listener.threads++;
+                            listener.listener.BeginGetContext(delegate(IAsyncResult result)
                             {
                                 try
                                 {
-                                    // Check again if we are listening 
-                                    // (might have been disconnected in meantime)
-                                    if (server.listener != null)
+                                    if (listener.listener != null)
                                     {
-                                        // Add connection to queue (asynchronously)
-                                        HttpListenerContext context = server.listener.EndGetContext(result);
-                                        Connection connection = new Connection(callbackId, context);
-                                        //Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
-                                        // This will be processed in STA thread (below)
-                                        // so that there are no memory conflicts in
-                                        // callbacks to V8 environment.
-                                        server.connections.Add(connection.id, connection);
+                                        // Check again if we are listening 
+                                        // (might have been disconnected in meantime)
+                                        HttpListenerContext context = listener.listener.EndGetContext(result);
+                                        if (listener.listener.IsListening)
+                                        {
+                                            // Add connection to queue (asynchronously)
+                                            Connection connection = new Connection(listener.callbackId, context);
+                                            //Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
+                                            // This will be processed in STA thread (below)
+                                            // so that there are no memory conflicts in
+                                            // callbacks to V8 environment.
+                                            listener.connections.Add(connection.id, connection);
+                                        }
                                     }
                                 }
                                 catch (Exception ex)
@@ -117,9 +118,9 @@ namespace TrifleJS.API.Modules
                                 }
                                 finally
                                 {
-                                    concurrentThreads--;
+                                    listener.threads--;
                                 }
-                            }, server.listener);
+                            }, listener.listener);
                         }
                         // Process incoming connection queue
                         // (in STA thread to avoid COM memory issues)
@@ -130,8 +131,9 @@ namespace TrifleJS.API.Modules
                             // the new List<string>() statement below to fail.
                             // In these cases we just ignore the error
                             // and wait for the next pass to read the queue.
-                            foreach(string connectionId in new List<string>(server.connections.Keys)) {
-                                Connection connection = server.connections[connectionId];
+                            foreach (string connectionId in new List<string>(listener.connections.Keys))
+                            {
+                                Connection connection = listener.connections[connectionId];
                                 if (connection != null && !connection.isProcessing)
                                 {
                                     // Start processing
@@ -148,8 +150,8 @@ namespace TrifleJS.API.Modules
                     }
                     else { 
                         // Not listening? Shutdown and remove from process queue..
-                        server.ShutDown();
-                        processes.Remove(callbackId);
+                        listener.Stop();
+                        processes.Remove(uri);
                     }
                 }
             }
@@ -162,28 +164,20 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         private static Connection Find(string connectionId)
         { 
-            Connection result = null;
-            // Loop through active TCP bindings
-            foreach (string callbackId in new List<string>(processes.Keys))
+            // Loop through active http bindings
+            foreach (string uri in new List<string>(processes.Keys))
             {
                 // Check each server for incoming connections
-                Server server = processes[callbackId];
-                if (server != null && server.listener != null)
+                Listener listener = processes[uri];
+                if (listener != null && listener.listener != null)
                 {
-                    try
+                    if (listener.connections.ContainsKey(connectionId)) 
                     {
-                        foreach (string id in new List<string>(server.connections.Keys))
-                        {
-                            if (id == connectionId)
-                            {
-                                result = server.connections[id];
-                            }
-                        }
+                        return listener.connections[connectionId];
                     }
-                    catch { }
                 }
             }
-            return result;
+            return null;
         }
 
         /// <summary>
@@ -194,20 +188,16 @@ namespace TrifleJS.API.Modules
         private static void Remove(string connectionId)
         {
             // Loop through active TCP bindings
-            foreach (string callbackId in new List<string>(processes.Keys))
+            foreach (string uri in new List<string>(processes.Keys))
             {
                 // Check each server for incoming connections
-                Server server = processes[callbackId];
-                if (server != null && server.listener != null)
+                Listener listener = processes[uri];
+                if (listener != null && listener.listener != null)
                 {
                     try
                     {
-                        foreach (string id in new List<string>(server.connections.Keys))
-                        {
-                            if (id == connectionId)
-                            {
-                                server.connections.Remove(id);
-                            }
+                        if (listener.connections.ContainsKey(connectionId)) {
+                            listener.connections.Remove(connectionId);
                         }
                     }
                     catch { }
@@ -244,23 +234,29 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// An internal class representing the server object
+        /// An internal class representing a http listener
         /// </summary>
-        private class Server {
-            public Server() {
+        private class Listener {
+            public Listener(string callbackId) {
                 this.listener = new HttpListener();
+                this.callbackId = callbackId;
             }
-            public Server(HttpListener listener) {
+            public Listener(HttpListener listener, string callbackId) {
                 this.listener = listener;
+                this.callbackId = callbackId;
             }
-            public void ShutDown() {
+            public void Stop()
+            {
                 connections.Clear();
-                if (this.listener != null) {
+                if (this.listener != null)
+                {
                     this.listener.Stop();
                     this.listener = null;
                 }
             }
             public HttpListener listener;
+            public string callbackId;
+            public int threads;
             public Dictionary<string, Connection> connections = new Dictionary<string, Connection>();
         }
 
@@ -273,18 +269,15 @@ namespace TrifleJS.API.Modules
                 this.request = request;
                 using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                 {
-                    this.rawPost = reader.ReadToEnd();
+                    this.rawPost = reader.ReadToEnd().Trim();
                     if (request.ContentType != null && request.ContentType.Contains("application/x-www-form-urlencoded")) {
-                        Dictionary<string, object> post = new Dictionary<string, object>();
-                        string[] fields = this.rawPost.Split('&');
-                        Array.Sort<string>(fields);
-                        foreach(string field in fields) {
-                            string[] fieldData = field.Split('=');
-                            if (fieldData.Length > 1) {
-                                post.Add(fieldData[0], Uri.UnescapeDataString(field.Replace(fieldData[0], "")));
-                            }
+                        Dictionary<string, object> data = new Dictionary<string, object> ();
+                        NameValueCollection form = HttpUtility.ParseQueryString(this.rawPost);
+                        foreach (string key in form)
+                        {
+                            data.Add(key, form[key]);
                         }
-                        this.post = post;
+                        this.post = data;
                     } else {
                         this.post = rawPost;
                     }
@@ -323,6 +316,7 @@ namespace TrifleJS.API.Modules
                     foreach (string key in request.Headers.AllKeys) {
                         result.Add(key, request.Headers[key]);
                     }
+                    result.Add("User-Agent", request.UserAgent);
                     return result;
                 }
             }
