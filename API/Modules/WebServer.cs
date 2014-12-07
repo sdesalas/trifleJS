@@ -95,13 +95,14 @@ namespace TrifleJS.API.Modules
                             {
                                 try
                                 {
-                                    if (listener.listener != null)
+                                    lock (listener)
                                     {
                                         // Check again if we are listening 
                                         // (might have been disconnected in meantime)
-                                        HttpListenerContext context = listener.listener.EndGetContext(result);
-                                        if (listener.listener.IsListening)
+                                        if (listener.listener != null && listener.listener.IsListening)
                                         {
+
+                                            HttpListenerContext context = listener.listener.EndGetContext(result);
                                             // Add connection to queue (asynchronously)
                                             Connection connection = new Connection(listener.callbackId, context);
                                             //Console.xdebug(String.Format("ProcessRequests:Queueing connection for {0}!", connection.id));
@@ -110,11 +111,15 @@ namespace TrifleJS.API.Modules
                                             // callbacks to V8 environment.
                                             listener.connections.Add(connection.id, connection);
                                         }
-                                    }
+                                    } 
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.error(String.Format("Error queueing connection: {0}", ex.Message));
+                                    // Ignore thread aborts (server being closed)
+                                    if (ex.Message.Contains("thread abort"))
+                                    {
+                                        Console.error(String.Format("Error queueing connection: {0}", ex.Message));
+                                    }
                                 }
                                 finally
                                 {
