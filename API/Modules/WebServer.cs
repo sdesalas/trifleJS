@@ -16,6 +16,9 @@ namespace TrifleJS.API.Modules
         private static Dictionary<string, Process> processes = new Dictionary<string, Process>();
         private static int threadsPerProcess = 2;
 
+        /// <summary>
+        /// Instantiates a web server
+        /// </summary>
         public WebServer() 
         {
             port = String.Empty;

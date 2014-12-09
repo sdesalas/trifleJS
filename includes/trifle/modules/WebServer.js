@@ -48,7 +48,11 @@ trifle.modules = trifle.modules || {};
 					var response = API._getResponse(connectionId);
 					// Execute callback
 					if (callback && callback.call) {
-						return !!callback ? callback.call(API, request, response) : null;
+						var result = !!callback ? callback.call(API, request, response) : null;
+						if (!opts.keepAlive) {
+							response.close();
+						}
+						return result;
 					}
 				};
 				// Start listening on binding

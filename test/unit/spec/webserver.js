@@ -134,6 +134,5 @@ assert.suite('WEBSERVER MODULE', function() {
 });
 
 // TEARDOWN
-trifle.wait(50);
 server.close()
-trifle.wait(50);
+
