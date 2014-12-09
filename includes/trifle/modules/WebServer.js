@@ -44,17 +44,18 @@ trifle.modules = trifle.modules || {};
 				// Instantiate Callback
 				var complete = function(connectionId) {
 					// Get Request & Response
-					var request = {}, _request = API._getRequest(connectionId);
+					var request = API._getRequest(connectionId);
 					var response = API._getResponse(connectionId);
 					// Decorate request object so it can be printed using console.log() or JSON.stringify()
-					request.httpVersion = _request.httpVersion;
-					request.method = _request.method;
-					request.headers = _request.headers;
-					request.post = _request.post;
-					request.url = _request.url;
-					request.rawPost = _request.rawPost;
-					request.write = function() { return _request.write.apply(_request, arguments); };
-					request.close = function() { return _request.close.apply(_request, arguments); };
+					request.headers = request._headers;
+					request.httpVersion = request._httpVersion;
+					request.method = request._method;
+					if (request.method === "POST") 
+					{
+						request.post = request._post;
+						request.rawPost = request._rawPost;
+					}
+					request.url = request._url;
 					// Execute callback
 					if (callback && callback.call) {
 						var result = !!callback ? callback.call(API, request, response) : null;

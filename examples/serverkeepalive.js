@@ -18,7 +18,7 @@ if (system.args.length !== 2) {
         response.headers = {
             'Cache': 'no-cache',
             'Content-Type': 'text/plain',
-            //'Connection': 'Keep-Alive',
+            'Connection': 'Keep-Alive',
             'Keep-Alive': 'timeout=5, max=100',
             'Content-Length': body.length
         };

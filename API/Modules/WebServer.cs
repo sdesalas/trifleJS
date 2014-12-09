@@ -274,17 +274,17 @@ namespace TrifleJS.API.Modules
                 this.request = request;
                 using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                 {
-                    this.rawPost = reader.ReadToEnd().Trim();
+                    this._rawPost = reader.ReadToEnd().Trim();
                     if (request.ContentType != null && request.ContentType.Contains("application/x-www-form-urlencoded")) {
                         Dictionary<string, object> data = new Dictionary<string, object> ();
-                        NameValueCollection form = HttpUtility.ParseQueryString(this.rawPost);
+                        NameValueCollection form = HttpUtility.ParseQueryString(this._rawPost);
                         foreach (string key in form)
                         {
                             data.Add(key, form[key]);
                         }
-                        this.post = data;
+                        this._post = data;
                     } else {
-                        this.post = rawPost;
+                        this._post = _rawPost;
                     }
                 }
             }
@@ -294,31 +294,34 @@ namespace TrifleJS.API.Modules
             /// <summary>
             /// Defines the request method ('GET', 'POST', etc.)
             /// </summary>
-            public string method {
+            public string _method {
                 get { return request.HttpMethod; }
             }
 
             /// <summary>
             /// The path part and query string part (if any) of the request URL
             /// </summary>
-            public string url {
+            public string _url {
                 get { return request.Url.PathAndQuery; }
             }
 
             /// <summary>
             /// The actual HTTP version
             /// </summary>
-            public string httpVersion {
+            public string _httpVersion {
                 get { return request.ProtocolVersion.ToString(); }
             }
 
             /// <summary>
             /// All of the HTTP headers as key-value pairs
             /// </summary>
-            public Dictionary<string, object> headers {
+            public Dictionary<string, object> _headers {
                 get {
                     Dictionary<string, object> result = new Dictionary<string, object>();
-                    foreach (string key in request.Headers.AllKeys) {
+                    string[] keys = request.Headers.AllKeys;
+                    Array.Sort(keys);
+                    foreach (string key in keys)
+                    {
                         result.Add(key, request.Headers[key]);
                     }
                     result.Add("User-Agent", request.UserAgent);
@@ -329,7 +332,7 @@ namespace TrifleJS.API.Modules
             /// <summary>
             /// The request body (only for 'POST' and 'PUT' method requests)
             /// </summary>
-            public object post { get; set; }
+            public object _post { get; set; }
 
             /// <summary>
             /// If the Content-Type header is set to 'application/x-www-form-urlencoded' 
@@ -337,7 +340,7 @@ namespace TrifleJS.API.Modules
             /// be stored in this extra property (postRaw) and then post will be 
             /// automatically updated with a URL-decoded version of the data.
             /// </summary>
-            public string rawPost { get; set; }
+            public string _rawPost { get; set; }
 
         }
 
@@ -377,6 +380,9 @@ namespace TrifleJS.API.Modules
                     response.Headers.Clear();
                     foreach (string key in headers.Keys)
                     {
+                        if (key == "Content-Length") {
+                            response.ContentLength64 = Convert.ToInt64(headers[key]);
+                        }
                         response.AddHeader(key, headers[key].ToString());
                     }
                 }
