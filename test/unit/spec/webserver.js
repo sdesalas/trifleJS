@@ -7,7 +7,7 @@ var textfile = refdir + "fs.txt";
 var workingDirectory = fs.workingDirectory;
 var helloWorldListener = function(request, response) { response.write("Hello World"); response.close(); }
 var helloWorld2Listener = function(request, response) { response.write("Hello World2"); response.close(); }
-var infoListener = function(request, response) { response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, rawPost: request.rawPost})); response.close(); }
+var infoListener = function(request, response) { response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, postRaw: request.postRaw})); response.close(); }
 
 assert.suite('WEBSERVER MODULE', function() {
 
@@ -104,7 +104,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(requestInfo.method === 'POST', 'request method was correct (POST)');
 	assert(typeof(requestInfo.headers) === 'object', 'request has some headers');
 	assert(requestInfo.post === '', 'request body was empty (no data was posted)');
-	assert(requestInfo.rawPost === '', 'request raw post was empty (no data was posted)');
+	assert(requestInfo.postRaw === '', 'request raw post was empty (no data was posted)');
 
 	ready = false;
 
@@ -129,7 +129,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(requestInfo.post.price === '$15', 'request body contains price ($15)');
 	assert(requestInfo.post.location === 'o\'rileys bar', 'request body contains location (including special chars)');
 	assert(requestInfo.post.perc === '10%', 'request body contains perc (including percentage sign)');
-	assert(requestInfo.rawPost === 'user=username&pass=password&price=$15&location=o\'rileys bar&perc=10%', 'request raw post contains the data sent');
+	assert(requestInfo.postRaw === 'user=username&pass=password&price=$15&location=o\'rileys bar&perc=10%', 'request raw post contains the data sent');
 
 });
 

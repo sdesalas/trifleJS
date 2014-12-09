@@ -53,7 +53,7 @@ trifle.modules = trifle.modules || {};
 					if (request.method === "POST") 
 					{
 						request.post = request._post;
-						request.rawPost = request._rawPost;
+						request.postRaw = request._postRaw;
 					}
 					request.url = request._url;
 					// Execute callback

@@ -274,17 +274,17 @@ namespace TrifleJS.API.Modules
                 this.request = request;
                 using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
                 {
-                    this._rawPost = reader.ReadToEnd().Trim();
+                    this._postRaw = reader.ReadToEnd().Trim();
                     if (request.ContentType != null && request.ContentType.Contains("application/x-www-form-urlencoded")) {
                         Dictionary<string, object> data = new Dictionary<string, object> ();
-                        NameValueCollection form = HttpUtility.ParseQueryString(this._rawPost);
+                        NameValueCollection form = HttpUtility.ParseQueryString(this._postRaw);
                         foreach (string key in form)
                         {
                             data.Add(key, form[key]);
                         }
                         this._post = data;
                     } else {
-                        this._post = _rawPost;
+                        this._post = _postRaw;
                     }
                 }
             }
@@ -361,7 +361,7 @@ namespace TrifleJS.API.Modules
             /// be stored in this extra property (postRaw) and then post will be 
             /// automatically updated with a URL-decoded version of the data.
             /// </summary>
-            public string _rawPost { get; set; }
+            public string _postRaw { get; set; }
 
         }
 
