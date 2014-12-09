@@ -330,6 +330,27 @@ namespace TrifleJS.API.Modules
             }
 
             /// <summary>
+            /// All HTTP cookies in request as key-value pairs
+            /// </summary>
+            public List<Dictionary<string, object>> cookies {
+                get {
+                    List<Dictionary<string, object>> result = new List<Dictionary<string, object>>();
+                    foreach (Cookie cookie in request.Cookies) {
+                        result.Add(new Dictionary<string, object> {
+                            {"name", cookie.Name }, 
+                            {"value", cookie.Value },
+                            {"domain", cookie.Domain },
+                            {"expires", cookie.Expires.ToString() },
+                            {"expiry", cookie.Expires.ToUnixTimestamp() },
+                            {"httponly", cookie.HttpOnly },
+                            {"secure", cookie.Secure }
+                        });
+                    }
+                    return result;
+                }
+            }
+
+            /// <summary>
             /// The request body (only for 'POST' and 'PUT' method requests)
             /// </summary>
             public object _post { get; set; }

@@ -71,6 +71,7 @@
     <Compile Include="API\Console.cs" />
     <Compile Include="API\Modules\FileSystem.cs" />
     <Compile Include="API\Context.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="IgnoreCertErrorBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
