@@ -409,13 +409,18 @@ namespace TrifleJS.API.Modules
         /// <param name="filename">path where the screenshot is saved</param>
         public void _render(string filename)
         {
+            Size oldSize = browser.Size;
+            int bottomPadding = 50;
+            int pageHeight = browser.Document.Body.ScrollRectangle.Height + bottomPadding;
+            browser.Size = new Size(browser.Size.Width, pageHeight);
             browser.Render(filename, zoomFactor);
+            browser.Size = oldSize;
         }
 
         /// <summary>
         /// Takes a screenshot and returns Base64 encoding
         /// </summary>
-        /// <param name="format"></param>
+        /// <param name="format">image format (defaults to PNG)</param>
         /// <returns></returns>
         public string _renderBase64(string format)
         {
