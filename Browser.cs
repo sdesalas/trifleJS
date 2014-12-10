@@ -13,8 +13,23 @@ namespace TrifleJS
     /// </summary>
     public class Browser : WebBrowser
     {
-        private const string IEEmulationPathx32 = @"SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
-        private const string IEEmulationPathx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
+        private const string IERootKeyx32 = @"SOFTWARE\Microsoft\Internet Explorer\";
+        private const string IERootKeyx64 = @"SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\";
+        private const string IEEmulationPath = @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
+        private const string IEEmulationPathx32 = IERootKeyx32 + IEEmulationPath;
+        private const string IEEmulationPathx64 = IERootKeyx64 + IEEmulationPath;
+        public static string UserAgentString = UserAgent.IE7;
+
+        /// <summary>
+        /// A list of user agent strings
+        /// </summary>
+        public static class UserAgent {
+            public static string IE7 = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)";
+            public static string IE8 = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)";
+            public static string IE9 = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)";
+            public static string IE10 = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)";
+            public static string IE11 = "Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko";
+        }
 
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys
@@ -28,23 +43,41 @@ namespace TrifleJS
                 System.UInt32 dWord;
                 switch (ieVersion.ToUpper())
                 {
-                    case "IE11_IGNOREDOCTYPE": dWord = 0x2AF9u;
+                    case "IE11_IGNOREDOCTYPE":
+                        UserAgentString = UserAgent.IE11;
+                        dWord = 0x2AF9u; 
                         break;
-                    case "IE11": dWord = 0x2AF8u;
+                    case "IE11":
+                        UserAgentString = UserAgent.IE11;
+                        dWord = 0x2AF8u;
                         break;
-                    case "IE10_IGNOREDOCTYPE": dWord = 0x2711u;
+                    case "IE10_IGNOREDOCTYPE":
+                        UserAgentString = UserAgent.IE10;
+                        dWord = 0x2711u;
                         break;
-                    case "IE10": dWord = 0x02710u;
+                    case "IE10":
+                        UserAgentString = UserAgent.IE10; 
+                        dWord = 0x02710u;
                         break;
-                    case "IE9_IGNOREDOCTYPE": dWord = 0x270Fu;
+                    case "IE9_IGNOREDOCTYPE":
+                        UserAgentString = UserAgent.IE9; 
+                        dWord = 0x270Fu;
                         break;
-                    case "IE9": dWord = 0x2328u;
+                    case "IE9":
+                        UserAgentString = UserAgent.IE9; 
+                        dWord = 0x2328u;
                         break;
-                    case "IE8_IGNOREDOCTYPE": dWord = 0x22B8u;
+                    case "IE8_IGNOREDOCTYPE":
+                        UserAgentString = UserAgent.IE8; 
+                        dWord = 0x22B8u;
                         break;
-                    case "IE8": dWord = 0x1F40u;
+                    case "IE8":
+                        UserAgentString = UserAgent.IE8; 
+                        dWord = 0x1F40u;
                         break;
-                    case "IE7": dWord = 0x1B58u;
+                    case "IE7":
+                        UserAgentString = UserAgent.IE7; 
+                        dWord = 0x1B58u;
                         break;
                     default:
                         throw new Exception("Incorrect IE version: " + ieVersion);
@@ -65,7 +98,33 @@ namespace TrifleJS
             return true;
         }
 
+        /// <summary>
+        /// Gets the version of IE currently installed in the users machine
+        /// @see http://www.cyotek.com/blog/configuring-the-emulation-mode-of-an-internet-explorer-webbrowser-control
+        /// </summary>
+        /// <returns></returns>
+        public static string InstalledVersion() {
+
+            object value = Utils.TryReadRegistryKey(Registry.LocalMachine, IERootKeyx32, "svcVersion");
+            value = value ?? Utils.TryReadRegistryKey(Registry.LocalMachine, IERootKeyx64, "svcVersion");
+            value = value ?? Utils.TryReadRegistryKey(Registry.LocalMachine, IERootKeyx32, "Version");
+            value = value ?? Utils.TryReadRegistryKey(Registry.LocalMachine, IERootKeyx64, "Version");
+            if (value != null) { 
+                string version = value.ToString();
+                int separator = version.IndexOf('.');
+                if (separator != -1) {
+                    return "IE" + version.Substring(0, separator);
+                }
+            }
+            return null;
+        }
+
         public void Navigate(Uri uri, string method, string data, string customHeaders) {
+            // Add the user agent (for better emulation)
+            if (!String.IsNullOrEmpty(UserAgentString) && customHeaders.IndexOf("User-Agent", StringComparison.InvariantCultureIgnoreCase) == -1)
+            {
+                customHeaders = String.Format("{0}User-Agent: {1}", String.IsNullOrEmpty(customHeaders) ? "" : customHeaders + "\r\n", UserAgentString);
+            }
             // Use HTTP method, currently only POST and GET are supported
             switch (method.ToUpper())
             {

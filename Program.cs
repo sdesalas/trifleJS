@@ -125,10 +125,14 @@ namespace TrifleJS
                 }
             }
 
-            // Default to IE9
+            // Default to IE7 (Lowest common denominator)
             if (!isVersionSet)
             {
-                Browser.Emulate("IE9");
+                String version = Browser.InstalledVersion();
+                if (!String.IsNullOrEmpty(version))
+                    Browser.Emulate(version);
+                else
+                    Browser.Emulate("IE7");
             }
 
             // Set proxy information if needed

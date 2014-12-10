@@ -37,17 +37,28 @@ namespace TrifleJS
         }
 
         /// <summary>
-        /// Tries reading a registry key, returns null if not found
+        /// Tries reading a registry key for the current user, returns null if not found
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
         /// <returns></returns>
         public static object TryReadRegistryKey(string path, string name)
         {
+            return TryReadRegistryKey(Registry.CurrentUser, path, name);
+        }
+
+        /// <summary>
+        /// Tries reading a registry key using a specific path, returns null if not found
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static object TryReadRegistryKey(RegistryKey root, string path, string name)
+        {
             try
             {
                 // Use current user, no need for admin permissions
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(path);
+                RegistryKey key = root.OpenSubKey(path);
                 if (key != null)
                 {
                     return key.GetValue(name);
