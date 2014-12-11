@@ -24,6 +24,7 @@ namespace TrifleJS
         /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
         /// @see http://www.cyotek.com/blog/configuring-the-emulation-mode-of-an-internet-explorer-webbrowser-control
         /// @see http://blogs.msdn.com/b/ie/archive/2009/03/10/more-ie8-extensibility-improvements.aspx
+        /// @see http://msdn.microsoft.com/en-us/library/ee330730(v=vs.85).aspx
         /// </summary>
         /// <param name="ieVersion">The version of IE to emulate (IE7, IE8, IE9 etc)</param>
         public static bool Emulate(string ieVersion)
