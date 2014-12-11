@@ -36,7 +36,7 @@ More information on each component is available on [triflejs.org](http://triflej
 
 - v0.5 - 100% of PhantomJS non-WebPage modules, 80% of WebPage module API
 - v0.6 - 100% PhantomJS Core API + internal unit tests
-- v0.7 - CasperJS Support (implement Test suite and fixes)
+- v0.7 - [CasperJS](https://github.com/n1k0/casperjs) Support (implement Test suite and fixes)
 - v0.9 - Testing and Support for various Windows platforms
 - v1.0 - Only minor Bugfixes left
 
