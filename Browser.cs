@@ -18,22 +18,12 @@ namespace TrifleJS
         private const string IEEmulationPath = @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION";
         private const string IEEmulationPathx32 = IERootKeyx32 + IEEmulationPath;
         private const string IEEmulationPathx64 = IERootKeyx64 + IEEmulationPath;
-        public static string UserAgentString = UserAgent.IE7;
-
-        /// <summary>
-        /// A list of user agent strings
-        /// </summary>
-        public static class UserAgent {
-            public static string IE7 = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)";
-            public static string IE8 = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)";
-            public static string IE9 = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)";
-            public static string IE10 = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)";
-            public static string IE11 = "Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko";
-        }
 
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys
         /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
+        /// @see http://www.cyotek.com/blog/configuring-the-emulation-mode-of-an-internet-explorer-webbrowser-control
+        /// @see http://blogs.msdn.com/b/ie/archive/2009/03/10/more-ie8-extensibility-improvements.aspx
         /// </summary>
         /// <param name="ieVersion">The version of IE to emulate (IE7, IE8, IE9 etc)</param>
         public static bool Emulate(string ieVersion)
@@ -43,41 +33,20 @@ namespace TrifleJS
                 System.UInt32 dWord;
                 switch (ieVersion.ToUpper())
                 {
-                    case "IE11_IGNOREDOCTYPE":
-                        UserAgentString = UserAgent.IE11;
-                        dWord = 0x2AF9u; 
-                        break;
                     case "IE11":
-                        UserAgentString = UserAgent.IE11;
-                        dWord = 0x2AF8u;
-                        break;
-                    case "IE10_IGNOREDOCTYPE":
-                        UserAgentString = UserAgent.IE10;
-                        dWord = 0x2711u;
+                        dWord = 11001; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
                     case "IE10":
-                        UserAgentString = UserAgent.IE10; 
-                        dWord = 0x02710u;
-                        break;
-                    case "IE9_IGNOREDOCTYPE":
-                        UserAgentString = UserAgent.IE9; 
-                        dWord = 0x270Fu;
+                        dWord = 10001; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
                     case "IE9":
-                        UserAgentString = UserAgent.IE9; 
-                        dWord = 0x2328u;
-                        break;
-                    case "IE8_IGNOREDOCTYPE":
-                        UserAgentString = UserAgent.IE8; 
-                        dWord = 0x22B8u;
+                        dWord = 9999; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
                     case "IE8":
-                        UserAgentString = UserAgent.IE8; 
-                        dWord = 0x1F40u;
+                        dWord = 8888; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
                     case "IE7":
-                        UserAgentString = UserAgent.IE7; 
-                        dWord = 0x1B58u;
+                        dWord = 7000; 
                         break;
                     default:
                         throw new Exception("Incorrect IE version: " + ieVersion);
@@ -127,11 +96,6 @@ namespace TrifleJS
         /// <param name="data">data being sent in POST request</param>
         /// <param name="customHeaders">custom header string</param>
         public void Navigate(Uri uri, string method, string data, string customHeaders) {
-            // Add the user agent (for better emulation)
-            if (!String.IsNullOrEmpty(UserAgentString) && customHeaders.IndexOf("User-Agent", StringComparison.InvariantCultureIgnoreCase) == -1)
-            {
-                customHeaders = String.Format("{0}User-Agent: {1}", String.IsNullOrEmpty(customHeaders) ? "" : customHeaders + "\r\n", UserAgentString);
-            }
             // Use HTTP method, currently only POST and GET are supported
             switch (method.ToUpper())
             {
