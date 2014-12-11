@@ -76,6 +76,13 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// The current userAgent string
+        /// </summary>
+        private string userAgent {
+            get { return _evaluate("function() { return navigator.userAgent ;}", null) as string; }
+        }
+
+        /// <summary>
         /// List of key/value pairs for custom headers to send to the server
         /// </summary>
         public Dictionary<string, object> customHeaders { get; set; }

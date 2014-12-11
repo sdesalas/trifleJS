@@ -119,6 +119,13 @@ namespace TrifleJS
             return null;
         }
 
+        /// <summary>
+        /// Navigates to a URI, using a specific HTTP method and posted data or headers.
+        /// </summary>
+        /// <param name="uri">the Uri to navigate to</param>
+        /// <param name="method">HTTP method (GET or POST)</param>
+        /// <param name="data">data being sent in POST request</param>
+        /// <param name="customHeaders">custom header string</param>
         public void Navigate(Uri uri, string method, string data, string customHeaders) {
             // Add the user agent (for better emulation)
             if (!String.IsNullOrEmpty(UserAgentString) && customHeaders.IndexOf("User-Agent", StringComparison.InvariantCultureIgnoreCase) == -1)
