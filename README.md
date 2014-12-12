@@ -46,11 +46,11 @@ Some items that are being deliberately left out:
 ### Roadmap
 
 - `v0.6` - 100% of PhantomJS non-WebPage modules, 80% of WebPage module API
-- v0.7 - 100% of PhantomJS Core API (v1.7) + internal unit tests
-- v0.8 - [CasperJS](https://github.com/n1k0/casperjs) Support (implement Test suite and fixes)
-- v0.9 - Testing and Support for various Windows platforms
-- v1.0 - Only minor Bugfixes left
-- v1.1 - Nice to haves (WebDriver, improved IPC, REPL Autocompletion etc)
+- `v0.7` - 100% of PhantomJS Core API (v1.7) + internal unit tests
+- `v0.8` - [CasperJS](https://github.com/n1k0/casperjs) Support (implement Test suite and fixes)
+- `v0.9` - Testing and Support for various Windows platforms
+- `v1.0` - Only minor Bugfixes left
+- `v1.1` - Nice to haves (WebDriver, improved IPC, REPL Autocompletion etc)
 
 ### Download v0.4
 
