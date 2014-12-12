@@ -52,7 +52,7 @@ Some items that are being deliberately left out:
 - `v1.0` - Only minor Bugfixes left
 - `v1.1` - Nice to haves (WebDriver, improved IPC, REPL Autocompletion etc)
 
-### Download v0.4
+### Download `v0.4`
 
 This code is still very much in beta. Check again for updates.
 
