@@ -18,7 +18,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 ### API Implementation
 
-We are a bit over half-way through the [PhantomJS API](http://phantomjs.org/api/).
+We are a bit over half-way through the [PhantomJS API](http://phantomjs.org/api/) at `v1.7`.
 
 - [API Status (59%)](http://triflejs.org#post-112)
 
