@@ -28,7 +28,7 @@ namespace TrifleJS.API
         /// <summary>
         /// Version of Internet Explorer currently being emulated.
         /// </summary>
-        public static string BrowserVersion { get; set; }
+        public static string Emulation { get; set; }
 
         /// <summary>
         /// Suspends V8 execution and runs program event loop

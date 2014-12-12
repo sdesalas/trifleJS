@@ -53,7 +53,7 @@ namespace TrifleJS
                         throw new Exception("Incorrect IE version: " + ieVersion);
                 }
                 Utils.Debug("Setting Version to " + ieVersion);
-                API.Trifle.BrowserVersion = ieVersion;
+                API.Trifle.Emulation = ieVersion;
 #if DEBUG
                 Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
                 Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
