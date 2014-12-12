@@ -20,7 +20,7 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 We are a bit over half-way through the [PhantomJS API](http://phantomjs.org/api/) at `v1.7`.
 
-- [API Status (59%)](http://triflejs.org#post-112)
+- [API Status (60%)](http://triflejs.org#post-112)
 
 More information on each component is available on [triflejs.org](http://triflejs.org):
 
@@ -56,7 +56,7 @@ Some items that are being deliberately left out:
 
 This code is still very much in beta. Check again for updates.
 
-You can download the binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip) if you want to play around with the beta version. 
+You can download the latest binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip) if you want to play around with the beta version. 
 
 #### System Requirements
 
