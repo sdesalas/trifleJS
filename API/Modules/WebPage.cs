@@ -14,8 +14,14 @@ namespace TrifleJS.API.Modules
     /// </summary>
     public class WebPage
     {
+        /// <summary>
+        /// Internal IE WebBrowser (enhanced)
+        /// </summary>
         private EnhancedBrowser browser;
 
+        /// <summary>
+        /// Creates a webpage module
+        /// </summary>
         public WebPage() {
             this.browser = new EnhancedBrowser();
             this.browser.Size = new Size(400, 300); 
@@ -66,13 +72,16 @@ namespace TrifleJS.API.Modules
         /// Gets the Plain Text content of the document
         /// </summary>
         public string plainText {
-            get { return (this.browser != null 
-                        && this.browser.Document != null 
-                        && this.browser.Document.Body != null 
-                        && this.browser.Document.Body.Parent != null
-                        && this.browser.Document.Body.Parent.OuterText != null) ?
-                            this.browser.Document.Body.Parent.OuterText:
-                            String.Empty; }
+            get
+            {
+                return (this.browser != null
+                      && this.browser.Document != null
+                      && this.browser.Document.Body != null
+                      && this.browser.Document.Body.OuterText != null
+                      && this.browser.Document.Body.OuterText != null) ?
+                          this.browser.Document.Body.OuterText :
+                          String.Empty;
+            }
         }
 
         /// <summary>
@@ -101,6 +110,62 @@ namespace TrifleJS.API.Modules
                     }
                 }
                 return output.ToString();
+            }
+        }
+
+        #endregion
+
+        #region Windows and Frames
+
+        /// <summary>
+        /// Current browser window object
+        /// </summary>
+        private HtmlWindow Window
+        {
+            get
+            {
+                return (this.browser != null
+                       && this.browser.Document != null) ?
+                       this.browser.Document.Window :
+                       null;
+            }
+        }
+
+        /// <summary>
+        /// List of frames in the browser window object
+        /// </summary>
+        private HtmlWindowCollection Frames {
+            get {
+                return (this.Window != null) ? this.Window.Frames : null;
+            }
+        }
+
+        /// <summary>
+        /// Name of the window
+        /// </summary>
+        public string windowName
+        {
+            get { return (this.Window != null && this.Window.Name != null) ? this.Window.Name : String.Empty; }
+        }
+
+        /// <summary>
+        /// Number of frames in browser window
+        /// </summary>
+        public int framesCount
+        {
+            get { return (this.Frames != null) ? this.Frames.Count : 0; }
+        }
+
+        /// <summary>
+        /// A list of names for child frames of browser window
+        /// </summary>
+        public List<string> framesName {
+            get {
+                List<string> result = new List<string>();
+                if (this.Frames != null) {
+                    foreach (HtmlWindow window in this.Frames) { result.Add(window.Name); }
+                }
+                return result;
             }
         }
 
@@ -236,6 +301,8 @@ namespace TrifleJS.API.Modules
                 _evaluateJavaScript(File.ReadAllText(filename));
             }
         }
+
+        #endregion
 
         #region Navigation
 
@@ -438,9 +505,7 @@ namespace TrifleJS.API.Modules
 
         #endregion
 
-        #endregion
-
-        #region Rendering Functionality
+        #region Rendering
 
         /// <summary>
         /// Takes a screenshot and saves into a file path

@@ -49,7 +49,8 @@ assert.suite('WEBPAGE MODULE', function() {
 	//assert(page.framePlainText === '', 'page.framePlainText is an empty string');
 	//assert(page.frameTitle === '', 'page.frameTitle is an empty string');
 	//assert(page.frameUrl === 'about:blank', 'page.frameUrl is "about:blank"');
-	//assert(page.framesCount === 0, 'page.framesCount is 0');
+	assert(page.framesCount === 0, 'page.framesCount is 0');
+	assert(page.framesName != null && typeof(page.framesName.length) === 'number', 'page.framesName is an array');
 	//assert(page.libraryPath != null, 'page.libraryPath is not null');
 	assert(page.loading === false, 'page.loading is false');
 	//assert(page.plainText === '', 'page.plainText is an empty string');
@@ -57,16 +58,19 @@ assert.suite('WEBPAGE MODULE', function() {
 	//assert(page.scrollPosition != null && page.scrollPosition.top === 0, 'page.scrollPosition.top is 0');
 	assert(page.title === '', 'page.title is an empty string');
 	assert(page.url === 'about:blank', 'page.url is "about:blank"');
-	//assert(page.windowName === '', 'page.windowName is an empty string');
+	assert(page.windowName === '', 'page.windowName is an empty string');
 	assert(page.zoomFactor === 1, 'page.zoomFactor is 1');
 	assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
 	assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
 
 	// Instantiate a web server to check that pages are loading
 	var server = require('webserver').create();
+	var pageContent, pagePlainText;
 	server.listen(8898, function(request, response) {
 		loadCount++;
-		response.write(JSON.stringify({success: true, message: "OK", url: request.url}));
+		pagePlainText = JSON.stringify({success: true, message: "OK", url: request.url});
+		pageContent = '<html><head><title>Test Page Title</title></head><body>' + pagePlainText + '</body></html>';
+		response.write(pageContent);
 		response.close();
 	});
 	
@@ -90,7 +94,13 @@ assert.suite('WEBPAGE MODULE', function() {
 	// --------------------------------------------
 	assert.section('Properties after loading');	
 
-	
+	assert(page.url === 'http://localhost:8898/', 'page.url is "http://localhost:8898/"');
+	assert(page.title === 'Test Page Title', 'page.url is "Test Page Title"');
+	assert(page.windowName === '', 'page.windowName is an empty string');
+	assert(page.framesCount === 0, 'page.framesCount is 0');
+	assert(page.plainText == pagePlainText, 'page.pagePlainText has BODY TEXT in it sent by the server');
+	assert(page.content == pageContent, 'page.content has HTML in it sent by the server');
+
 	// --------------------------------------------
 	assert.section('Sequential page loading.', function() {
 	
