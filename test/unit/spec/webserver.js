@@ -5,9 +5,10 @@ var page = require('webpage').create();
 var refdir = "../../test/unit/ref/";
 var textfile = refdir + "fs.txt";
 var workingDirectory = fs.workingDirectory;
-var helloWorldListener = function(request, response) { response.write("Hello World"); response.close(); }
-var helloWorld2Listener = function(request, response) { response.write("Hello World2"); response.close(); }
-var infoListener = function(request, response) { response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, postRaw: request.postRaw})); response.close(); }
+var loadCount = 0;
+var helloWorldListener = function(request, response) { loadCount++; response.write("Hello World"); response.close(); }
+var helloWorld2Listener = function(request, response) { loadCount++; response.write("Hello World2"); response.close(); }
+var infoListener = function(request, response) { loadCount++; response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, postRaw: request.postRaw})); response.close(); }
 
 assert.suite('WEBSERVER MODULE', function() {
 
@@ -47,6 +48,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert.waitFor(ready);
 	
 	assert(page.plainText === "Hello World", 'server responded with "Hello World" on 8080');
+	assert(loadCount === 1, 'listener on 8080 fired once');
 
 	// Try again on same port
 
@@ -64,6 +66,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert.waitFor(ready);
 	
 	assert(page.plainText === "Hello World2", 'server responded with "Hello World2" on 8080 (binding is replaced)');
+	assert(loadCount === 2, 'listener on 8080 fired once');
 
 	isListening = server.listen(8081, infoListener);
 
@@ -80,6 +83,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	
 	requestInfo = JSON.parse(page.plainText);
 	
+	assert(loadCount === 3, 'listener on 8081 fired once');
 	assert(requestInfo.success === true, 'request was a success');
 	assert(requestInfo.httpVersion === '1.1', 'request httpVersion was 1.1');
 	assert(requestInfo.method === 'GET', 'request method was correct (GET)');
@@ -101,6 +105,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	
 	requestInfo = JSON.parse(page.plainText);
 	
+	assert(loadCount === 4, 'listener on 8081 fired once');
 	assert(requestInfo.method === 'POST', 'request method was correct (POST)');
 	assert(typeof(requestInfo.headers) === 'object', 'request has some headers');
 	assert(requestInfo.post === '', 'request body was empty (no data was posted)');
@@ -120,6 +125,7 @@ assert.suite('WEBSERVER MODULE', function() {
 	
 	requestInfo = JSON.parse(page.plainText);
 	
+	assert(loadCount === 5, 'listener on 8081 fired once');
 	assert(requestInfo.method === 'POST', 'request method was correct (POST)');
 	assert(typeof(requestInfo.headers) === 'object', 'request has some headers');
 	assert(requestInfo.headers['Content-Type'] === 'application/x-www-form-urlencoded', 'Content-Type header set to application/x-www-form-urlencoded');

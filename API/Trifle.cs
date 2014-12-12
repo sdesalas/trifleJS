@@ -26,6 +26,11 @@ namespace TrifleJS.API
         }
 
         /// <summary>
+        /// Version of Internet Explorer currently being emulated.
+        /// </summary>
+        public static string BrowserVersion { get; set; }
+
+        /// <summary>
         /// Suspends current thread
         /// </summary>
         /// <param name="milliseconds">Milliseconds to wait for</param>

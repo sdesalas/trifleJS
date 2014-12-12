@@ -1,6 +1,9 @@
 ﻿
+var loadCount = 0;
+
 assert.suite('WEBPAGE MODULE', function() {
 
+	// --------------------------------------------
 	assert.section('Instantiation');
 
 	assert(this.hasOwnProperty('WebPage'), 'this.WebPage exists');
@@ -10,11 +13,28 @@ assert.suite('WEBPAGE MODULE', function() {
 	var page = require("webpage").create();
 	assert(typeof page === 'object', 'require("webpage").create() returns an object');
 
+	// --------------------------------------------
 	assert.section('Method availability');
 
+	//assert(typeof page.addCookie === 'function', 'page.addCookie() method available');
+	//assert(typeof page.clearCookies === 'function', 'page.clearCookies() method available');
+	assert(typeof page.close === 'function', 'page.close() method available');
+	assert(typeof page.evaluate === 'function', 'page.evaluate() method available');
+	//assert(typeof page.evaluateAsync === 'function', 'page.evaluateAsync() method available');
+	assert(typeof page.evaluateJavaScript === 'function', 'page.evaluateJavaScript() method available');
+	//assert(typeof page.getPage === 'function', 'page.getPage() method available');
 	assert(typeof page.goBack === 'function', 'page.goBack() method available');
 	assert(typeof page.goForward === 'function', 'page.goForward() method available');
+	assert(typeof page.go === 'function', 'page.go() method available');
+	assert(typeof page.includeJs === 'function', 'page.includeJs() method available');
+	assert(typeof page.injectJs === 'function', 'page.injectJs() method available');
+	assert(typeof page.open === 'function', 'page.open() method available');
+	//assert(typeof page.openUrl === 'function', 'page.openUrl() method available');
+	assert(typeof page.reload === 'function', 'page.reload() method available');
+	assert(typeof page.render === 'function', 'page.render() method available');
+	assert(typeof page.renderBase64 === 'function', 'page.renderBase64() method available');
 
+	// --------------------------------------------
 	assert.section('Properties before loading');
 
 	assert(page.canGoBack === false, 'page.canGoBack is false');
@@ -39,17 +59,18 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.url === 'about:blank', 'page.url is "about:blank"');
 	//assert(page.windowName === '', 'page.windowName is an empty string');
 	assert(page.zoomFactor === 1, 'page.zoomFactor is 1');
-	//assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
-	//assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
-
+	assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
+	assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
 
 	// Instantiate a web server to check that pages are loading
 	var server = require('webserver').create();
 	server.listen(8898, function(request, response) {
+		loadCount++;
 		response.write(JSON.stringify({success: true, message: "OK", url: request.url}));
 		response.close();
 	});
 	
+	// --------------------------------------------
 	assert.section('Simple page loading.', function() {
 	
 		var loaded = false, responseData = null;
@@ -62,9 +83,15 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert.waitFor(loaded);
 		try {responseData = JSON.parse(page.plainText); } catch (e) {}
 		assert(responseData !== null && responseData.success, 'page.open(url) can load a simple request');
+		assert(loadCount === 1, 'page.open(url) loads the page once');
 	
 	});
 	
+	// --------------------------------------------
+	assert.section('Properties after loading');	
+
+	
+	// --------------------------------------------
 	assert.section('Sequential page loading.', function() {
 	
 		var loaded1 = false, loaded3 = false, responseData = null;
@@ -90,37 +117,41 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert.waitFor(loaded3);
 		
 		assert(callbacks === 2, 'page.open(url) executes each callback once.');
+		assert(loadCount === 3, 'page.open(url) loads each page once.');
 	
 	});
 	
-	assert.section('Properties after loading');
+	// --------------------------------------------
+	assert.section('Navigating through history');
 	
 	assert(page.canGoBack === true, 'page.canGoBack is true');	
 	assert(page.canGoForward === false, 'page.canGoForward is false');
-	
-	assert.section('Navigating through history');
+
+	page.reload();
+
+	assert(loadCount === 4, 'page.reload(url) loads the page again from the server.');
 
 	page.goBack();
 	
-	page.render('back.png');
-	
+	assert(loadCount === 4, 'page.goBack(url) uses cache instead of loading from the server.');
 	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
 	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');
 
 	page.goForward();
 	
-	page.render('forward.png');
-	
+	assert(loadCount === 4, 'page.goForward(url) uses cache instead of loading from the server.');	
 	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward');	
 	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward');
 
 	page.go(-1);
 	
+	assert(loadCount === 4, 'page.go(-n) uses cache instead of loading from the server.');	
 	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back using go(-1)');	
 	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back using go(-1)');
 
 	page.go(1);
 	
+	assert(loadCount === 4, 'page.go(+n) uses cache instead of loading from the server.');	
 	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward using go(1)');	
 	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward using go(1)');
 

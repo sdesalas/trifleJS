@@ -125,13 +125,14 @@ namespace TrifleJS
                 }
             }
 
-            // Default to IE7 (Lowest common denominator)
+            // Default to Installed Version
             if (!isVersionSet)
             {
                 String version = Browser.InstalledVersion();
                 if (!String.IsNullOrEmpty(version))
                     Browser.Emulate(version);
                 else
+                    // No version? use IE7
                     Browser.Emulate("IE7");
             }
 

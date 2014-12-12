@@ -398,6 +398,20 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Reloads page for current URL
+        /// </summary>
+        public void reload() {
+            if (browser != null) {
+                browser.Refresh(WebBrowserRefreshOption.Completely);
+                do
+                {
+                    // Run events while waiting
+                    Trifle.Wait(50);
+                } while (loading);
+            }
+        }
+
+        /// <summary>
         /// Returns true if the browser is loading
         /// </summary>
         public bool loading {

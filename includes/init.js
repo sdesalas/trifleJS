@@ -105,6 +105,7 @@
     var trifle = GLOBAL.trifle = {
         API: API.trifle,
         version: API.trifle.Version,
+        browserVersion: API.trifle.BrowserVersion,
         wait: function(ms) {
             return API.trifle.Wait(ms || 0);
         },
