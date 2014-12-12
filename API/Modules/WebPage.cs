@@ -400,9 +400,27 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Reloads page for current URL
         /// </summary>
-        public void reload() {
-            if (browser != null) {
+        public void reload()
+        {
+            if (browser != null)
+            {
                 browser.Refresh(WebBrowserRefreshOption.Completely);
+                do
+                {
+                    // Run events while waiting
+                    Trifle.Wait(50);
+                } while (loading);
+            }
+        }
+
+        /// <summary>
+        /// Stops loading the current page.
+        /// </summary>
+        public void stop()
+        {
+            if (browser != null)
+            {
+                browser.Stop();
                 do
                 {
                     // Run events while waiting

@@ -31,7 +31,7 @@ namespace TrifleJS.API
         public static string BrowserVersion { get; set; }
 
         /// <summary>
-        /// Suspends current thread
+        /// Suspends V8 execution and runs program event loop
         /// </summary>
         /// <param name="milliseconds">Milliseconds to wait for</param>
         public static void Wait(int milliseconds)
