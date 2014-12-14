@@ -205,7 +205,9 @@
     </Content>
     <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
+    <Content Include="test\unit\ref\script.js" />
     <Content Include="test\unit\spec\fs.js" />
+    <Content Include="test\unit\spec\phantom.js" />
     <Content Include="test\unit\spec\require.js" />
     <Content Include="test\unit\spec\webpage.js" />
     <Content Include="test\phantom\tools.js" />

@@ -11,10 +11,15 @@ namespace TrifleJS.API
     public class Phantom
     {
         /// <summary>
+        /// Phantom Cookie Jar
+        /// </summary>
+        internal static CookieJar cookieJar = new CookieJar();
+
+        /// <summary>
         /// Exists the program
         /// </summary>
         /// <param name="exitCode">Return code</param>
-        public void Exit(int exitCode)
+        public void exit(int exitCode)
         {
             Program.Exit(exitCode);
         }
@@ -22,9 +27,9 @@ namespace TrifleJS.API
         /// <summary>
         /// Exits the program
         /// </summary>
-        public void Exit()
+        public void exit()
         {
-            Exit(0);
+            exit(0);
         }
 
         /// <summary>
@@ -32,7 +37,7 @@ namespace TrifleJS.API
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public bool InjectJs(string filename) {
+        public bool injectJs(string filename) {
             if (Program.Context.Find(filename) != null)
             {
                 try
@@ -49,21 +54,18 @@ namespace TrifleJS.API
         }
 
         /// <summary>
-        /// Returns the current library path (usually the location where a script is being run)
+        /// Returns the current library path 
+        /// (usually the location where a script is being run)
         /// </summary>
-        public static string LibraryPath
-        {
-            get { return libraryPath; }
-            set { libraryPath = value; }
-        }
-        private static string libraryPath = Environment.CurrentDirectory;
+        public static string libraryPath { get; set; }
 
         /// <summary>
         /// Returns the current versions
         /// </summary>
-        public static Dictionary<string, int> Version
+        public static Dictionary<string, int> version
         {
-            get { return new Dictionary<string, int> { 
+            get { 
+                return new Dictionary<string, int> { 
                     {"major", 1},
                     {"minor", 7},
                     {"patch", 0}
@@ -116,41 +118,38 @@ namespace TrifleJS.API
         /// <summary>
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
-        public static string[] Args {
+        public static string[] args {
             get { return Program.Args; }
         }
 
         /// <summary>
         /// Returns the name of the currently executing script
         /// </summary>
-        public static string ScriptName {
-            get { return scriptName; }
-        }
-        public static string scriptName;
+        public static string scriptName { get; set; }
 
         /// <summary>
         /// Sets the encoding used for terminal output (default is utf8).
         /// </summary>
-        public static string OutputEncoding {
-            get { return outputEncoding.WebName; }
+        public static string outputEncoding {
+            get { return System.Console.OutputEncoding.WebName.ToUpper(); }
             set
             {
                 try
                 {
-                    outputEncoding = Encoding.GetEncoding(value);
-                    System.Console.OutputEncoding = outputEncoding;
+                    System.Console.OutputEncoding = Encoding.GetEncoding(value);
                 }
-                catch { };
+                catch {
+                    Console.error(String.Format("Unknown Encoding '{0}'", value));
+                };
             }
         }
-        public static Encoding outputEncoding = Encoding.UTF8;
 
         /// <summary>
         /// Controls whether the CookieJar is enabled or not. Defaults to true.
         /// </summary>
-        public static bool CookiesEnabled
-        {
-            get; set;
+        public static bool cookiesEnabled {
+            get { return cookieJar.Enabled; }
+            set { cookieJar.Enabled = value; }
         }
 
     }

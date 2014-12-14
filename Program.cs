@@ -70,8 +70,9 @@ namespace TrifleJS
             bool isVersionSet = false;
             List<string> configLoop = new List<string>(args);
             List<string> commandLoop = new List<string>();
-            API.Phantom.OutputEncoding = "UTF-8";
-            API.Phantom.CookiesEnabled = true;
+            API.Phantom.outputEncoding = "UTF-8";
+            API.Phantom.cookiesEnabled = true;
+            API.Phantom.libraryPath = Environment.CurrentDirectory;
 
             // Check OS Support
             CheckSupport();
@@ -99,7 +100,7 @@ namespace TrifleJS
                         break;
                     case "-v":
                     case "--version":
-                        var v = API.Phantom.Version;
+                        var v = API.Phantom.version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
                         return;
                     case "--emulate":
@@ -271,6 +272,7 @@ namespace TrifleJS
                     // Execute Specs
                     Context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
                     Context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
+                    Context.RunScript(Resources.test_unit_spec_phantom, "test/unit/spec/phantom.js");
                     Context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
                     Context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
 
@@ -363,7 +365,8 @@ namespace TrifleJS
             using (Program.Context = Initialise())
             {
                 // Set Library Path
-                API.Phantom.LibraryPath = new FileInfo(filename).DirectoryName;
+                API.Phantom.libraryPath = new FileInfo(filename).DirectoryName;
+                API.Phantom.scriptName = new FileInfo(filename).Name;
 
                 try
                 {

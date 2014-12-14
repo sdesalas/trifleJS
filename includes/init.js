@@ -29,6 +29,7 @@
     var window = GLOBAL.window = {
         API: API.window,
         window: window,
+        phantom: API.phantom,
         setTimeout: function(callback, ms) {
             console.xdebug('window.setTimeout(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
@@ -84,22 +85,7 @@
     GLOBAL.addEventListener = window.addEventListener;
 
     // Initialise phantom object
-    var phantom = GLOBAL.phantom = {
-        API: API.phantom,
-        version: API.phantom.Version,
-        libraryPath: API.phantom.LibraryPath,
-        scriptName: API.phantom.ScriptName,
-        outputEncoding: API.phantom.OutputEncoding,
-        cookiesEnabled: API.phantom.CookiesEnabled,
-        args: API.phantom.Args,
-        exit: function(code) {
-            return phantom.API.Exit(code || 0);
-        },
-        injectJs: function(filename) {
-            return phantom.API.InjectJs(filename || '');
-        }
-    };
-
+    var phantom = GLOBAL.phantom = API.phantom; 
 
     // TrifleJS object
     var trifle = GLOBAL.trifle = {
@@ -196,7 +182,7 @@
             // Add to cache and load
             var path = module;
             require.cache[path] = { id: path, exports: {} };
-            phantom.API.LoadModule(path, fs.read(path));
+            phantom.LoadModule(path, fs.read(path));
             return require.cache[path].exports;
 
         // Is it a file path without the extension?
@@ -204,7 +190,7 @@
             // Add to cache and load
             var path = module + '.js';
             require.cache[path] = { id: path, exports: {} };
-            phantom.API.LoadModule(path, fs.read(path));
+            phantom.LoadModule(path, fs.read(path));
             return require.cache[path].exports;
 
         } else {

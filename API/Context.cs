@@ -59,7 +59,7 @@ namespace TrifleJS.API
             if (!file.Exists)
             {
                 string currentDir = Environment.CurrentDirectory;
-                Environment.CurrentDirectory = Phantom.LibraryPath;
+                Environment.CurrentDirectory = Phantom.libraryPath;
                 file = new FileInfo(path);
                 Environment.CurrentDirectory = currentDir;
             }
