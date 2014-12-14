@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\CookieJar.cs" />
     <Compile Include="API\Modules\WebServer.cs" />
     <Compile Include="API\Trifle.cs" />
     <Compile Include="EnhancedBrowser.cs">
