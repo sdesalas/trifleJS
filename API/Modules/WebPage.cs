@@ -210,34 +210,28 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// Closes the page and releases memory
-        /// </summary>
-        public void close() {
-            throw new Exception("not implemented");
-            callbackStack.Clear();
-            browser.Dispose();
-            browser = null;
-        }
-
-        /// <summary>
         /// Evaluates (executes) javascript on the currently open window
         /// @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
         /// </summary>
         /// <param name="code">code to inject into browser window</param>
         public void _evaluateJavaScript(string code)
         {
-            HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
-            if (head != null)
+            if (browser != null)
             {
-                try
+                HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
+                if (head != null)
                 {
-                    HtmlElement scriptEl = browser.Document.CreateElement("script");
-                    IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-                    element.text = code;
-                    head[0].AppendChild(scriptEl);
-                }
-                catch (Exception ex){
-                    Utils.Debug(ex.Message);
+                    try
+                    {
+                        HtmlElement scriptEl = browser.Document.CreateElement("script");
+                        IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                        element.text = code;
+                        head[0].AppendChild(scriptEl);
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.Debug(ex.Message);
+                    }
                 }
             }
         }
@@ -250,14 +244,17 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public object _evaluate(string function, object[] args)
         {
-            string[] input;
-            if (args == null) { input = new string[] {}; }
-            else { input = Callback.Parse(args); }
-            string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
-            string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
-            _evaluateJavaScript(script);
-            object result = browser.Document.InvokeScript(guid);
-            return result;
+            if (browser != null)
+            {
+                string[] input;
+                if (args == null) { input = new string[] { }; }
+                else { input = Callback.Parse(args); }
+                string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
+                string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
+                _evaluateJavaScript(script);
+                object result = browser.Document.InvokeScript(guid);
+                return result;
+            }
         }
 
         /// <summary>
@@ -269,7 +266,7 @@ namespace TrifleJS.API.Modules
         public void _includeJs(string url, string callbackId)
         {
             Uri uri = Browser.TryParse(url);
-            if (uri != null)
+            if (uri != null && browser != null)
             {
                 HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
                 if (head != null)
@@ -320,7 +317,7 @@ namespace TrifleJS.API.Modules
         {
             // Check the URL
             Uri uri = Browser.TryParse(url);
-            if (uri != null)
+            if (uri != null && browser != null)
             {
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
@@ -383,21 +380,24 @@ namespace TrifleJS.API.Modules
         /// <param name="args"></param>
         public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args)
         {
-            // DocumentCompleted is fired before window.onload and body.onload
-            // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
-            browser.Document.Window.AttachEventHandler("onload", delegate
+            if (browser != null)
             {
-                // Add IE Toolset
-                AddToolset();
-                // Track unhandled errors
-                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                // DocumentCompleted is fired before window.onload and body.onload
+                // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
+                browser.Document.Window.AttachEventHandler("onload", delegate
                 {
-                    Handle(e.Description, e.LineNumber, e.Url);
-                    e.Handled = true;
-                };
-                // Execute callback at top of the stack
-                RemoveCallback();
-            });
+                    // Add IE Toolset
+                    AddToolset();
+                    // Track unhandled errors
+                    browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                    {
+                        Handle(e.Description, e.LineNumber, e.Url);
+                        e.Handled = true;
+                    };
+                    // Execute callback at top of the stack
+                    RemoveCallback();
+                });
+            }
         }
 
         /// <summary>
@@ -497,6 +497,19 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Closes the page and releases memory
+        /// </summary>
+        public void close()
+        {
+            callbackStack.Clear();
+            if (browser != null)
+            {
+                browser.Dispose();
+                browser = null;
+            }
+        }
+
+        /// <summary>
         /// Returns true if the browser is loading
         /// </summary>
         public bool loading {
@@ -513,12 +526,15 @@ namespace TrifleJS.API.Modules
         /// <param name="filename">path where the screenshot is saved</param>
         public void _render(string filename)
         {
-            Size oldSize = browser.Size;
-            int bottomPadding = 50;
-            int pageHeight = browser.Document.Body.ScrollRectangle.Height + bottomPadding;
-            browser.Size = new Size(browser.Size.Width, pageHeight);
-            browser.Render(filename, zoomFactor);
-            browser.Size = oldSize;
+            if (browser != null)
+            {
+                Size oldSize = browser.Size;
+                int bottomPadding = 50;
+                int pageHeight = browser.Document.Body.ScrollRectangle.Height + bottomPadding;
+                browser.Size = new Size(browser.Size.Width, pageHeight);
+                browser.Render(filename, zoomFactor);
+                browser.Size = oldSize;
+            }
         }
 
         /// <summary>
@@ -528,22 +544,25 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public string _renderBase64(string format)
         {
-            using (var pic = browser.Render(zoomFactor))
+            if (browser != null)
             {
-                MemoryStream stream = new MemoryStream();
-                switch (format.ToUpper())
+                using (var pic = browser.Render(zoomFactor))
                 {
-                    case "JPG":
-                        pic.Save(stream, ImageFormat.Jpeg);
-                        break;
-                    case "GIF":
-                        pic.Save(stream, ImageFormat.Gif);
-                        break;
-                    default:
-                        pic.Save(stream, ImageFormat.Png);
-                        break;
+                    MemoryStream stream = new MemoryStream();
+                    switch (format.ToUpper())
+                    {
+                        case "JPG":
+                            pic.Save(stream, ImageFormat.Jpeg);
+                            break;
+                        case "GIF":
+                            pic.Save(stream, ImageFormat.Gif);
+                            break;
+                        default:
+                            pic.Save(stream, ImageFormat.Png);
+                            break;
+                    }
+                    return Convert.ToBase64String(stream.ToArray());
                 }
-                return Convert.ToBase64String(stream.ToArray());
             }
         }
 
@@ -607,14 +626,17 @@ namespace TrifleJS.API.Modules
         {
             get
             {
-                int top = 0, left = 0, width = 0, height = 0;
-                if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
-                if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
-                if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
-                if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
-                if (width == 0) width = browser.Document.Window.Size.Width;
-                if (height == 0) height = browser.Document.Window.Size.Height;
-                return new Rectangle(top, left, width, height);
+                if (browser != null)
+                {
+                    int top = 0, left = 0, width = 0, height = 0;
+                    if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
+                    if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
+                    if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
+                    if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
+                    if (width == 0) width = browser.Document.Window.Size.Width;
+                    if (height == 0) height = browser.Document.Window.Size.Height;
+                    return new Rectangle(top, left, width, height);
+                }
             }
         }
 
