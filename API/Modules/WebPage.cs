@@ -244,17 +244,15 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public object _evaluate(string function, object[] args)
         {
-            if (browser != null)
-            {
-                string[] input;
-                if (args == null) { input = new string[] { }; }
-                else { input = Callback.Parse(args); }
-                string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
-                string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
-                _evaluateJavaScript(script);
-                object result = browser.Document.InvokeScript(guid);
-                return result;
-            }
+            if (browser == null) return null;
+            string[] input;
+            if (args == null) { input = new string[] { }; }
+            else { input = Callback.Parse(args); }
+            string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
+            string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
+            _evaluateJavaScript(script);
+            object result = browser.Document.InvokeScript(guid);
+            return result;
         }
 
         /// <summary>
@@ -302,9 +300,6 @@ namespace TrifleJS.API.Modules
         #endregion
 
         #region Navigation
-
-        private Stack<string> history = new Stack<string>();
-        private int historyPosition = 0;
 
         /// <summary>
         /// Opens a URL using a specific HTTP method with a corresponding payload
@@ -564,6 +559,7 @@ namespace TrifleJS.API.Modules
                     return Convert.ToBase64String(stream.ToArray());
                 }
             }
+            return String.Empty;
         }
 
         /// <summary>
@@ -626,17 +622,19 @@ namespace TrifleJS.API.Modules
         {
             get
             {
+
+                int top = 0, left = 0, width = 0, height = 0;
+                if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
+                if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
+                if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
+                if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
                 if (browser != null)
                 {
-                    int top = 0, left = 0, width = 0, height = 0;
-                    if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
-                    if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
-                    if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
-                    if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
                     if (width == 0) width = browser.Document.Window.Size.Width;
                     if (height == 0) height = browser.Document.Window.Size.Height;
-                    return new Rectangle(top, left, width, height);
                 }
+                return new Rectangle(top, left, width, height);
+
             }
         }
 
