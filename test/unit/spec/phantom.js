@@ -36,13 +36,13 @@ assert.suite('Object: phantom', function() {
 	// --------------------------------------------
 	assert.section('Functionality');
 
-	phantom.libraryPath = "..";
+	phantom.libraryPath = "..\\..\\test\\unit\\ref\\";
 
 	assert(phantom.scriptName === 'test/unit/spec/phantom.js', 'phantom.scriptName is the currently executing script');
 	assert(phantom.libraryPath !== fs.workingDirectory, 'changing phantom.libraryPath does not alter fs.workingDirectory');
 	assert(phantom.version.major === 1, 'phantom.version.major is 1');
 	
-	var injection = phantom.injectJs('..\\..\\test\\unit\\ref\\script.js');
+	var injection = phantom.injectJs('script.js');
 	
 	assert(injection === true, 'phantom.injectJs() returned true when pointing to file');
 	assert(___test190234 === true, 'phantom.injectJs() executes a script in current V8 context');
