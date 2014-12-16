@@ -1,7 +1,9 @@
 ﻿
-var loadCount = 0;
 
 assert.suite('WEBPAGE MODULE', function() {
+
+	// SETUP
+	var loadCount = 0;
 
 	// --------------------------------------------
 	assert.section('Instantiation');
@@ -167,7 +169,7 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	// Finish serving web pages
 	server.close();
-	
+	page.close();
 
 });
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,8 +8,10 @@ using IWshRuntimeLibrary;
 namespace TrifleJS.API.Native
 {
     // @see http://stackoverflow.com/questions/5006825/converting-webbrowser-document-to-a-bitmap
-    internal class Methods
+    internal static class Methods
     {
+        #region Screenshots
+
         [ComImport]
         [Guid("0000010D-0000-0000-C000-000000000046")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -55,6 +58,10 @@ namespace TrifleJS.API.Native
             }
         }
 
+        #endregion
+
+        #region WindowsScriptingHost
+
         /// <summary>
         /// Follows a shortcut file programmatically
         /// </summary>
@@ -70,5 +77,78 @@ namespace TrifleJS.API.Native
             catch { }
             return "";
         }
+
+        #endregion
+
+        #region InternetCookie
+
+        internal const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
+
+        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern bool InternetSetOption(int hInternet, int dwOption, string lpBuffer, int dwBufferLength);
+
+        /// <summary>
+        /// Resets the browser session
+        /// @see http://stackoverflow.com/questions/1688991/how-to-set-and-delete-cookies-from-webbrowser-control-for-arbitrary-domains
+        /// </summary>
+        /// <returns></returns>
+        internal static bool ResetBrowserSession() {
+            try
+            {
+                InternetSetOption(0, INTERNET_OPTION_END_BROWSER_SESSION, null, 0);
+            }
+            catch { }
+            return false;
+        }
+
+        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern bool InternetSetCookie(string lpszUrlName, string lbszCookieName, string lpszCookieData);
+
+        [DllImport("wininet.dll", SetLastError = true)]
+        internal static extern bool InternetGetCookieEx(
+            string url,
+            string cookieName,
+            StringBuilder cookieData,
+            ref int size,
+            Int32 dwFlags,
+            IntPtr lpReserved);
+
+        private const Int32 InternetCookieHttponly = 0x2000;
+
+        /// <summary>
+        /// Gets the URI cookie container.
+        /// @see http://stackoverflow.com/questions/3382498/is-it-possible-to-transfer-authentication-from-webbrowser-to-webrequest
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <returns></returns>
+        public static CookieContainer GetUriCookieContainer(Uri uri)
+        {
+            CookieContainer cookies = null;
+            // Determine the size of the cookie
+            int datasize = 8192 * 16;
+            StringBuilder cookieData = new StringBuilder(datasize);
+            if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
+            {
+                if (datasize < 0)
+                    return null;
+                // Allocate stringbuilder large enough to hold the cookie
+                cookieData = new StringBuilder(datasize);
+                if (!InternetGetCookieEx(
+                    uri.ToString(),
+                    null, cookieData,
+                    ref datasize,
+                    InternetCookieHttponly,
+                    IntPtr.Zero))
+                    return null;
+            }
+            if (cookieData.Length > 0)
+            {
+                cookies = new CookieContainer();
+                cookies.SetCookies(uri, cookieData.ToString().Replace(';', ','));
+            }
+            return cookies;
+        }
+
+        #endregion
     }
 }

@@ -1,16 +1,18 @@
 
-var fs = require("fs");
-var server = require('webserver').create();
-var page = require('webpage').create();
-var refdir = "../../test/unit/ref/";
-var textfile = refdir + "fs.txt";
-var workingDirectory = fs.workingDirectory;
-var loadCount = 0;
-var helloWorldListener = function(request, response) { loadCount++; response.write("Hello World"); response.close(); }
-var helloWorld2Listener = function(request, response) { loadCount++; response.write("Hello World2"); response.close(); }
-var infoListener = function(request, response) { loadCount++; response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, postRaw: request.postRaw})); response.close(); }
 
 assert.suite('WEBSERVER MODULE', function() {
+
+	// SETUP
+	var fs = require("fs");
+	var server = require('webserver').create();
+	var page = require('webpage').create();
+	var refdir = "../../test/unit/ref/";
+	var textfile = refdir + "fs.txt";
+	var workingDirectory = fs.workingDirectory;
+	var loadCount = 0;
+	var helloWorldListener = function(request, response) { loadCount++; response.write("Hello World"); response.close(); }
+	var helloWorld2Listener = function(request, response) { loadCount++; response.write("Hello World2"); response.close(); }
+	var infoListener = function(request, response) { loadCount++; response.write(JSON.stringify({success: true, httpVersion: request.httpVersion, method: request.method, url: request.url, headers: request.headers, post: request.post, postRaw: request.postRaw})); response.close(); }
 
 	// --------------------------------------------
 	assert.section('Instantiation');
@@ -137,8 +139,10 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(requestInfo.post.perc === '10%', 'request body contains perc (including percentage sign)');
 	assert(requestInfo.postRaw === 'user=username&pass=password&price=$15&location=o\'rileys bar&perc=10%', 'request raw post contains the data sent');
 
+
+	// TEARDOWN
+	server.close()
+
 });
 
-// TEARDOWN
-server.close()
 

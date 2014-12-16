@@ -201,9 +201,9 @@ namespace TrifleJS
         /// <returns></returns>
         public static Uri TryParse(string url)
         {
-            Uri uri;
+            Uri uri = null;
             try { uri = new Uri(url); }
-            catch { return null; }
+            catch { }
             return uri;
         }
 

@@ -1,14 +1,13 @@
 ﻿
-// Setup variables
-
-var fs = require("fs");
-var refdir = "../../test/unit/ref/";
-var textfile = refdir + "fs.txt";
-var linkfile = refdir + "sample_link.lnk";
-var workingDirectory = fs.workingDirectory;
-
 
 assert.suite('FS MODULE', function() {
+
+	// SETUP
+	var fs = require("fs");
+	var refdir = "../../test/unit/ref/";
+	var textfile = refdir + "fs.txt";
+	var linkfile = refdir + "sample_link.lnk";
+	var workingDirectory = fs.workingDirectory;
 
 	// --------------------------------------------
 	assert.section('Instantiation');
@@ -262,10 +261,11 @@ assert.suite('FS MODULE', function() {
 	stream.close();
 	stream = null;
 
+	// TEARDOWN
+
+	// reset file to original
+	fs.remove(textfile);
+	fs.write(textfile, 'original text');
+
 });
 
-// TEARDOWN
-
-// reset file to original
-fs.remove(textfile);
-fs.write(textfile, 'original text');

@@ -74,10 +74,10 @@ namespace TrifleJS.API
         }
 
         /// <summary>
-        /// Loads a module
+        /// Creates a module
         /// </summary>
         /// <param name="js"></param>
-        public static void LoadModule(string name, string src) {
+        public static void createModule(string name, string src) {
             try 
             {
                 // Fix the path separator
@@ -144,6 +144,8 @@ namespace TrifleJS.API
             }
         }
 
+        #region Cookies
+
         /// <summary>
         /// Controls whether the CookieJar is enabled or not. Defaults to true.
         /// </summary>
@@ -152,5 +154,31 @@ namespace TrifleJS.API
             set { cookieJar.Enabled = value; }
         }
 
+        /// <summary>
+        /// Returns the current list of cookies
+        /// </summary>
+        public List<Dictionary<string, object>> cookies {
+            get {
+                List<Dictionary<string, object>> output = new List<Dictionary<string, object>>();
+                foreach (var list in cookieJar.content.Values) {
+                    foreach (var cookie in list) {
+                        output.Add(cookie.ToDictionary());
+                    }
+                }
+                return output;
+            }
+        }
+
+        /// <summary>
+        /// Adds a cookie to the cookie jar. Returns true if added successfully.
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
+        public bool addCookie(Dictionary<string, object> cookie)
+        {
+            return cookieJar.AddOne(cookie);
+        }
+
+        #endregion 
     }
 }

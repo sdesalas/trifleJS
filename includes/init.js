@@ -182,7 +182,7 @@
             // Add to cache and load
             var path = module;
             require.cache[path] = { id: path, exports: {} };
-            phantom.LoadModule(path, fs.read(path));
+            phantom.createModule(path, fs.read(path));
             return require.cache[path].exports;
 
         // Is it a file path without the extension?
@@ -190,7 +190,7 @@
             // Add to cache and load
             var path = module + '.js';
             require.cache[path] = { id: path, exports: {} };
-            phantom.LoadModule(path, fs.read(path));
+            phantom.createModule(path, fs.read(path));
             return require.cache[path].exports;
 
         } else {

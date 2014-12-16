@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -8,7 +9,7 @@ namespace TrifleJS.API
     public class CookieJar
     {
         public bool Enabled { get; set; }
-        public Dictionary<string, List<Cookie>> cookieList = new Dictionary<string, List<Cookie>>();
+        public Dictionary<string, List<Cookie>> content = new Dictionary<string, List<Cookie>>();
 
         public CookieJar() { }
 
@@ -16,64 +17,138 @@ namespace TrifleJS.API
             throw new NotImplementedException();
         }
 
-        public bool addCookiesFromMap(List<Dictionary<string, object>> cookies, string url)
+        public bool AddList(List<Dictionary<string, object>> cookies, string url)
         {
             if (!Enabled) return false;
             bool result = true;
             foreach (var cookie in cookies)
             {
-                if (addCookieFromMap(cookie, url) == false)
+                if (AddOne(cookie, url) == false)
                     result = false;
             }
             return result;
         }
 
-        public bool addCookieFromMap(Dictionary<string, object> cookie, string url)
+        public bool AddOne(Dictionary<string, object> data)
+        {
+            return AddOne(data, null);
+        }
+
+        public bool AddOne(Dictionary<string, object> data, string url)
         {
             if (Enabled)
             {
-                // Empty URL? Look for it in domain
-                if (String.IsNullOrEmpty(url)) {
-                    
-                }
-                if (cookieList.ContainsKey(url))
+                Cookie cookie = new Cookie();
+                cookie.Load(data);
+                if (String.IsNullOrEmpty(url))
                 {
-                    cookieList[url].Add(new Cookie(cookie));
+                    // Empty URL? Look for it in domain
+                    url = cookie.GetUrl();
                 }
-                else
-                {
-                    cookieList.Add(url, new List<Cookie> { new Cookie(cookie) } );
+                if (Browser.TryParse(url ?? "") != null) {
+                    if (content.ContainsKey(url))
+                    {
+                        if (cookie.Save())
+                        {
+                            content[url].Add(cookie);
+                        }
+                    }
+                    else
+                    {
+                        if (cookie.Save())
+                        {
+                            content.Add(url, new List<Cookie> { cookie });
+                        }
+                    }
+                    return true;
                 }
-                return true;
             }
             return false;
         }
+    }
 
-        public class Cookie 
+    /// <summary>
+    /// Extensions to .NET Cookie class for Cookie Jar functionality
+    /// </summary>
+    public static class CookieExtensions
+    {
+        /// <summary>
+        /// Loads the contents of a cookie dictionary into a system cookie
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <param name="data"></param>
+        public static void Load(this Cookie cookie, Dictionary<string, object> data)
         {
-            public string Name;
-            public string Value;
-            public string Domain;
-            public string Path;
-            public DateTime Expires;
-            public bool HttpOnly;
-            public bool Secure;
+            cookie.Name = data.Get<string>("name");
+            cookie.Value = data.Get<string>("value");
+            cookie.Secure = data.Get<bool>("secure");
+            cookie.Domain = data.Get<string>("domain");
+            cookie.Path = String.IsNullOrEmpty(data.Get<string>("path")) ? "/" : data.Get<string>("path");
+            cookie.Expires = data.Get<DateTime>("expires");
+            cookie.HttpOnly = data.Get<bool>("httpOnly");
+        }
 
-            public Cookie(Dictionary<string, object> data) { 
-                
-            }
+        /// <summary>
+        /// Converts a cookie into a dictionary for display
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
+        public static Dictionary<string, object> ToDictionary(this Cookie cookie)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("name", cookie.Name);
+            data.Add("value", cookie.Value);
+            data.Add("secure", cookie.Secure);
+            data.Add("domain", cookie.Domain);
+            data.Add("path", cookie.Path);
+            if (cookie.Expires > DateTime.Now) { data.Add("expires", cookie.Expires); }
+            data.Add("httpOnly", cookie.HttpOnly);
+            return data;
+        }
 
-            public Dictionary<string, object> ToDictionary() {
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data.Add("name", Name);
-                data.Add("value", Value);
-                data.Add("domain", Domain);
-                data.Add("path", Path);
-                data.Add("expires", Expires);
-                data.Add("httpOnly", HttpOnly);
-                data.Add("secure", Secure);
-                return data;
+        /// <summary>
+        /// Returns url for the cookie (using cookie domain and path)
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
+        public static string GetUrl(this Cookie cookie)
+        {
+            if (!String.IsNullOrEmpty(cookie.Domain))
+            {
+                return String.Format("http{0}://{1}{2}{3}",
+                            cookie.Secure ? "s" : "",
+                            cookie.Domain.StartsWith(".") ? "www" : "",
+                            cookie.Domain,
+                            String.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path);
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Saves a cookie for use in .NET WebBrowser (via Windows API)
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
+        public static bool Save(this Cookie cookie)
+        {
+            // Make sure we only set cookie for duration of the session
+            // @see http://stackoverflow.com/questions/1780469/how-do-i-set-cookie-expiration-to-session-in-c
+            DateTime expires = cookie.Expires;
+            cookie.Expires = DateTime.MinValue;
+            bool success = false;
+            try
+            {
+                string url = cookie.GetUrl();
+                string cookieString = cookie.ToString();
+                API.Native.Methods.InternetSetCookie(cookie.GetUrl(), null, cookie.ToString());
+                success = true;
+            }
+            catch { }
+            finally
+            {
+                cookie.Expires = expires;
+            }
+            return success;
         }
     }
 }
