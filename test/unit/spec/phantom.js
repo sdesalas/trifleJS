@@ -32,7 +32,7 @@ assert.suite('Object: phantom', function() {
 	assert(typeof phantom.version.major === 'number', 'phantom.version.major is a number');
 	assert(typeof phantom.version.minor === 'number', 'phantom.version.minor is a number');
 	assert(typeof phantom.addCookie === 'function', 'phantom.addCookie is a function');
-	//assert(typeof phantom.clearCookies === 'function', 'phantom.clearCookies is a function');
+	assert(typeof phantom.clearCookies === 'function', 'phantom.clearCookies is a function');
 	//assert(typeof phantom.deleteCookie === 'function', 'phantom.deleteCookie is a function');
 	assert(typeof phantom.exit === 'function', 'phantom.exit is a function');
 	assert(typeof phantom.injectJs === 'function', 'phantom.injectJs is a function');
@@ -66,6 +66,7 @@ assert.suite('Object: phantom', function() {
 			url: request.url, 
 			headers: request.headers
 		})); 
+		//console.log(request);
 		response.close(); 
 	});
 	
@@ -74,6 +75,34 @@ assert.suite('Object: phantom', function() {
 
 	var ready = false;
 	var cookies = null;
+	var checkCookies = function(status) {
+		try {
+			var response = JSON.parse(page.plainText);
+			if (response && response.headers) cookies = response.headers['Cookie'];
+			ready = true;
+		} catch (e) {}
+	};
+
+	page.open('http://localhost:8086', checkCookies);
+	
+	assert.waitFor(ready);
+	
+	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') > -1, 'phantom.addCookie() succesfully sends a cookie to the server');
+	
+	phantom.cookies = [{
+		name: 'PhantomTestCookie2',
+		value: 'ariya/phantomjs/wiki2',
+		domain: 'localhost'
+	}, {
+		name: 'PhantomTestCookie3',
+		value: 'ariya/phantomjs/wiki3',
+		domain: 'localhost'
+	}];
+	
+	assert(phantom.cookies.length === 2, 'phantom.cookies has 2x cookies after using setter');
+
+	ready = false;
+	cookies = null;
 
 	page.open('http://localhost:8086', function(status) {
 		var response = JSON.parse(page.plainText);
@@ -82,9 +111,15 @@ assert.suite('Object: phantom', function() {
 	});
 	
 	assert.waitFor(ready);
+		
+	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') === -1, 'phantom.cookies removes previous cookies from request');
+	assert(!!cookies && cookies.indexOf('PhantomTestCookie2=ariya/phantomjs/wiki2') > -1, 'phantom.cookies succesfully adds a cookie and sends to the server');
+	assert(!!cookies && cookies.indexOf('PhantomTestCookie3=ariya/phantomjs/wiki3') > -1, 'phantom.cookies succesfully adds a cookie and sends to the server');
+
+	phantom.clearCookies();
 	
-	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') > -1, 'phantom.addCookie() succesfully sends a cookie to the server');
-	
+	assert(phantom.cookies.length === 0, 'phantom.cookies has 0 cookies after using phantom.clearCookies()');
+
 	// Tear down
 	phantom.libraryPath = fs.workingDirectory;
 	server.close();

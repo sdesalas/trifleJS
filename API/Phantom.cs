@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -10,11 +11,6 @@ namespace TrifleJS.API
     /// </summary>
     public class Phantom
     {
-        /// <summary>
-        /// Phantom Cookie Jar
-        /// </summary>
-        internal static CookieJar cookieJar = new CookieJar();
-
         /// <summary>
         /// Exists the program
         /// </summary>
@@ -150,22 +146,34 @@ namespace TrifleJS.API
         /// Controls whether the CookieJar is enabled or not. Defaults to true.
         /// </summary>
         public static bool cookiesEnabled {
-            get { return cookieJar.Enabled; }
-            set { cookieJar.Enabled = value; }
+            get { return CookieJar.Current.Enabled; }
+            set { CookieJar.Current.Enabled = value; }
         }
 
         /// <summary>
-        /// Returns the current list of cookies
+        /// Returns the global list of cookies
         /// </summary>
-        public List<Dictionary<string, object>> cookies {
+        public object[] cookies {
             get {
-                List<Dictionary<string, object>> output = new List<Dictionary<string, object>>();
-                foreach (var list in cookieJar.content.Values) {
+                List<object> output = new List<object>();
+                foreach (var list in CookieJar.Current.content.Values)
+                {
                     foreach (var cookie in list) {
                         output.Add(cookie.ToDictionary());
                     }
                 }
-                return output;
+                return output.ToArray();
+            }
+            set {
+                CookieJar.Current.ClearAll();
+                if (value != null)
+                {
+                    foreach (object data in value)
+                    {
+                        Dictionary<string, object> item = data as Dictionary<string, object>;
+                        CookieJar.Current.Add(item);
+                    }
+                }
             }
         }
 
@@ -176,7 +184,14 @@ namespace TrifleJS.API
         /// <returns></returns>
         public bool addCookie(Dictionary<string, object> cookie)
         {
-            return cookieJar.AddOne(cookie);
+            return CookieJar.Current.Add(cookie);
+        }
+
+        /// <summary>
+        /// Deletes all cookies in the CookieJar
+        /// </summary>
+        public void clearCookies() {
+            CookieJar.Current.ClearAll();
         }
 
         #endregion 

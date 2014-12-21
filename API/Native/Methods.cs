@@ -85,17 +85,17 @@ namespace TrifleJS.API.Native
         internal const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
 
         [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern bool InternetSetOption(int hInternet, int dwOption, string lpBuffer, int dwBufferLength);
+        internal static extern bool InternetSetOption(IntPtr hInternet, int dwOption, string lpBuffer, int dwBufferLength);
 
         /// <summary>
         /// Resets the browser session
         /// @see http://stackoverflow.com/questions/1688991/how-to-set-and-delete-cookies-from-webbrowser-control-for-arbitrary-domains
         /// </summary>
         /// <returns></returns>
-        internal static bool ResetBrowserSession() {
+        internal static bool ResetBrowserSession(IntPtr handle) {
             try
             {
-                InternetSetOption(0, INTERNET_OPTION_END_BROWSER_SESSION, null, 0);
+                InternetSetOption(handle, INTERNET_OPTION_END_BROWSER_SESSION, null, 0);
             }
             catch { }
             return false;

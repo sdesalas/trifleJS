@@ -8,6 +8,8 @@ namespace TrifleJS.API
 {
     public class CookieJar
     {
+        public static CookieJar Current = new CookieJar();
+
         public bool Enabled { get; set; }
         public Dictionary<string, List<Cookie>> content = new Dictionary<string, List<Cookie>>();
 
@@ -17,26 +19,14 @@ namespace TrifleJS.API
             throw new NotImplementedException();
         }
 
-        public bool AddList(List<Dictionary<string, object>> cookies, string url)
+        public bool Add(Dictionary<string, object> data)
         {
-            if (!Enabled) return false;
-            bool result = true;
-            foreach (var cookie in cookies)
-            {
-                if (AddOne(cookie, url) == false)
-                    result = false;
-            }
-            return result;
+            return Add(data, null);
         }
 
-        public bool AddOne(Dictionary<string, object> data)
+        public bool Add(Dictionary<string, object> data, string url)
         {
-            return AddOne(data, null);
-        }
-
-        public bool AddOne(Dictionary<string, object> data, string url)
-        {
-            if (Enabled)
+            if (Enabled && data != null)
             {
                 Cookie cookie = new Cookie();
                 cookie.Load(data);
@@ -46,16 +36,13 @@ namespace TrifleJS.API
                     url = cookie.GetUrl();
                 }
                 if (Browser.TryParse(url ?? "") != null) {
-                    if (content.ContainsKey(url))
+                    if (cookie.Save())
                     {
-                        if (cookie.Save())
+                        if (content.ContainsKey(url))
                         {
                             content[url].Add(cookie);
                         }
-                    }
-                    else
-                    {
-                        if (cookie.Save())
+                        else
                         {
                             content.Add(url, new List<Cookie> { cookie });
                         }
@@ -64,6 +51,30 @@ namespace TrifleJS.API
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Clears cookies from all browser sessions
+        /// </summary>
+        public void ClearAll() {
+            content = new Dictionary<string, List<Cookie>>();
+            API.Native.Methods.ResetBrowserSession(IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Clears cookies for a specific URI
+        /// </summary>
+        /// <param name="uri"></param>
+        public void Clear(Uri targetUri) {
+            if (targetUri != null)
+            {
+                foreach (string url in content.Keys) {
+                    Uri uri = Browser.TryParse(url);
+                    if (uri.Host == targetUri.Host) {
+                        content.Remove(url);
+                    }
+                }
+            }
         }
     }
 

@@ -91,14 +91,32 @@ namespace TrifleJS
         }
 
         /// <summary>
+        /// Gets a list of headers as string
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public static string Build(Dictionary<string, object> headers) {
+            List<string> output = new List<string>();
+            if (headers != null)
+            {
+                foreach (string key in headers.Keys)
+                {
+                    output.Add(String.Format("{0}: {1}", key, headers[key]));
+                }
+            }
+            return String.Join("\r\n", output.ToArray());
+        }
+
+        /// <summary>
         /// Navigates to a URI, using a specific HTTP method and posted data or headers.
         /// </summary>
         /// <param name="uri">the Uri to navigate to</param>
         /// <param name="method">HTTP method (GET or POST)</param>
         /// <param name="data">data being sent in POST request</param>
         /// <param name="customHeaders">custom header string</param>
-        public void Navigate(Uri uri, string method, string data, string customHeaders) {
+        public void Navigate(Uri uri, string method, string data, Dictionary<string, object> customHeaders) {
             // Use HTTP method, currently only POST and GET are supported
+            string headers = Build(customHeaders);
             switch (method.ToUpper())
             {
                 case "POST":
@@ -108,10 +126,10 @@ namespace TrifleJS
                     {
                         data = " ";
                     }
-                    base.Navigate(uri.AbsoluteUri, "", Encoding.UTF8.GetBytes(data), customHeaders);
+                    base.Navigate(uri.AbsoluteUri, "", Encoding.UTF8.GetBytes(data), headers);
                     break;
                 case "GET":
-                    base.Navigate(uri.AbsoluteUri, "", null, customHeaders);
+                    base.Navigate(uri.AbsoluteUri, "", null, headers);
                     break;
                 default:
                     throw new Exception("Browser.Navigate(), only POST and GET methods allowed.");
@@ -123,6 +141,13 @@ namespace TrifleJS
         /// </summary>
         public HtmlHistory History {
             get { return (Document != null && Document.Window != null) ? Document.Window.History : null; }
+        }
+
+        /// <summary>
+        /// Resets the current session
+        /// </summary>
+        public void ResetSession() {
+            Methods.ResetBrowserSession(this.Handle);
         }
 
         /// <summary>

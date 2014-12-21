@@ -96,23 +96,6 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public Dictionary<string, object> customHeaders { get; set; }
 
-        /// <summary>
-        /// A string of HTTP headers
-        /// </summary>
-        private string ParsedHeaders {
-            get {
-                StringBuilder output = new StringBuilder();
-                if (customHeaders != null)
-                {
-                    foreach (string key in customHeaders.Keys)
-                    {
-                        output.AppendLine(String.Format("{0}:{1}\r\n", key, customHeaders[key]));
-                    }
-                }
-                return output.ToString();
-            }
-        }
-
         #endregion
 
         #region Windows and Frames
@@ -316,7 +299,7 @@ namespace TrifleJS.API.Modules
             {
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
-                browser.Navigate(uri, method, data, ParsedHeaders);
+                browser.Navigate(uri, method, data, customHeaders);
                 browser.DocumentCompleted -= DocumentCompleted;
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
