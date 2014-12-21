@@ -49,6 +49,8 @@ namespace TrifleJS.API.Modules
                 processes.Add(uri, process);
                 this.port = binding.Port.ToString();
                 Console.xdebug(String.Format("WebServer Listening on {0}", uri));
+                // Wait for 10ms to allow first connection
+                Trifle.Wait(10);
                 return true;
             }
             catch
