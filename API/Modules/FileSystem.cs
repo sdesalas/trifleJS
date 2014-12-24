@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using Microsoft.VisualBasic.Devices;
 
 namespace TrifleJS.API.Modules
 {
@@ -205,17 +206,9 @@ namespace TrifleJS.API.Modules
         public void copyTree(string source, string destination) {
             if (Directory.Exists(source) && !String.IsNullOrEmpty(destination))
             {
-                char[] invalid = Path.GetInvalidPathChars();
                 if (destination.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                 {
-                    Process proc = new Process();
-                    proc.StartInfo.UseShellExecute = true;
-                    proc.StartInfo.FileName = @"xcopy.exe";
-                    proc.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\" /E /I /Y", source, destination);
-                    proc.StartInfo.UseShellExecute = true;
-                    proc.StartInfo.CreateNoWindow = true;
-                    proc.Start();
-                    proc.WaitForExit(1000 * 60 * 10); // 10 minutes max
+                    new Computer().FileSystem.CopyDirectory(source, destination, true);
                 }
             }
         }
