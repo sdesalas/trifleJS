@@ -24,18 +24,31 @@ namespace TrifleJS.API
             return Add(data, null);
         }
 
+        public bool Add(Cookie cookie) {
+            return Add(cookie, null);
+        }
+
         public bool Add(Dictionary<string, object> data, string url)
         {
-            if (Enabled && data != null)
+            if (data != null)
             {
                 Cookie cookie = new Cookie();
                 cookie.Load(data);
+                return Add(cookie, url);
+            }
+            return false;
+        }
+
+        public bool Add(Cookie cookie, string url) {
+            if (Enabled && cookie != null)
+            {
                 if (String.IsNullOrEmpty(url))
                 {
                     // Empty URL? Look for it in domain
                     url = cookie.GetUrl();
                 }
-                if (Browser.TryParse(url ?? "") != null) {
+                if (Browser.TryParse(url ?? "") != null)
+                {
                     if (cookie.Save())
                     {
                         if (content.ContainsKey(url))

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -59,6 +60,13 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public string url {
             get { return (this.browser != null && this.browser.Url != null) ? this.browser.Url.AbsoluteUri : String.Empty; }
+        }
+
+        /// <summary>
+        /// Returns the current url as a parsed Uri
+        /// </summary>
+        public Uri uri {
+            get { return Browser.TryParse(url); }
         }
 
         /// <summary>
@@ -492,6 +500,60 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public bool loading {
             get { return (browser != null) ? browser.ReadyState != WebBrowserReadyState.Complete : false; }
+        }
+
+        #endregion
+
+        #region Cookies
+
+        /// <summary>
+        /// Add a Cookies to the page. 
+        /// If the domains do not match, the Cookie will be ignored/rejected. 
+        /// Returns true if successfully added, otherwise false.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public bool addCookie(object data) {
+            Cookie cookie = new Cookie();
+            try
+            {
+                cookie.Load(data as Dictionary<string, object>);
+                if (cookie.Domain == uri.Host) {
+                    return CookieJar.Current.Add(cookie);
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Get or set Cookies visible to the current URL 
+        /// (though, for setting, use of WebPage#addCookie is preferred).
+        /// This array will be pre-populated by any existing Cookie data 
+        /// visible to this URL that is stored in the CookieJar, if any. 
+        /// </summary>
+        public object[] cookies
+        {
+            get
+            {
+                List<object> output = new List<object>();
+                foreach (string url in CookieJar.Current.content.Keys)
+                {
+                    Uri uri = Browser.TryParse(url);
+                    if (uri.Host == this.uri.Host)
+                    {
+                        foreach (var cookie in CookieJar.Current.content[url])
+                        {
+                            output.Add(cookie.ToDictionary());
+                        }
+                    }
+                }
+                return output.ToArray();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
 
         #endregion

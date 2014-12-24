@@ -60,6 +60,7 @@ assert.suite('Object: phantom', function() {
 		domain: 'localhost'
 	});
 	
+	// Start a listener to check headers
 	server.listen(8086, function(request, response) { 
 		response.write(JSON.stringify({
 			success: true, 

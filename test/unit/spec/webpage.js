@@ -3,6 +3,7 @@
 assert.suite('WEBPAGE MODULE', function() {
 
 	// SETUP
+	var server = require('webserver').create();
 	var loadCount = 0;
 
 	// --------------------------------------------
@@ -18,7 +19,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	// --------------------------------------------
 	assert.section('Method availability');
 
-	//assert(typeof page.addCookie === 'function', 'page.addCookie() method available');
+	assert(typeof page.addCookie === 'function', 'page.addCookie() method available');
 	//assert(typeof page.clearCookies === 'function', 'page.clearCookies() method available');
 	assert(typeof page.close === 'function', 'page.close() method available');
 	assert(typeof page.evaluate === 'function', 'page.evaluate() method available');
@@ -46,6 +47,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.clipRect != null && page.clipRect.top === 0, 'page.clipRect.top is 0');
 	assert(page.clipRect != null && page.clipRect.left === 0, 'page.clipRect.left is 0');
 	assert(page.content != null && page.content.indexOf("<HTML>") === 0 , 'page.content has some HTML in it');
+	assert(page.cookies != null && page.cookies instanceof Array, 'page.cookies is an array');
 	//assert(page.frameContent != null && page.frameContent.indexOf("<HTML>") === 0 , 'page.frameContent has some HTML in it');
 	//assert(page.frameName === '', 'page.frameName is an empty string');
 	//assert(page.framePlainText === '', 'page.framePlainText is an empty string');
@@ -65,8 +67,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
 	assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
 
-	// Instantiate a web server to check that pages are loading
-	var server = require('webserver').create();
+	// Start a web server listener to check that pages are loading
 	var pageContent, pagePlainText;
 	server.listen(8898, function(request, response) {
 		loadCount++;
@@ -132,7 +133,7 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(loadCount === 3, 'page.open(url) loads each page once.');
 	
 	});
-	
+
 	// --------------------------------------------
 	assert.section('Navigating through history');
 	
@@ -167,7 +168,57 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward using go(1)');	
 	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward using go(1)');
 
-	// Finish serving web pages
+
+	// Clear all listeners and connections.
+	server.close();
+
+	// --------------------------------------------
+	assert.section('Coookies', function() {
+
+		var cookieSuccess = page.addCookie({
+			name: 'PageTestCookie',
+			value: 'ariya/phantomjs/wiki/WebPage',
+			domain: 'localhost'
+		});
+		
+		// Start a listener to check headers
+		server.listen(8086, function(request, response) { 
+			response.write(JSON.stringify({
+				success: true, 
+				url: request.url, 
+				headers: request.headers
+			})); 
+			//console.log(request);
+			response.close(); 
+		});
+		
+		assert(cookieSuccess === true, 'page.addCookie() returned true when adding a test cookie');
+		assert(page.cookies.length === 1, 'page.cookies has one cookie listed');
+
+		var ready = false;
+		var cookies = null;
+		var checkCookies = function(status) {
+			try {
+				var response = JSON.parse(page.plainText);
+				if (response && response.headers) cookies = response.headers['Cookie'];
+				ready = true;
+			} catch (e) {}
+		};
+
+		page.open('http://localhost:8086', checkCookies);
+		
+		assert.waitFor(ready);
+		
+		assert(!!cookies && cookies.indexOf('PageTestCookie=ariya/phantomjs/wiki/WebPage') > -1, 'page.addCookie() succesfully sends a cookie to the server');
+		
+
+		// When we remove cookies for a page, they do not get removed from phantom object (except for same domain)
+
+
+	});
+
+
+	// Tear down
 	server.close();
 	page.close();
 
