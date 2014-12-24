@@ -103,13 +103,16 @@ namespace TrifleJS.API
         /// <param name="data"></param>
         public static void Load(this Cookie cookie, Dictionary<string, object> data)
         {
-            cookie.Name = data.Get<string>("name");
-            cookie.Value = data.Get<string>("value");
-            cookie.Secure = data.Get<bool>("secure");
-            cookie.Domain = data.Get<string>("domain");
-            cookie.Path = String.IsNullOrEmpty(data.Get<string>("path")) ? "/" : data.Get<string>("path");
-            cookie.Expires = data.Get<DateTime>("expires");
-            cookie.HttpOnly = data.Get<bool>("httpOnly");
+            if (data != null)
+            {
+                cookie.Name = data.Get<string>("name");
+                cookie.Value = data.Get<string>("value");
+                cookie.Secure = data.Get<bool>("secure");
+                cookie.Domain = data.Get<string>("domain");
+                cookie.Path = String.IsNullOrEmpty(data.Get<string>("path")) ? "/" : data.Get<string>("path");
+                cookie.Expires = data.Get<DateTime>("expires");
+                cookie.HttpOnly = data.Get<bool>("httpOnly");
+            }
         }
 
         /// <summary>

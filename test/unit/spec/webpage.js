@@ -211,9 +211,14 @@ assert.suite('WEBPAGE MODULE', function() {
 		
 		assert(!!cookies && cookies.indexOf('PageTestCookie=ariya/phantomjs/wiki/WebPage') > -1, 'page.addCookie() succesfully sends a cookie to the server');
 		
+		// When we remove cookies for a page, 
+		// they do not get removed from phantom object 
+		// (except for same domain)
 
-		// When we remove cookies for a page, they do not get removed from phantom object (except for same domain)
 
+		// When we remove cookies for a page, 
+		// it should not affect cookies added to another page.
+		
 
 	});
 

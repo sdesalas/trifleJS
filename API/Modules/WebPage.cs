@@ -513,12 +513,13 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public bool addCookie(object data) {
+        public bool addCookie(Dictionary<string, object> data) {
             Cookie cookie = new Cookie();
             try
             {
-                cookie.Load(data as Dictionary<string, object>);
-                if (cookie.Domain == uri.Host) {
+                cookie.Load(data);
+                if (cookie.Domain == uri.Host)
+                {
                     return CookieJar.Current.Add(cookie);
                 }
             }
@@ -552,7 +553,18 @@ namespace TrifleJS.API.Modules
             }
             set
             {
-                throw new NotImplementedException();
+                if (browser != null)
+                {
+                    API.Native.Methods.ResetBrowserSession(browser.Handle);
+                    CookieJar.Current.Clear(uri);
+                    if (value != null)
+                    {
+                        foreach (object data in value)
+                        {
+                            this.addCookie(data as Dictionary<string, object>);
+                        }
+                    }
+                }
             }
         }
 

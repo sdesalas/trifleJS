@@ -80,8 +80,8 @@ assert.suite('Object: phantom', function() {
 		try {
 			var response = JSON.parse(page.plainText);
 			if (response && response.headers) cookies = response.headers['Cookie'];
-			ready = true;
 		} catch (e) {}
+		ready = true;
 	};
 
 	page.open('http://localhost:8086', checkCookies);
@@ -89,6 +89,18 @@ assert.suite('Object: phantom', function() {
 	assert.waitFor(ready);
 	
 	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') > -1, 'phantom.addCookie() succesfully sends a cookie to the server');
+	
+	// Check HTTPOnly cookies include "HttpOnly"
+
+	// Check Secure cookies include "secure"
+
+	// Check Path (only send cookies if in same path)
+	
+	// Check Expires (should remain even after deletion - or ignore/ throw an error)
+	
+	
+	// NOTE: phantom.cookies setter should remove 
+	// previous cookies and replace them with new ones.
 	
 	phantom.cookies = [{
 		name: 'PhantomTestCookie2',
