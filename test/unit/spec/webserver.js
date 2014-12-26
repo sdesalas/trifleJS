@@ -34,20 +34,18 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert.section('Listening for connections');
 	// --------------------------------------------
 
-	var ready, requestInfo;
+	var requestInfo;
 
 	var isListening = server.listen(8080, helloWorldListener);
 
 	assert(isListening === true, 'server.listen() returns true when listening');
 	assert(server.port === '8080', 'server.port returns the correct port')
 
-	ready = false;
-
 	page.open('http://localhost:8080', function(status) {
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	assert(page.plainText === "Hello World", 'server responded with "Hello World" on 8080');
 	assert(loadCount === 1, 'listener on 8080 fired once');
@@ -59,13 +57,12 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(isListening === true, 'server.listen() return true when listening on same port');
 	assert(server.port === '8080', 'server.port returns the correct port')
 	
-	ready = false;
 
 	page.open('http://localhost:8080', function(status) {
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	assert(page.plainText === "Hello World2", 'server responded with "Hello World2" on 8080 (binding is replaced)');
 	assert(loadCount === 2, 'listener on 8080 fired once');
@@ -75,13 +72,11 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(isListening === true, 'server.listen() return true when listening on a different port');
 	assert(server.port === '8081', 'server.port returns the correct port')
 
-	ready = false;
-
 	page.open('http://localhost:8081/testurl?k=v', function(status) {
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	requestInfo = JSON.parse(page.plainText);
 	
@@ -97,13 +92,11 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert.section('POST Request');
 	// --------------------------------------------
 
-	ready = false;
-
 	page.open('http://localhost:8081/', 'POST', function(status) {
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	requestInfo = JSON.parse(page.plainText);
 	
@@ -113,17 +106,15 @@ assert.suite('WEBSERVER MODULE', function() {
 	assert(requestInfo.post === '', 'request body was empty (no data was posted)');
 	assert(requestInfo.postRaw === '', 'request raw post was empty (no data was posted)');
 
-	ready = false;
-
 	page.customHeaders = {
 		'Content-Type': 'application/x-www-form-urlencoded'
 	};
 
 	page.open('http://localhost:8081/', 'POST', 'user=username&pass=password&price=$15&location=o\'rileys bar&perc=10%', function(status) {
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	requestInfo = JSON.parse(page.plainText);
 	

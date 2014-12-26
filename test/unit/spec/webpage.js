@@ -3,6 +3,7 @@
 assert.suite('WEBPAGE MODULE', function() {
 
 	// SETUP
+	var fs = require('fs');
 	var server = require('webserver').create();
 	var loadCount = 0;
 
@@ -57,7 +58,8 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.framesName != null && typeof(page.framesName.length) === 'number', 'page.framesName is an array');
 	//assert(page.libraryPath != null, 'page.libraryPath is not null');
 	assert(page.loading === false, 'page.loading is false');
-	//assert(page.plainText === '', 'page.plainText is an empty string');
+	assert(page.objectName === 'WebPage', 'page.objectName is WebPage');
+	assert(page.plainText === '', 'page.plainText is an empty string');
 	//assert(page.scrollPosition != null && page.scrollPosition.left === 0, 'page.scrollPosition.left is 0');
 	//assert(page.scrollPosition != null && page.scrollPosition.top === 0, 'page.scrollPosition.top is 0');
 	assert(page.title === '', 'page.title is an empty string');
@@ -80,14 +82,17 @@ assert.suite('WEBPAGE MODULE', function() {
 	// --------------------------------------------
 	assert.section('Simple page loading.', function() {
 	
-		var loaded = false, responseData = null;
+		var responseData = null;
 		
 		trifle.wait(500);
 		page.open('http://localhost:8898', function() { 
-			loaded = true; 
+			assert.ready = true; 
 		});
 		
-		assert.waitFor(loaded);
+		assert(assert.ready !== true, 'page.open(url) loads pages asynchronously');
+		
+		assert.waitUntilReady();
+		
 		try {responseData = JSON.parse(page.plainText); } catch (e) {}
 		assert(responseData !== null && responseData.success, 'page.open(url) can load a simple request');
 		assert(loadCount === 1, 'page.open(url) loads the page once');
@@ -103,6 +108,62 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.framesCount === 0, 'page.framesCount is 0');
 	assert(page.plainText == pagePlainText, 'page.pagePlainText has BODY TEXT in it sent by the server');
 	assert(page.content == pageContent, 'page.content has HTML in it sent by the server');
+
+	// --------------------------------------------
+	assert.section('Scripting', function() {
+	
+		var evaluateResult = page.evaluate(function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+            var result = document.title + arg1 + arg2 + arg3[0] + arg3[1] + arg4.a + ' ' + arg5 + arg6;
+            if (arg7 === null) {
+                result += arg7;
+            };
+            if (arg8 === undefined) {
+                result += arg8;
+            }
+            return result;
+        }, 'message 1', 234, [5, '6'], { a: "78" }, !true, NaN, null, undefined);
+        
+        assert(evaluateResult === 'Test Page Titlemessage 12345678 falseNaNnullundefined', 'page.evaluate can run scripts and return values from the page');
+        
+        // page.evaluateJavaScript()
+		page.evaluateJavaScript('var message = "hello from ie";');
+		
+		evaluateResult = page.evaluate(function() { return message; });
+	
+		assert(evaluateResult === 'hello from ie', 'page.evaluateJavaScript executes a javascript string on page context');
+		
+		server.listen(8891, function(request, response) {
+			response.write('window.injectedData = "test content1234";');
+			response.close();
+		});
+		
+		page.includeJs("http://localhost:8891/test.js", function() {
+			assert.ready = true;
+			evaluateResult = page.evaluate(function() {
+				return window.injectedData || '';
+			});
+		});
+		
+		assert(assert.ready !== true, 'page.includeJs loads files asynchronously');
+
+		assert.waitUntilReady();
+
+		assert(evaluateResult === 'test content1234', 'page.includeJs can be used to load remote javascript files using a url');
+
+		fs.write('injectJs.script.js', 'window.___test8206134 = "hello world 229132";');
+
+		page.injectJs('injectJs.script.js');
+		
+		evaluateResult = page.evaluate(function() {
+			return window.___test8206134 || '';
+		});
+
+		assert(evaluateResult === 'hello world 229132', 'page.injectJs can be used to inject local scripts into page context');
+
+		fs.remove('injectJs.script.js');
+
+	});	
+
 
 	// --------------------------------------------
 	assert.section('Sequential page loading.', function() {
@@ -126,8 +187,9 @@ assert.suite('WEBPAGE MODULE', function() {
 			});
 		});
 
-		assert.waitFor(loaded1);
-		assert.waitFor(loaded3);
+		while(loaded1 !== true && loaded3 !== true) {
+			trifle.wait(100);
+		}
 		
 		assert(callbacks === 2, 'page.open(url) executes each callback once.');
 		assert(loadCount === 3, 'page.open(url) loads each page once.');
@@ -195,19 +257,18 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(cookieSuccess === true, 'page.addCookie() returned true when adding a test cookie');
 		assert(page.cookies.length === 1, 'page.cookies has one cookie listed');
 
-		var ready = false;
 		var cookies = null;
 		var checkCookies = function(status) {
 			try {
 				var response = JSON.parse(page.plainText);
 				if (response && response.headers) cookies = response.headers['Cookie'];
-				ready = true;
 			} catch (e) {}
+			assert.ready = true;
 		};
 
 		page.open('http://localhost:8086', checkCookies);
 		
-		assert.waitFor(ready);
+		assert.waitUntilReady();
 		
 		assert(!!cookies && cookies.indexOf('PageTestCookie=ariya/phantomjs/wiki/WebPage') > -1, 'page.addCookie() succesfully sends a cookie to the server');
 		

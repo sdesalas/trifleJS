@@ -27,6 +27,7 @@ namespace TrifleJS.API.Modules
             this.browser = new EnhancedBrowser();
             this.browser.Size = new Size(400, 300); 
             this.browser.ScrollBarsEnabled = false;
+            //this.browser.ScriptErrorsSuppressed = true;
             this.browser.ObjectForScripting = new Callback.External(this);
             if (this.url == "about:blank") {
                 this.AddToolset();
@@ -38,6 +39,7 @@ namespace TrifleJS.API.Modules
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
+            this.uuid = Utils.newUid();
             this.clipRect = new Dictionary<string, object>() {
                 { "top", 0 },
                 { "left", 0 },
@@ -45,6 +47,11 @@ namespace TrifleJS.API.Modules
                 { "height", 0 }
             };
         }
+
+        /// <summary>
+        /// Unique ID to help identify page in V8 enviroment
+        /// </summary>
+        public string uuid { get; set; }
 
         #region Main Properties (title, url etc)
 
@@ -312,16 +319,7 @@ namespace TrifleJS.API.Modules
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
                 AddCallback(callbackId, "success");
-                // Check if we are not already in the event loop
-                if (!Program.InEventLoop)
-                {
-                    // Loading?
-                    while (loading || browser.StatusText != "Done")
-                    {
-                        // Run events while waiting
-                        Trifle.Wait(50);
-                    }
-                }
+
             }
             else
             {
@@ -679,19 +677,22 @@ namespace TrifleJS.API.Modules
         {
             get
             {
-
-                int top = 0, left = 0, width = 0, height = 0;
-                if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
-                if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
-                if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
-                if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
-                if (browser != null)
+                try
                 {
-                    if (width == 0) width = browser.Document.Window.Size.Width;
-                    if (height == 0) height = browser.Document.Window.Size.Height;
+                    int top = 0, left = 0, width = 0, height = 0;
+                    if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
+                    if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
+                    if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
+                    if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
+                    if (browser != null)
+                    {
+                        if (width == 0) width = browser.Document.Window.Size.Width;
+                        if (height == 0) height = browser.Document.Window.Size.Height;
+                    }
+                    return new Rectangle(top, left, width, height);
                 }
-                return new Rectangle(top, left, width, height);
-
+                catch { }
+                return new Rectangle();
             }
         }
 

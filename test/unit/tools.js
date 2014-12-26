@@ -68,9 +68,10 @@ assert.section = function(name, callback) {
 	}
 }
 
-assert.waitFor = function(condition) {
-	while(condition !== true) {
-		trifle.wait(1);
+assert.waitUntilReady = function() {
+	while(assert.ready !== true) {
+		trifle.wait(100);
 	}
+	assert.ready = false;
 }
 

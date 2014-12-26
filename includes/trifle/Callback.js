@@ -25,13 +25,13 @@ this.trifle = this.trifle || {};
         this.func = func;
         this.scope = scope;
         this.defaultArgs = defaultArgs;
-        this.id = this.newUid();
+        this.id = Callback.newUid();
         console.xdebug('new Callback#' + this.id + '(func, scope, defaultArgs)');
         callbacks[this.id] = this;
     };
 
     // Unique ID Generator
-    Callback.prototype.newUid = function() {
+    Callback.newUid = function() {
         var s4 = function() {
             return Math.floor((1 + Math.random()) * 0x10000)
                  .toString(16)

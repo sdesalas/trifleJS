@@ -74,19 +74,18 @@ assert.suite('Object: phantom', function() {
 	assert(cookieSuccess === true, 'phantom.addCookie() returned true when adding a test cookie');
 	assert(phantom.cookies.length === 1, 'phantom.cookies has one cookie listed');
 
-	var ready = false;
 	var cookies = null;
 	var checkCookies = function(status) {
 		try {
 			var response = JSON.parse(page.plainText);
 			if (response && response.headers) cookies = response.headers['Cookie'];
 		} catch (e) {}
-		ready = true;
+		assert.ready = true;
 	};
 
 	page.open('http://localhost:8086', checkCookies);
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 	
 	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') > -1, 'phantom.addCookie() succesfully sends a cookie to the server');
 	
@@ -114,16 +113,15 @@ assert.suite('Object: phantom', function() {
 	
 	assert(phantom.cookies.length === 2, 'phantom.cookies has 2x cookies after using setter');
 
-	ready = false;
 	cookies = null;
 
 	page.open('http://localhost:8086', function(status) {
 		var response = JSON.parse(page.plainText);
 		if (response && response.headers) cookies = response.headers['Cookie'];
-		ready = true;
+		assert.ready = true;
 	});
 	
-	assert.waitFor(ready);
+	assert.waitUntilReady();
 		
 	assert(!!cookies && cookies.indexOf('PhantomTestCookie=ariya/phantomjs/wiki') === -1, 'phantom.cookies removes previous cookies from request');
 	assert(!!cookies && cookies.indexOf('PhantomTestCookie2=ariya/phantomjs/wiki2') > -1, 'phantom.cookies succesfully adds a cookie and sends to the server');
