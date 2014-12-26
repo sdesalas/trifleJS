@@ -238,7 +238,7 @@ namespace TrifleJS.API.Modules
             if (browser == null) return null;
             string[] input;
             if (args == null) { input = new string[] { }; }
-            else { input = Callback.Parse(args); }
+            else { input = Context.Parse(args); }
             string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
             string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
             _evaluateJavaScript(script);

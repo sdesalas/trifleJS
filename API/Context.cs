@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -80,16 +81,86 @@ namespace TrifleJS.API
         /// <param name="ex"></param>
         public static void Handle(Exception ex)
         {
+            List<Dictionary<string, object>> traceData = new List<Dictionary<string, object>>();
             JavascriptException jsEx = ex as JavascriptException;
+            string message = ex.Message;
             if (jsEx != null)
             {
                 // Remove refs to Host environment & output javascript error
-                string message = jsEx.Message.Replace("TrifleJS.Host+", "");
-                Console.error(String.Format("{0} ({1},{2}): {3}", jsEx.Source, jsEx.Line, jsEx.StartColumn, message));
+                message = jsEx.Message.Replace("TrifleJS.Host+", "");
+                traceData.Add(new Dictionary<string, object> { 
+                    {"file", jsEx.Source},
+                    {"line", jsEx.Line},
+                    {"col", jsEx.StartColumn},
+                    {"function", jsEx.TargetSite.Name}
+                });
             }
             else
             {
-                Console.error(String.Format("{0}: {1}", ex.Source, ex.Message));
+                StackTrace trace = new StackTrace(ex);
+                foreach (var frame in trace.GetFrames())
+                {
+                    traceData.Add(new Dictionary<string, object> { 
+                        {"file", frame.GetFileName()},
+                        {"line", frame.GetFileLineNumber()},
+                        {"col", frame.GetFileColumnNumber()},
+                        {"function", frame.GetMethod().Name}
+                    });
+                }
+            }
+            var err = traceData[0];
+            Console.error(String.Format("{0} ({1},{2}): {3}", err.Get("file"), err.Get("line"), err.Get("col"), message));
+        }
+
+
+        /// <summary>
+        /// Parses input/output to make it JavaScript friendly
+        /// </summary>
+        /// <param name="arguments">an array of argument objects (of any type)</param>
+        /// <returns>list of parsed arguments</returns>
+        public static string[] Parse(params object[] arguments)
+        {
+            List<string> input = new List<string>();
+            foreach (object argument in arguments)
+            {
+                input.Add(ParseOne(argument));
+            }
+            return input.ToArray();
+        }
+
+        /// <summary>
+        /// Parses input/output tomake it JavaScript friendly
+        /// </summary>
+        /// <param name="argument">an argument object (of any type)</param>
+        /// <returns>the parsed argument</returns>
+        public static string ParseOne(object argument)
+        {
+            if (argument == null)
+            {
+                return "null";
+            }
+            else
+            {
+                switch (argument.GetType().Name)
+                {
+                    case "Int32":
+                    case "Double":
+                        return argument.ToString();
+                    case "Boolean":
+                        return argument.ToString().ToLowerInvariant();
+                    case "String":
+                        // Fix for undefined (coming up as null)
+                        if ("{{undefined}}".Equals(argument))
+                        {
+                            return "undefined";
+                        }
+                        else
+                        {
+                            return String.Format("\"{0}\"", argument.ToString().Replace("\"", "\\\""));
+                        }
+                    default:
+                        return Utils.Serialize(argument);
+                }
             }
         }
 

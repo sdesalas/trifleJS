@@ -153,7 +153,7 @@
     <Content Include="examples\test.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="includes\init.js" />
+    <Resource Include="includes\bootstrap.js" />
     <None Include="includes\trifle\ie\tools.js" />
     <Content Include="examples\universe.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
