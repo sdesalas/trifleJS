@@ -148,7 +148,7 @@ assert.suite('WEBPAGE MODULE', function() {
 
 		assert.waitUntilReady();
 
-		assert(evaluateResult === 'test content1234', 'page.includeJs can be used to load remote javascript files using a url');
+		assert(evaluateResult === 'test content1234', 'page.includeJs can add remote javascript files to a page using a url');
 
 		fs.write('injectJs.script.js', 'window.___test8206134 = "hello world 229132";');
 
@@ -187,9 +187,13 @@ assert.suite('WEBPAGE MODULE', function() {
 			});
 		});
 
-		while(loaded1 !== true && loaded3 !== true) {
-			trifle.wait(100);
-		}
+		do {
+			trifle.wait(10);		
+		} while (loaded1 !== true);
+		
+		do {
+			trifle.wait(10);
+		} while (loaded3 !== true);
 		
 		assert(callbacks === 2, 'page.open(url) executes each callback once.');
 		assert(loadCount === 3, 'page.open(url) loads each page once.');
@@ -233,6 +237,43 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	// Clear all listeners and connections.
 	server.close();
+	
+	// --------------------------------------------
+	assert.section('Headers', function() {
+	
+		// Start a listener to check headers
+		server.listen(8086, function(request, response) { 
+			response.write(JSON.stringify({
+				success: true, 
+				url: request.url, 
+				headers: request.headers
+			})); 
+			response.close(); 
+		});
+
+		page.customHeaders = {
+			'X-Test': 'foo',
+			'DNT': 1
+		}
+
+		var loadedHeaders, originalHeaders = page.customHeaders;
+		
+		assert(originalHeaders && originalHeaders['X-Test'] === 'foo', 'page.customHeaders saves data object');	
+		assert(originalHeaders && originalHeaders.DNT === 1, 'page.customHeaders saves data object (inc numerical data)');	
+
+		page.open('http://localhost:8086', function(status) {
+			try {
+				loadedHeaders = JSON.parse(page.plainText).headers;
+			} catch (e) {}
+			assert.ready = true;
+		});
+
+		assert.waitUntilReady();
+		
+		assert(loadedHeaders && loadedHeaders['X-Test'] === 'foo', 'page.customHeaders sends header data to the server');	
+		assert(loadedHeaders && loadedHeaders.DNT === '1', 'page.customHeaders sends header numeric data to the server (as text)');	
+	
+	});
 
 	// --------------------------------------------
 	assert.section('Coookies', function() {
@@ -241,17 +282,6 @@ assert.suite('WEBPAGE MODULE', function() {
 			name: 'PageTestCookie',
 			value: 'ariya/phantomjs/wiki/WebPage',
 			domain: 'localhost'
-		});
-		
-		// Start a listener to check headers
-		server.listen(8086, function(request, response) { 
-			response.write(JSON.stringify({
-				success: true, 
-				url: request.url, 
-				headers: request.headers
-			})); 
-			//console.log(request);
-			response.close(); 
 		});
 		
 		assert(cookieSuccess === true, 'page.addCookie() returned true when adding a test cookie');

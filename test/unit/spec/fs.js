@@ -244,7 +244,7 @@ assert.suite('FS MODULE', function() {
 
 	stream.writeLine(', appended text');
 	var content = stream.read();
-	console.log(content);
+	//console.log(content);
 
 	stream.close();
 	stream = null;

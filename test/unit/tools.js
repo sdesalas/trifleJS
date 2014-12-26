@@ -70,7 +70,7 @@ assert.section = function(name, callback) {
 
 assert.waitUntilReady = function() {
 	while(assert.ready !== true) {
-		trifle.wait(100);
+		trifle.wait(10);
 	}
 	assert.ready = false;
 }
