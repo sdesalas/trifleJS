@@ -53,6 +53,7 @@ assert.suite = function(name, callback) {
 	try {
 		callback();
 	} catch (e) {
+		assert.n++
 		assert.fail(e);
 	}
 }

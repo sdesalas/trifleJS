@@ -124,8 +124,8 @@
   <data name="ie_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\includes\trifle\ie\tools.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="init" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\includes\init.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="bootstrap" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\includes\bootstrap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="test_lib_jasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\lib\jasmine.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

@@ -40,5 +40,20 @@ namespace TrifleJS
             return default(T);
         }
 
+        /// <summary>
+        /// Gets an entry in a dictionary as an object
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static object Get(this Dictionary<string, object> dictionary, string key)
+        {
+            if (dictionary.ContainsKey(key))
+            {
+                return dictionary[key];
+            }
+            return null;
+        }
+
     }
 }

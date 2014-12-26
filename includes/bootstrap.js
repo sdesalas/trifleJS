@@ -84,8 +84,62 @@
     GLOBAL.clearInterval = window.clearInterval;
     GLOBAL.addEventListener = window.addEventListener;
 
+   
+	// Internal event handling 
+	// @usage
+	// Object.addEvent(phantom, 'onError', true);
+	// Object.addEvent(page, 'onAlert');
+	Object.addEvent = function(obj, eventName, unique) {
+		if (obj && typeof eventName === 'string') {
+			// Add event handling capability
+			obj.listeners = obj.listeners || {};
+			obj.fireEvent = function() {
+				if (arguments.length && obj.listeners) {
+					var name = Array.prototype.shift.call(arguments);
+					var listeners = obj.listeners[name];
+					if (listeners && listeners.length) {
+						for(var i = 0; i < listeners.length; i++) {
+							listeners[i].apply(obj, arguments);
+						}
+						return true;
+					}
+				}
+				return false;
+			};
+			// Use setter/getter for event handling
+			Object.defineProperty(obj, eventName, {
+				set: function(listener) {
+					if (obj.listeners) {
+						if (typeof listener === 'function') {
+							// Unique events only ever have one listener
+							if (unique) {
+								obj.listeners[eventName] = [listener];
+							} else {
+								obj.listeners[eventName] = obj.listeners[eventName] || [];
+								obj.listeners[eventName].push(listener);
+							}
+						} else if (listener === null) {
+							// Setting listener to null will wipe existing handler(s)
+							delete obj.listeners[eventName];
+						}
+					}
+				},
+				get: function() {
+					if (obj.listeners) {
+						return obj.listeners[eventName] || [];
+					}
+				}
+			});
+		}
+	};
+	
     // Initialise phantom object
-    var phantom = GLOBAL.phantom = API.phantom; 
+    var phantom = GLOBAL.phantom = API.phantom;
+
+
+	// Define phantom event handler
+	Object.addEvent(phantom, 'onError', true);
+
 
     // TrifleJS object
     var trifle = GLOBAL.trifle = {

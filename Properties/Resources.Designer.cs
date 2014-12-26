@@ -62,6 +62,43 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /*
+        ///* init.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Sep 2013
+        ///* 
+        ///*
+        ///* Generates the core running environment for
+        ///* javascript code to execute under
+        ///* 
+        ///*/
+        ///
+        ///(function(GLOBAL) {
+        ///
+        ///    // Save imported params
+        ///    var API = {
+        ///        phantom: GLOBAL.phantom,
+        ///        trifle: GLOBAL.trifle,
+        ///        console: GLOBAL.console,
+        ///        window: GLOBAL.window
+        ///    };
+        ///
+        ///    delete GLOBAL.phantom;
+        ///    delete GLOBAL.trifle;
+        ///    delete GLOBAL.console;
+        ///    delete GLOBAL.window;
+        ///
+        ///    // Initialise window object
+        ///  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string bootstrap {
+            get {
+                return ResourceManager.GetString("bootstrap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
         ///    json2.js
         ///    2013-05-26
         ///
@@ -110,43 +147,6 @@ namespace TrifleJS.Properties {
         internal static string ie_tools {
             get {
                 return ResourceManager.GetString("ie_tools", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*
-        ///* init.js
-        ///*
-        ///* By: Steven de Salas
-        ///* On: Sep 2013
-        ///* 
-        ///*
-        ///* Generates the core running environment for
-        ///* javascript code to execute under
-        ///* 
-        ///*/
-        ///
-        ///(function(GLOBAL) {
-        ///
-        ///    // Save imported params
-        ///    var API = {
-        ///        phantom: GLOBAL.phantom,
-        ///        trifle: GLOBAL.trifle,
-        ///        console: GLOBAL.console,
-        ///        window: GLOBAL.window
-        ///    };
-        ///
-        ///    delete GLOBAL.phantom;
-        ///    delete GLOBAL.trifle;
-        ///    delete GLOBAL.console;
-        ///    delete GLOBAL.window;
-        ///
-        ///    // Initialise window object
-        ///  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string init {
-            get {
-                return ResourceManager.GetString("init", resourceCulture);
             }
         }
         
@@ -346,16 +346,15 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///// Setup variables
-        ///
-        ///var fs = require(&quot;fs&quot;);
-        ///var refdir = &quot;../../test/unit/ref/&quot;;
-        ///var textfile = refdir + &quot;fs.txt&quot;;
-        ///var linkfile = refdir + &quot;sample_link.lnk&quot;;
-        ///var workingDirectory = fs.workingDirectory;
-        ///
         ///
         ///assert.suite(&apos;FS MODULE&apos;, function() {
+        ///
+        ///	// SETUP
+        ///	var fs = require(&quot;fs&quot;);
+        ///	var refdir = &quot;../../test/unit/ref/&quot;;
+        ///	var textfile = refdir + &quot;fs.txt&quot;;
+        ///	var linkfile = refdir + &quot;sample_link.lnk&quot;;
+        ///	var workingDirectory = fs.workingDirectory;
         ///
         ///	// --------------------------------------------
         ///	assert.section(&apos;Instantiation&apos;);
@@ -364,7 +363,7 @@ namespace TrifleJS.Properties {
         ///	assert(!!fs, &apos;fs can be instantiated using require()&apos;);
         ///	assert(typeof fs === &apos;object&apos;, &apos;fs is an object&apos;);
         ///
-        ///	// - [rest of string was truncated]&quot;;.
+        ///	// ------- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_fs {
             get {
@@ -375,19 +374,20 @@ namespace TrifleJS.Properties {
         /// <summary>
         ///   Looks up a localized string similar to 
         ///
-        ///
         ///assert.suite(&apos;Object: phantom&apos;, function() {
         ///
+        ///	// SETUP
+        ///	var fs = require(&apos;fs&apos;);
+        ///	var server = require(&apos;webserver&apos;).create();
+        ///	var page = require(&apos;webpage&apos;).create();
+        ///	
         ///	// --------------------------------------------
         ///	assert.section(&apos;Object availability&apos;);
         ///
         ///	assert(this.hasOwnProperty(&apos;phantom&apos;), &apos;this.phantom exists&apos;);
         ///	assert(typeof this.phantom === &apos;object&apos;, &apos;this.phantom is an object&apos;);
         ///	assert(window.hasOwnProperty(&apos;phantom&apos;), &apos;window.phantom exists&apos;);
-        ///	assert(typeof window.phantom === &apos;object&apos;, &apos;window.phantom is an object&apos;);
-        ///
-        ///	// --------------------------------------------
-        ///	assert.section(&apos;Properties &amp; [rest of string was truncated]&quot;;.
+        ///	assert(typeof window.phantom == [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_phantom {
             get {
@@ -397,6 +397,8 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
+        ///
+        ///
         ///assert.suite(&apos;REQUIRE&apos;, function() {
         ///
         ///    assert.section(&apos;Globals&apos;);
@@ -410,7 +412,7 @@ namespace TrifleJS.Properties {
         ///    assert(typeof fs.workingDirectory === &apos;string&apos;, &apos;fs module contains a workingDirectory&apos;)
         ///    var fs2 = require(&apos;fs&apos;);
         ///    assert(typeof fs2 === &apos;object&apos;, &apos;fs module can be instantiated a second time&apos;);
-        ///    [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_require {
             get {
@@ -420,9 +422,12 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///var loadCount = 0;
         ///
         ///assert.suite(&apos;WEBPAGE MODULE&apos;, function() {
+        ///
+        ///	// SETUP
+        ///	var server = require(&apos;webserver&apos;).create();
+        ///	var loadCount = 0;
         ///
         ///	// --------------------------------------------
         ///	assert.section(&apos;Instantiation&apos;);
@@ -431,8 +436,7 @@ namespace TrifleJS.Properties {
         ///	assert(typeof this.WebPage === &apos;function&apos;, &apos;this.WebPage is a function&apos;);
         ///	assert(window.hasOwnProperty(&apos;WebPage&apos;), &apos;window.WebPage exists&apos;);
         ///	assert(typeof window.WebPage === &apos;function&apos;, &apos;window.WebPage is a function&apos;);
-        ///	var page = require(&quot;webpage&quot;).create();
-        ///	assert(typeof page == [rest of string was truncated]&quot;;.
+        ///	var [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_webpage {
             get {
@@ -442,16 +446,19 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///var fs = require(&quot;fs&quot;);
-        ///var server = require(&apos;webserver&apos;).create();
-        ///var page = require(&apos;webpage&apos;).create();
-        ///var refdir = &quot;../../test/unit/ref/&quot;;
-        ///var textfile = refdir + &quot;fs.txt&quot;;
-        ///var workingDirectory = fs.workingDirectory;
-        ///var loadCount = 0;
-        ///var helloWorldListener = function(request, response) { loadCount++; response.write(&quot;Hello World&quot;); response.close(); }
-        ///var helloWorld2Listener = function(request, response) { loadCount++; response.write(&quot;Hello World2&quot;); response.close(); }
-        ///var infoListener =  [rest of string was truncated]&quot;;.
+        ///
+        ///assert.suite(&apos;WEBSERVER MODULE&apos;, function() {
+        ///
+        ///	// SETUP
+        ///	var fs = require(&quot;fs&quot;);
+        ///	var server = require(&apos;webserver&apos;).create();
+        ///	var page = require(&apos;webpage&apos;).create();
+        ///	var refdir = &quot;../../test/unit/ref/&quot;;
+        ///	var textfile = refdir + &quot;fs.txt&quot;;
+        ///	var workingDirectory = fs.workingDirectory;
+        ///	var loadCount = 0;
+        ///	var helloWorldListener = function(request, response) { loadCount++; response.write(&quot;Hello World&quot;); response.close(); }
+        ///	var helloWorld2Listener = function(request, response) { loadCount++; r [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_webserver {
             get {
@@ -545,7 +552,8 @@ namespace TrifleJS.Properties {
         ///    var FileSystem = trifle.modules.FileSystem = trifle.extend({
         ///		
         ///		// Derives functionality from FileSystem.cs
-        ///		module: trifle.API.FileSystem,        /// [rest of string was truncated]&quot;;.
+        ///		module: trifle.API.FileSystem,
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_FileSystem {
             get {
