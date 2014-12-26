@@ -34,7 +34,6 @@ More information on each component is available on [triflejs.org](http://triflej
 
 Some of the big ticket items currently missing from the automation are: 
 
-- Cookies
 - IE Windows (File Upload, SSL Certificate Error)
 - Mouse / Keyboard interaction
 - ChildProcess module
