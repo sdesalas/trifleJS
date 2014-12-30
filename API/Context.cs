@@ -129,7 +129,7 @@ namespace TrifleJS.API
         }
 
         /// <summary>
-        /// Parses input/output tomake it JavaScript friendly
+        /// Parses input/output to make it JavaScript friendly
         /// </summary>
         /// <param name="argument">an argument object (of any type)</param>
         /// <returns>the parsed argument</returns>
@@ -146,6 +146,8 @@ namespace TrifleJS.API
                     case "Int32":
                     case "Double":
                         return argument.ToString();
+                    case "DateTime":
+                        return String.Format("new Date({0})", Utils.Serialize(argument));
                     case "Boolean":
                         return argument.ToString().ToLowerInvariant();
                     case "String":

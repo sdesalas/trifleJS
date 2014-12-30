@@ -69,6 +69,43 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.viewportSize != null && page.viewportSize.width === 400, 'page.viewportSize.width is 400');
 	assert(page.viewportSize != null && page.viewportSize.height === 300, 'page.viewportSize.height is 300');
 
+	// --------------------------------------------
+	assert.section('Scripting and capabilities before loading', function() {
+	
+		date = new Date();
+	
+		var evaluateResult = page.evaluate(function(arg1, arg2) {
+            return location.href + arg1 + (typeof arg2 === 'object') + (arg2.getTime ? arg2.getTime() : '');
+        }, 78123, date);
+        
+        assert(evaluateResult === 'about:blank78123true' + date.getTime(), 'page.evaluate can run scripts and return values from the page');
+
+		page.evaluateJavaScript('var message = "hello from ie";');
+		
+		evaluateResult = page.evaluate(function() { return message; });
+	
+		assert(evaluateResult === 'hello from ie', 'page.evaluateJavaScript executes a javascript string on page context');
+
+	});
+
+	// --------------------------------------------
+	assert.section('Events before loading');
+
+	var pageData, pageData2, pageData3;
+	
+	page.onCallback = function(data, data2, data3) {
+		pageData = data;
+		pageData2 = data2;
+		pageData3 = data3;
+	}
+
+	page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
+
+	assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
+	assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
+	assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
+
+
 	// Start a web server listener to check that pages are loading
 	var pageContent, pagePlainText;
 	server.listen(8898, function(request, response) {
@@ -110,7 +147,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.content == pageContent, 'page.content has HTML in it sent by the server');
 
 	// --------------------------------------------
-	assert.section('Scripting', function() {
+	assert.section('Scripting after loading', function() {
 	
 		var evaluateResult = page.evaluate(function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
             var result = document.title + arg1 + arg2 + arg3[0] + arg3[1] + arg4.a + ' ' + arg5 + arg6;
@@ -125,7 +162,6 @@ assert.suite('WEBPAGE MODULE', function() {
         
         assert(evaluateResult === 'Test Page Titlemessage 12345678 falseNaNnullundefined', 'page.evaluate can run scripts and return values from the page');
         
-        // page.evaluateJavaScript()
 		page.evaluateJavaScript('var message = "hello from ie";');
 		
 		evaluateResult = page.evaluate(function() { return message; });
@@ -163,7 +199,10 @@ assert.suite('WEBPAGE MODULE', function() {
 		fs.remove('injectJs.script.js');
 
 	});	
-
+	
+	// Closing and restarting to keep history intact
+	page.close();
+	page = require('webpage').create();
 
 	// --------------------------------------------
 	assert.section('Sequential page loading.', function() {
@@ -191,17 +230,29 @@ assert.suite('WEBPAGE MODULE', function() {
 			trifle.wait(10);		
 		} while (loaded1 !== true);
 		
+		
 		do {
 			trifle.wait(10);
 		} while (loaded3 !== true);
 		
 		assert(callbacks === 2, 'page.open(url) executes each callback once.');
 		assert(loadCount === 3, 'page.open(url) loads each page once.');
+		
 	
 	});
 
 	// --------------------------------------------
 	assert.section('Navigating through history');
+	
+	var url, inPageUrl;
+
+	try {
+		url = page.url;
+		inPageUrl = JSON.parse(page.plainText).url
+	} catch (e) {}
+	
+	assert(url === 'http://localhost:8898/3', 'We are at page 3 before using history');
+	assert(inPageUrl === '/3', 'Page 3 is being displayed before using history');
 	
 	assert(page.canGoBack === true, 'page.canGoBack is true');	
 	assert(page.canGoForward === false, 'page.canGoForward is false');
@@ -210,14 +261,39 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	assert(loadCount === 4, 'page.reload(url) loads the page again from the server.');
 
+	try {
+		url = page.url;
+		inPageUrl = JSON.parse(page.plainText).url
+	} catch (e) {}
+	
+	assert(url === 'http://localhost:8898/3', 'page.reload() loads page 3 again');
+	assert(inPageUrl === '/3', 'page.reload() displays page 3 again');
+
+	page.goBack();
 	page.goBack();
 	
+	try {
+		url = page.url;
+		inPageUrl = JSON.parse(page.plainText).url
+	} catch (e) {}
+	
+	console.log(url, inPageUrl);
+	
+	assert(url === 'http://localhost:8898/1', 'page.goBack() loads page 1');
+	assert(inPageUrl === '/1', 'page.goBack() displays page 1');
 	assert(loadCount === 4, 'page.goBack(url) uses cache instead of loading from the server.');
 	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
 	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');
 
 	page.goForward();
 	
+	try {
+		url = page.url;
+		inPageUrl = JSON.parse(page.plainText).url
+	} catch (e) {}
+	
+	assert(url === 'http://localhost:8898/3', 'page.goForward() loads page 3 again');
+	assert(inPageUrl === '/3', 'page.goForward() displays page 3 again');
 	assert(loadCount === 4, 'page.goForward(url) uses cache instead of loading from the server.');	
 	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward');	
 	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward');
@@ -312,11 +388,61 @@ assert.suite('WEBPAGE MODULE', function() {
 		
 
 	});
+	
+	server.close();
+	
+	// Recreate webpage for next test
+	page.close();
+	page = require('webpage').create();
+
+
+	// --------------------------------------------
+	assert.section('Events');
+
+	// Start a listener to check events
+	server.listen(8083, function(request, response) { 
+		var bodyText = JSON.stringify({
+			success: true, 
+			url: request.url
+		});
+		response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
+		response.close(); 
+	});
+
+	var pageData = null, pageData2 = null, pageData3 = null;
+	
+	page.open('http://localhost:8083', function(status) {
+		assert.ready = true;
+	});
+
+	assert.waitUntilReady();
+	
+	page.onCallback = function(data, data2, data3) {
+		pageData = data;
+		pageData2 = data2;
+		pageData3 = data3;
+	}
+
+	page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
+
+	assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
+	//assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
+	//assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
+
+
+
+
+	// --------------------------------------------
+	assert.section('Closing page');	
+	
+	page.close();
+
+
 
 
 	// Tear down
 	server.close();
-	page.close();
+
 
 });
 

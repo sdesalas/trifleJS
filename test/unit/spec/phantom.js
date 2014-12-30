@@ -53,12 +53,6 @@ assert.suite('Object: phantom', function() {
 	
 	// --------------------------------------------
 	assert.section('Cookies');
-
-	var cookieSuccess = phantom.addCookie({
-		name: 'PhantomTestCookie',
-		value: 'ariya/phantomjs/wiki',
-		domain: 'localhost'
-	});
 	
 	// Start a listener to check headers
 	server.listen(8086, function(request, response) { 
@@ -71,8 +65,26 @@ assert.suite('Object: phantom', function() {
 		response.close(); 
 	});
 	
+	var cookieSuccess = phantom.addCookie({
+		name: 'PhantomTestCookie',
+		value: 'ariya/phantomjs/wiki',
+		domain: 'localhost'
+	});
+	
 	assert(cookieSuccess === true, 'phantom.addCookie() returned true when adding a test cookie');
 	assert(phantom.cookies.length === 1, 'phantom.cookies has one cookie listed');
+
+	phantom.cookiesEnabled = false;
+	
+	var cookieSuccess = phantom.addCookie({
+		name: 'PhantomTestCookie2',
+		value: 'ariya/phantomjs/wiki2',
+		domain: 'localhost'
+	});
+
+	assert(cookieSuccess === false, 'phantom.cookiesEnabled can be used to disable cookie usage');
+
+	phantom.cookiesEnabled = true;
 
 	var cookies = null;
 	var checkCookies = function(status) {

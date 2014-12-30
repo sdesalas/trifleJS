@@ -25,17 +25,19 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public WebPage() {
             this.browser = new EnhancedBrowser();
-            this.browser.Size = new Size(400, 300); 
+            this.browser.Size = new Size(400, 300);
             this.browser.ScrollBarsEnabled = false;
+            // Add WebBrowser external scripting support
+            this.browser.DocumentCompleted += DocumentCompleted;
+            this.browser.Navigate("about:blank");
+
+            while (loading)
+            {
+                Application.DoEvents();
+            }
+            this.browser.InitialiseOLE();
+
             //this.browser.ScriptErrorsSuppressed = true;
-            this.browser.ObjectForScripting = new Callback.External(this);
-            if (this.url == "about:blank") {
-                this.AddToolset();
-            }
-            // Wait for about blank
-            while (loading) {
-                Program.DoEvents();
-            }
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;

@@ -28,16 +28,10 @@ namespace TrifleJS
         private const int S_OK = unchecked((int)0x00000000);
 
         /// <summary>
-        /// Creates an IE browser enhanced with additional OLE support
+        /// Add OLE objects necessary for bypassing prompt dialogs
         /// </summary>
-        public EnhancedBrowser()
+        public void InitialiseOLE()
         {
-            Navigate("about:blank");
-            while (this.ReadyState != WebBrowserReadyState.Complete)
-            {
-                Application.DoEvents();
-            }
-            // Add OLE objects necessary for bypassing prompt dialogs
             object obj = this.ActiveXInstance;
             IOleObject oc = obj as IOleObject;
             oc.SetClientSite(this as IOleClientSite);

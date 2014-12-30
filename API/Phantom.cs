@@ -143,7 +143,10 @@ namespace TrifleJS.API
         #region Cookies
 
         /// <summary>
-        /// Controls whether the CookieJar is enabled or not. Defaults to true.
+        /// Controls whether the CookieJar is enabled or not. 
+        /// Defaults to true.
+        /// TODO: This should really try to prevent IE sending 
+        /// known cookies to the server
         /// </summary>
         public static bool cookiesEnabled {
             get { return CookieJar.Current.Enabled; }
