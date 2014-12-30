@@ -397,38 +397,46 @@ assert.suite('WEBPAGE MODULE', function() {
 
 
 	// --------------------------------------------
-	assert.section('Events');
+	assert.section('Events', function() {
+	
+		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
+		var date = new Date();
 
-	// Start a listener to check events
-	server.listen(8083, function(request, response) { 
-		var bodyText = JSON.stringify({
-			success: true, 
-			url: request.url
+		// Start a listener to check events
+		server.listen(8083, function(request, response) { 
+			var bodyText = JSON.stringify({
+				success: true, 
+				url: request.url
+			});
+			response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
+			response.close(); 
 		});
-		response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
-		response.close(); 
-	});
+		
+		page.open('http://localhost:8083', function(status) {
+			assert.ready = true;
+		});
 
-	var pageData = null, pageData2 = null, pageData3 = null;
+		assert.waitUntilReady();
+		
+		page.onCallback = function(data, data2, data3, data4) {
+			pageData = data;
+			pageData2 = data2;
+			pageData3 = data3;
+			pageData4 = data4;
+		}
+
+		page.evaluate(function(date) {
+			window.callPhantom('blah', 6, date, {a: 1});
+		}, date);
+
+		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
+		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
+		//assert(pageData3 && pageData3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
+		assert(pageData4 && pageData4.a && pageData4.a === 1, 'page.onCallback can be used to transfer JSON objects');
+
 	
-	page.open('http://localhost:8083', function(status) {
-		assert.ready = true;
 	});
-
-	assert.waitUntilReady();
 	
-	page.onCallback = function(data, data2, data3) {
-		pageData = data;
-		pageData2 = data2;
-		pageData3 = data3;
-	}
-
-	page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
-
-	assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
-	//assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
-	//assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
-
 
 
 

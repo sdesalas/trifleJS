@@ -30,14 +30,13 @@ namespace TrifleJS.API.Modules
             // Add WebBrowser external scripting support
             this.browser.DocumentCompleted += DocumentCompleted;
             this.browser.Navigate("about:blank");
-
             while (loading)
             {
                 Application.DoEvents();
             }
             this.browser.InitialiseOLE();
-
-            //this.browser.ScriptErrorsSuppressed = true;
+            this.browser.ObjectForScripting = new Callback.External(this);
+            this.browser.ScriptErrorsSuppressed = true;
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
