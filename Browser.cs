@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Imaging;
 using TrifleJS.API.Native;
 
 namespace TrifleJS
@@ -161,20 +163,9 @@ namespace TrifleJS
                 Utils.Debug("WebBrowser#DocumentCompleted");
                 this.Size = this.Document.Window.Size;
                 this.ScrollBarsEnabled = false;
-                Render(fileName);
+                Render(fileName, 1);
                 Console.WriteLine("Screenshot rendered to file: " + fileName);
             };
-        }
-
-        /// <summary>
-        /// Takes a screenshot and saves into a file
-        /// </summary>
-        /// <param name="filename">path where the screenshot is saved</param>
-        public void Render(string filename) {
-            using (var pic = this.Render())
-            {
-                pic.Save(filename);
-            }
         }
 
         /// <summary>
@@ -186,7 +177,19 @@ namespace TrifleJS
         {
             using (var pic = this.Render(ratio))
             {
-                pic.Save(filename);
+                FileInfo file = new FileInfo(filename);
+                switch (file.Extension.Replace(".", "").ToUpper())
+                {
+                    case "JPG":
+                        pic.Save(filename, ImageFormat.Jpeg);
+                        break;
+                    case "GIF":
+                        pic.Save(filename, ImageFormat.Gif);
+                        break;
+                    default:
+                        pic.Save(filename, ImageFormat.Png);
+                        break;
+                }
             }
         }
 

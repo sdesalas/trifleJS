@@ -580,8 +580,7 @@ namespace TrifleJS.API.Modules
             if (browser != null)
             {
                 Size oldSize = browser.Size;
-                int bottomPadding = 50;
-                int pageHeight = browser.Document.Body.ScrollRectangle.Height + bottomPadding;
+                int pageHeight = browser.Document.Body.ScrollRectangle.Height;
                 browser.Size = new Size(browser.Size.Width, pageHeight);
                 browser.Render(filename, zoomFactor);
                 browser.Size = oldSize;

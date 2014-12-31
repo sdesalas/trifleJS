@@ -389,18 +389,44 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	});
 	
-	server.close();
+	// --------------------------------------------
+	assert.section('Rendering', function() {
 	
-	// Recreate webpage for next test
-	page.close();
-	page = require('webpage').create();
-
+		fs.remove('render.test.png');
+		fs.remove('render.test.jpg');
+		fs.remove('render.test.gif');
+	
+		page.render('render.test.png');
+		page.render('render.test.jpg');
+		page.render('render.test.gif');
+	
+		assert(fs.exists('render.test.png'), 'page.render("*.png") creates a png file');
+		assert(fs.exists('render.test.jpg'), 'page.render("*.jpg") creates a jpg file');
+		assert(fs.exists('render.test.gif'), 'page.render("*.gif") creates a gif file');
+	
+		var base64png = page.renderBase64('png');
+		var base64jpg = page.renderBase64('jpg');
+		var base64gif = page.renderBase64('gif');
+			
+		assert(base64png === fs.read('render.test.png'), 'page.renderBase64("png") creates a base64 encoded png string');
+		assert(base64jpg === fs.read('render.test.jpg'), 'page.renderBase64("jpg") creates a base64 encoded jpg string');
+		assert(base64gif === fs.read('render.test.gif'), 'page.renderBase64("gif") creates a base64 encoded gif string');
+	
+	});
+	
 
 	// --------------------------------------------
 	assert.section('Events', function() {
 	
+	/*
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
 		var date = new Date();
+	
+		// Recreate environment for test
+		page.close();
+		server.close();
+
+		page = require('webpage').create();
 
 		// Start a listener to check events
 		server.listen(8083, function(request, response) { 
@@ -433,7 +459,7 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
 		//assert(pageData3 && pageData3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
 		assert(pageData4 && pageData4.a && pageData4.a === 1, 'page.onCallback can be used to transfer JSON objects');
-
+*/
 	
 	});
 	
