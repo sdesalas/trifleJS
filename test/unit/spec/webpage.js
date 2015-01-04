@@ -55,7 +55,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	//assert(page.frameTitle === '', 'page.frameTitle is an empty string');
 	//assert(page.frameUrl === 'about:blank', 'page.frameUrl is "about:blank"');
 	assert(page.framesCount === 0, 'page.framesCount is 0');
-	assert(page.framesName != null && typeof(page.framesName.length) === 'number', 'page.framesName is an array');
+	assert(page.framesName != null && page.framesName instanceof Array, 'page.framesName is an array');
 	//assert(page.libraryPath != null, 'page.libraryPath is not null');
 	assert(page.loading === false, 'page.loading is false');
 	assert(page.objectName === 'WebPage', 'page.objectName is WebPage');
@@ -143,6 +143,7 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert(page.title === 'Test Page Title', 'page.url is "Test Page Title"');
 	assert(page.windowName === '', 'page.windowName is an empty string');
 	assert(page.framesCount === 0, 'page.framesCount is 0');
+	assert(page.framesName instanceof Array && page.framesName.length === 0, 'page.framesName is an array with no items');
 	assert(page.plainText == pagePlainText, 'page.pagePlainText has BODY TEXT in it sent by the server');
 	assert(page.content == pageContent, 'page.content has HTML in it sent by the server');
 
@@ -157,10 +158,12 @@ assert.suite('WEBPAGE MODULE', function() {
             if (arg8 === undefined) {
                 result += arg8;
             }
+            window.name = 'test-window';
             return result;
         }, 'message 1', 234, [5, '6'], { a: "78" }, !true, NaN, null, undefined);
         
         assert(evaluateResult === 'Test Page Titlemessage 12345678 falseNaNnullundefined', 'page.evaluate can run scripts and return values from the page');
+		assert(page.windowName === 'test-window', 'page.windowName is set correctly');
         
 		page.evaluateJavaScript('var message = "hello from ie";');
 		
@@ -313,6 +316,127 @@ assert.suite('WEBPAGE MODULE', function() {
 
 	// Clear all listeners and connections.
 	server.close();
+	
+	
+	// --------------------------------------------
+	assert.section('Windows and Frames', function() {
+	
+		var wwwroot = 'test/frames', loadCount = 0, urls = [];
+	
+		fs.makeDirectory(wwwroot);
+		fs.write(wwwroot + '/index.html', 
+'<html><head><title>index</title></head>' +
+'<frameset cols="50%,50%">' +
+'    <frame name="frame1" src="./frame1.html" />' +
+'    <frame name="frame2" src="./frame2.html" />' +
+'</frameset>' +
+'</html>');
+
+		fs.write(wwwroot + '/frame1.html', 
+'<html><head><title>frame1</title></head>' +
+'<body>' +
+'<p>This is frame1</p>' +
+'</body>' +
+'</html>');
+
+		fs.write(wwwroot + '/frame2.html', 
+'<html><head><title>frame2</title></head>' +
+'<frameset rows="50%,50%">' +
+'    <frame name="frame2-1" src="./frame2-1.html" />' +
+'    <frame name="frame2-2" src="./frame2-2.html" />' +
+'</frameset>' +
+'</html>');
+
+		fs.write(wwwroot + '/frame2-1.html', 
+'<html><head><title>frame2-1</title></head>' +
+'<body>' +
+'<p>This is frame2-1</p>' +
+'</body>' +
+'</html>');
+
+		fs.write(wwwroot + '/frame2-2.html', 
+'<html><head><title>frame2-2</title></head>' +
+'<body>' +
+'<p>This is frame2-2</p>' +
+'</body>' +
+'</html>');
+		
+		server.listen(8897, function(request, response) {
+			urls.push(request.url);
+			loadCount++;
+			var path = request.url;
+			if (!path || path === '/') path = '/index.html';
+			response.write(fs.read(wwwroot + '/' + path));
+			response.close();
+		});
+	
+		page.open('http://localhost:8897/', function(status) {
+			assert.ready = true;
+		});
+		
+		assert.waitUntilReady();
+	
+		assert(loadCount === 5, '5 frameset pages are being loaded from the server.');	
+		assert(urls.join() === '/,/frame1.html,/frame2.html,/frame2-1.html,/frame2-2.html', 'framesets are loaded in correct order.');	
+		assert(page.framesCount === 2, 'page.framesCount is 2');
+		assert(page.framesName.join() === 'frame1,frame2', 'page.framesName has the names of child frames on main window');
+		assert(page.frameName === '', 'page.frameName is a blank string');
+		assert(page.focusedFrameName === '', 'page.focusedFrameName is a blank string');
+		assert(page.windowName === '', 'page.windowName is a blank string');
+		assert(page.frameUrl === 'http://localhost:8897/', 'page.frameUrl is the main frame URL');
+	
+		page.switchToFrame('frame1');
+		
+		assert(loadCount === 5, 'frame1: No additional pages loaded when switching');	
+		assert(page.framesCount === 0, 'frame1: page.framesCount is 0 after switching frame');
+		assert(page.framesName.join() === '', 'frame1: page.framesName is a blank array when there are no frames');
+		assert(page.frameName === 'frame1', 'frame1: page.frameName is the name of current frame');
+		assert(page.focusedFrameName === '', 'frame1: page.focusedFrameName is a blank string');
+		assert(page.windowName === '', 'frame1: page.windowName is a blank string');
+		assert(page.frameUrl === 'http://localhost:8897/frame1.html', 'frame1: page.frameUrl is the url for current frame');
+		
+		page.switchToFrame('unknown-frame');
+
+		assert(page.frameName === 'frame1', 'page.switchToFrame() does not switch frame if frame cannot be found');
+		assert(page.frameUrl === 'http://localhost:8897/frame1.html', 'page.switchToFrame() does not switch frame if frame cannot be found');
+	
+		page.switchToMainFrame();
+		
+		assert(page.framesCount === 2, 'page.switchToMainFrame(): page.framesCount is 2');
+		assert(page.framesName.join() === 'frame1,frame2', 'page.switchToMainFrame(): switches to main window');
+		assert(page.frameUrl === 'http://localhost:8897/', 'page.switchToMainFrame(): page.frameUrl is the main frame URL');
+		
+		page.switchToFrame('frame2-1');
+		
+		assert(page.framesCount === 2, 'page.switchToFrame(): page.framesCount is 2');
+		assert(page.framesName.join() === 'frame1,frame2', 'page.switchToFrame(): can only navigate to immediate children');
+		assert(page.frameUrl === 'http://localhost:8897/', 'page.switchToFrame(): page.frameUrl is the main frame URL');
+
+		page.switchToFrame('frame2');
+
+		assert(page.framesCount === 2, 'frame1: page.framesCount is 2 after switching frame');
+		assert(page.framesName.join() === 'frame2-1,frame2-2', 'frame2: page.framesName has the names of child frames');
+		assert(page.frameName === 'frame2', 'frame2: page.frameName is the name of current frame');
+		assert(page.focusedFrameName === '', 'frame2: page.focusedFrameName is a blank string');
+		assert(page.windowName === '', 'frame2: page.windowName is a blank string');
+		assert(page.frameUrl === 'http://localhost:8897/frame2.html', 'frame2: page.frameUrl is the url for current frame');
+
+		page.switchToFrame('frame2-1');
+
+		assert(page.framesCount === 0, 'frame2-1: page.framesCount is 0 after switching frame');
+		assert(page.framesName.join() === '', 'frame2-1: page.framesName does not have any child frames');
+		assert(page.frameName === 'frame2-1', 'frame2-1: page.frameName is the name of current frame');
+		assert(page.focusedFrameName === '', 'frame2-1: page.focusedFrameName is a blank string');
+		assert(page.windowName === '', 'frame2-1: page.windowName is a blank string');
+		assert(page.frameUrl === 'http://localhost:8897/frame2-1.html', 'frame2-1: page.frameUrl is the url for current frame');
+
+		page.switchToParentFrame();
+
+		assert(page.frameName === 'frame2', 'page.switchToParentFrame(): changes current frame to parent');
+		assert(page.frameUrl === 'http://localhost:8897/frame2.html', 'page.switchToParentFrame(): changes current frame to parent');
+
+	
+	});
 	
 	// --------------------------------------------
 	assert.section('Headers', function() {

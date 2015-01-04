@@ -2,6 +2,7 @@
 using System.Net;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.Text;
 
 namespace TrifleJS
@@ -53,6 +54,49 @@ namespace TrifleJS
                 return dictionary[key];
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets all ancestor frames in a HtmlWindow
+        /// </summary>
+        /// <param name="window"></param>
+        /// <returns></returns>
+        public static List<HtmlWindow> GetAllFrames(this HtmlWindow window) {
+            List<HtmlWindow> ancestors = new List<HtmlWindow>();
+            foreach (HtmlWindow child in window.Frames) { ancestors.Add(child); }
+            bool added;
+            do
+            {
+                // Keep recursing until we no longer 
+                // have anything else to add.
+                added = false;
+                foreach (HtmlWindow ancestor in ancestors.ToArray())
+                {
+                    foreach (HtmlWindow frame in ancestor.Frames)
+                    {
+                        if (!ancestors.Contains(frame))
+                        {
+                            ancestors.Add(frame);
+                            added = true;
+                        }
+                    }
+                }
+            } while (added);
+            return ancestors;
+        }
+
+        /// <summary>
+        /// Gets the currently focused frame in all ancestor frames
+        /// </summary>
+        /// <param name="window"></param>
+        /// <returns></returns>
+        public static HtmlWindow GetCurrentFrame(this HtmlWindow window) {
+            foreach (HtmlWindow frame in window.GetAllFrames()) {
+                if (frame.Document != null && frame.Document.Focused) {
+                    return frame;
+                }
+            }
+            return window;
         }
 
     }

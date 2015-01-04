@@ -131,11 +131,19 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// List of frames in the browser window object
+        /// Pointer to currently selected frame used by PhantomJS
         /// </summary>
-        private HtmlWindowCollection Frames {
+        private HtmlWindow CurrentFrame {get; set;}
+
+        /// <summary>
+        /// Pointer the frame IE is currently focused on
+        /// </summary>
+        private HtmlWindow FocusedFrame {
             get {
-                return (this.Window != null) ? this.Window.Frames : null;
+                if (this.Window != null) {
+                    return this.Window.GetCurrentFrame();
+                }
+                return null;
             }
         }
 
@@ -152,7 +160,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public int framesCount
         {
-            get { return (this.Frames != null) ? this.Frames.Count : 0; }
+            get { return (CurrentFrame != null && CurrentFrame.Frames != null) ? CurrentFrame.Frames.Count : 0; }
         }
 
         /// <summary>
@@ -161,10 +169,95 @@ namespace TrifleJS.API.Modules
         public List<string> framesName {
             get {
                 List<string> result = new List<string>();
-                if (this.Frames != null) {
-                    foreach (HtmlWindow window in this.Frames) { result.Add(window.Name); }
+                if (CurrentFrame != null && CurrentFrame.Frames != null)
+                {
+                    foreach (HtmlWindow window in CurrentFrame.Frames) { result.Add(window.Name); }
                 }
                 return result;
+            }
+        }
+
+        /// <summary>
+        /// Returns the name of the selected frame
+        /// </summary>
+        public string frameName {
+            get
+            {
+                if (CurrentFrame != null)
+                {
+                    return CurrentFrame.Name ?? String.Empty;
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the URL of the selected frame
+        /// </summary>
+        public string frameUrl {
+            get {
+                if (CurrentFrame != null && CurrentFrame.Url != null) {
+                    return CurrentFrame.Url.AbsoluteUri;
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the name of frame IE is currently focused on.
+        /// </summary>
+        public string focusedFrameName {
+            get {
+                if (FocusedFrame != null) {
+                    return FocusedFrame.Name ?? String.Empty;
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Switches current frame by name
+        /// </summary>
+        /// <param name="name"></param>
+        public bool switchToFrame(string name) {
+            if (CurrentFrame != null && CurrentFrame.Frames != null)
+            {
+                foreach (HtmlWindow window in CurrentFrame.Frames)
+                {
+                    if (window.Name == name)
+                    {
+                        CurrentFrame = window;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Switches current frame to main window
+        /// </summary>
+        /// <returns></returns>
+        public void switchToMainFrame() {
+            CurrentFrame = this.Window;
+        }
+
+        /// <summary>
+        /// Switches current frame to parent
+        /// </summary>
+        /// <returns></returns>
+        public void switchToParentFrame() {
+            if (CurrentFrame != null && CurrentFrame.Parent != null) {
+                CurrentFrame = CurrentFrame.Parent;
+            }
+        }
+
+        /// <summary>
+        /// Switches current frame to the frame IE is focused on
+        /// </summary>
+        public void switchToFocusedFrame() {
+            if (this.Window != null) {
+                CurrentFrame = this.Window.GetCurrentFrame();
             }
         }
 
@@ -379,6 +472,8 @@ namespace TrifleJS.API.Modules
                         Handle(e.Description, e.LineNumber, e.Url);
                         e.Handled = true;
                     };
+                    // Set current frame
+                    switchToMainFrame();
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
