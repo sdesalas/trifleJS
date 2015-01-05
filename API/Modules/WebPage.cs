@@ -87,6 +87,7 @@ namespace TrifleJS.API.Modules
                 if (this.browser != null)
                 {
                     this.browser.Navigate("about:blank");
+                    Application.DoEvents();
                     this.browser.Document.Write(value);
                     switchToMainFrame();
                 }
@@ -142,18 +143,6 @@ namespace TrifleJS.API.Modules
         /// Pointer to currently selected frame used by PhantomJS
         /// </summary>
         private HtmlWindow CurrentFrame {get; set;}
-
-        /// <summary>
-        /// Pointer the frame IE is currently focused on
-        /// </summary>
-        private HtmlWindow FocusedFrame {
-            get {
-                if (this.Window != null) {
-                    return this.Window.GetCurrentFrame();
-                }
-                return null;
-            }
-        }
 
         /// <summary>
         /// Name of the window
@@ -261,8 +250,8 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public string focusedFrameName {
             get {
-                if (FocusedFrame != null) {
-                    return FocusedFrame.Name ?? String.Empty;
+                if (this.browser != null && this.browser.FocusedFrame != null) {
+                    return this.browser.FocusedFrame.Name ?? String.Empty;
                 }
                 return String.Empty;
             }
@@ -309,8 +298,8 @@ namespace TrifleJS.API.Modules
         /// Switches current frame to the frame IE is focused on
         /// </summary>
         public void switchToFocusedFrame() {
-            if (this.Window != null) {
-                CurrentFrame = this.Window.GetCurrentFrame();
+            if (this.browser != null && this.browser.FocusedFrame != null) {
+                CurrentFrame = this.browser.FocusedFrame;
             }
         }
 
@@ -398,6 +387,9 @@ namespace TrifleJS.API.Modules
                 string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
                 _evaluateJavaScript(script);
                 object result = CurrentFrame.Document.InvokeScript(guid);
+                // Before returning, clear any events
+                // generated as a result of the script
+                Application.DoEvents();
                 return result;
             }
             return null;

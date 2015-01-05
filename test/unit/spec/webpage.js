@@ -209,7 +209,6 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(evaluateResult === 'hello589871', 'page.content is set correctly');
 		assert(page.plainText === 'this is the new set content', 'page.content is set correctly');
 		assert(page.content === newContent, 'page.content is set correctly');
-		assert(page.url === 'http://localhost:8898/', 'setting page.content does not alter the url');
 
 		// Clean up
 		fs.remove('injectJs.script.js');
@@ -469,6 +468,7 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert.waitUntilReady();
 
 		evaluateResult = page.evaluate(function() {
+			document.body.focus();
 			return evalJs982341 + document.title + window.includedData53410 + window.injectJs9271004;
 		});
 				
@@ -479,6 +479,13 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(page.frameName === 'frame2', 'page.switchToParentFrame(): changes current frame to parent');
 		assert(page.frameTitle === 'frame2', 'page.switchToParentFrame(): changes current frame to parent');
 		assert(page.frameUrl === 'http://localhost:8897/frame2.html', 'page.switchToParentFrame(): changes current frame to parent');
+
+		page.switchToFocusedFrame();
+
+		assert(page.focusedFrameName === 'frame2-1', 'page.switchToFocusedFrame(): tracks frame with IE focus');
+		assert(page.frameName === 'frame2-1', 'page.switchToFocusedFrame(): tracks frame with IE focus');
+		assert(page.frameTitle === 'frame2.1', 'page.switchToFocusedFrame(): tracks frame with IE focus');
+		assert(page.frameUrl === 'http://localhost:8897/frame2-1.html', 'page.switchToFocusedFrame(): tracks frame with IE focus');
 
 		// Clean up
 		fs.removeTree(wwwroot);

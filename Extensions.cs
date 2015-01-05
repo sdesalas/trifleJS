@@ -62,8 +62,7 @@ namespace TrifleJS
         /// <param name="window"></param>
         /// <returns></returns>
         public static List<HtmlWindow> GetAllFrames(this HtmlWindow window) {
-            List<HtmlWindow> ancestors = new List<HtmlWindow>();
-            foreach (HtmlWindow child in window.Frames) { ancestors.Add(child); }
+            List<HtmlWindow> ancestors = new List<HtmlWindow> {window};
             bool added;
             do
             {
@@ -83,20 +82,6 @@ namespace TrifleJS
                 }
             } while (added);
             return ancestors;
-        }
-
-        /// <summary>
-        /// Gets the currently focused frame in all ancestor frames
-        /// </summary>
-        /// <param name="window"></param>
-        /// <returns></returns>
-        public static HtmlWindow GetCurrentFrame(this HtmlWindow window) {
-            foreach (HtmlWindow frame in window.GetAllFrames()) {
-                if (frame.Document != null && frame.Document.Focused) {
-                    return frame;
-                }
-            }
-            return window;
         }
 
     }

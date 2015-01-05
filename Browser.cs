@@ -21,6 +21,32 @@ namespace TrifleJS
         private const string IEEmulationPathx32 = IERootKeyx32 + IEEmulationPath;
         private const string IEEmulationPathx64 = IERootKeyx64 + IEEmulationPath;
 
+        public Browser()
+            : base()
+        {
+            // Make sure we track which frames IE is focused on as a result
+            // of javascript or mouse/keyboard events.
+            this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
+            {
+                if (this.Document != null && this.Document.Window != null)
+                {
+                    FocusedFrame = this.Document.Window;
+                    foreach (HtmlWindow window in FocusedFrame.GetAllFrames())
+                    {
+                        window.GotFocus += delegate(object sender2, HtmlElementEventArgs e2)
+                        {
+                            FocusedFrame = sender2 as HtmlWindow;
+                        };
+                    }
+                }
+            };
+        }
+
+        /// <summary>
+        /// The frame IE is currently focused on
+        /// </summary>
+        public HtmlWindow FocusedFrame { get; set; }
+
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys
         /// @see http://www.west-wind.com/weblog/posts/2011/May/21/Web-Browser-Control-Specifying-the-IE-Version
