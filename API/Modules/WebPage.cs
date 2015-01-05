@@ -93,9 +93,8 @@ namespace TrifleJS.API.Modules
                 return (this.browser != null
                       && this.browser.Document != null
                       && this.browser.Document.Body != null
-                      && this.browser.Document.Body.OuterText != null
-                      && this.browser.Document.Body.OuterText != null) ?
-                          this.browser.Document.Body.OuterText :
+                      && this.browser.Document.Body.InnerText != null) ?
+                          this.browser.Document.Body.InnerText :
                           String.Empty;
             }
         }
@@ -198,6 +197,36 @@ namespace TrifleJS.API.Modules
             get {
                 if (CurrentFrame != null && CurrentFrame.Url != null) {
                     return CurrentFrame.Url.AbsoluteUri;
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the HTML of the selected frame
+        /// </summary>
+        public string frameContent {
+            get {
+                if (CurrentFrame != null && CurrentFrame.Document != null)
+                {
+                    mshtml.HTMLDocumentClass doc = CurrentFrame.Document.DomDocument as mshtml.HTMLDocumentClass;
+                    if (doc != null && doc.documentElement != null)
+                    {
+                        return doc.documentElement.outerHTML ?? String.Empty;
+                    }
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the plain text content of the frame
+        /// </summary>
+        public string framePlainText { 
+            get {
+                if (CurrentFrame != null && CurrentFrame.Document != null && CurrentFrame.Document.Body != null)
+                {
+                    return CurrentFrame.Document.Body.InnerText ?? String.Empty;
                 }
                 return String.Empty;
             }

@@ -322,39 +322,41 @@ assert.suite('WEBPAGE MODULE', function() {
 	assert.section('Windows and Frames', function() {
 	
 		var wwwroot = 'test/frames', loadCount = 0, urls = [];
+		var maincontent, frame1content, frame2content, frame2_1content, frame2_2content;
 	
 		fs.makeDirectory(wwwroot);
-		fs.write(wwwroot + '/index.html', 
+		
+		fs.write(wwwroot + '/index.html', maincontent =
 '<html><head><title>index</title></head>' +
 '<frameset cols="50%,50%">' +
-'    <frame name="frame1" src="./frame1.html" />' +
-'    <frame name="frame2" src="./frame2.html" />' +
+'    <frame name="frame1" src="./frame1.html">' +
+'    <frame name="frame2" src="./frame2.html">' +
 '</frameset>' +
 '</html>');
 
-		fs.write(wwwroot + '/frame1.html', 
+		fs.write(wwwroot + '/frame1.html', frame1content =
 '<html><head><title>frame1</title></head>' +
 '<body>' +
 '<p>This is frame1</p>' +
 '</body>' +
 '</html>');
 
-		fs.write(wwwroot + '/frame2.html', 
+		fs.write(wwwroot + '/frame2.html', frame2content =
 '<html><head><title>frame2</title></head>' +
 '<frameset rows="50%,50%">' +
-'    <frame name="frame2-1" src="./frame2-1.html" />' +
-'    <frame name="frame2-2" src="./frame2-2.html" />' +
+'    <frame name="frame2-1" src="./frame2-1.html">' +
+'    <frame name="frame2-2" src="./frame2-2.html">' +
 '</frameset>' +
 '</html>');
 
-		fs.write(wwwroot + '/frame2-1.html', 
+		fs.write(wwwroot + '/frame2-1.html', frame2_1content =
 '<html><head><title>frame2-1</title></head>' +
 '<body>' +
 '<p>This is frame2-1</p>' +
 '</body>' +
 '</html>');
 
-		fs.write(wwwroot + '/frame2-2.html', 
+		fs.write(wwwroot + '/frame2-2.html', frame2_2content =
 '<html><head><title>frame2-2</title></head>' +
 '<body>' +
 '<p>This is frame2-2</p>' +
@@ -394,6 +396,8 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(page.focusedFrameName === '', 'frame1: page.focusedFrameName is a blank string');
 		assert(page.windowName === '', 'frame1: page.windowName is a blank string');
 		assert(page.frameUrl === 'http://localhost:8897/frame1.html', 'frame1: page.frameUrl is the url for current frame');
+		assert(page.frameContent === frame1content, 'frame1: page.frameContent is the HTML content for current frame');
+		assert(page.framePlainText === 'This is frame1', 'frame1: page.framePlainText is the text for current frame');
 		
 		page.switchToFrame('unknown-frame');
 
@@ -420,6 +424,8 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(page.focusedFrameName === '', 'frame2: page.focusedFrameName is a blank string');
 		assert(page.windowName === '', 'frame2: page.windowName is a blank string');
 		assert(page.frameUrl === 'http://localhost:8897/frame2.html', 'frame2: page.frameUrl is the url for current frame');
+		assert(page.frameContent === frame2content, 'frame2: page.frameContent is the HTML content for current frame');
+		assert(page.framePlainText === '', 'frame2: page.framePlainText is the text for current frame');
 
 		page.switchToFrame('frame2-1');
 
@@ -429,6 +435,8 @@ assert.suite('WEBPAGE MODULE', function() {
 		assert(page.focusedFrameName === '', 'frame2-1: page.focusedFrameName is a blank string');
 		assert(page.windowName === '', 'frame2-1: page.windowName is a blank string');
 		assert(page.frameUrl === 'http://localhost:8897/frame2-1.html', 'frame2-1: page.frameUrl is the url for current frame');
+		assert(page.frameContent === frame2_1content, 'frame2-1: page.frameContent is the HTML content for current frame');
+		assert(page.framePlainText === 'This is frame2-1', 'frame2-1: page.framePlainText is the text for current frame');
 
 		page.switchToParentFrame();
 
