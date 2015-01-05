@@ -82,6 +82,15 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public string content {
             get { return (this.browser != null) ? this.browser.DocumentText : String.Empty; }
+            set
+            {
+                if (this.browser != null)
+                {
+                    this.browser.Navigate("about:blank");
+                    this.browser.Document.Write(value);
+                    switchToMainFrame();
+                }
+            }
         }
 
         /// <summary>
@@ -185,6 +194,21 @@ namespace TrifleJS.API.Modules
                 if (CurrentFrame != null)
                 {
                     return CurrentFrame.Name ?? String.Empty;
+                }
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the title of the selected frame
+        /// </summary>
+        public string frameTitle
+        {
+            get
+            {
+                if (CurrentFrame != null && CurrentFrame.Document != null)
+                {
+                    return CurrentFrame.Document.Title ?? String.Empty;
                 }
                 return String.Empty;
             }
@@ -337,14 +361,14 @@ namespace TrifleJS.API.Modules
         /// <param name="code">code to inject into browser window</param>
         public void _evaluateJavaScript(string code)
         {
-            if (browser != null)
+            if (CurrentFrame != null && CurrentFrame.Document != null)
             {
-                HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
+                HtmlElementCollection head = CurrentFrame.Document.GetElementsByTagName("head");
                 if (head != null)
                 {
                     try
                     {
-                        HtmlElement scriptEl = browser.Document.CreateElement("script");
+                        HtmlElement scriptEl = CurrentFrame.Document.CreateElement("script");
                         IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
                         element.text = code;
                         head[0].AppendChild(scriptEl);
@@ -365,15 +389,18 @@ namespace TrifleJS.API.Modules
         /// <returns></returns>
         public object _evaluate(string function, object[] args)
         {
-            if (browser == null) return null;
-            string[] input;
-            if (args == null) { input = new string[] { }; }
-            else { input = Context.Parse(args); }
-            string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
-            string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
-            _evaluateJavaScript(script);
-            object result = browser.Document.InvokeScript(guid);
-            return result;
+            if (CurrentFrame != null && CurrentFrame.Document != null)
+            {
+                string[] input;
+                if (args == null) { input = new string[] { }; }
+                else { input = Context.Parse(args); }
+                string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
+                string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
+                _evaluateJavaScript(script);
+                object result = CurrentFrame.Document.InvokeScript(guid);
+                return result;
+            }
+            return null;
         }
 
         /// <summary>
@@ -385,12 +412,12 @@ namespace TrifleJS.API.Modules
         public void _includeJs(string url, string callbackId)
         {
             Uri uri = Browser.TryParse(url);
-            if (uri != null && browser != null)
+            if (uri != null && CurrentFrame != null && CurrentFrame.Document != null)
             {
-                HtmlElementCollection head = browser.Document.GetElementsByTagName("head");
+                HtmlElementCollection head = CurrentFrame.Document.GetElementsByTagName("head");
                 if (head != null)
                 {
-                    HtmlElement scriptEl = browser.Document.CreateElement("script");
+                    HtmlElement scriptEl = CurrentFrame.Document.CreateElement("script");
                     IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
                     element.src = url;
                     element.type = "text/javascript";
@@ -493,6 +520,8 @@ namespace TrifleJS.API.Modules
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                 browser.Document.Window.AttachEventHandler("onload", delegate
                 {
+                    // Set current frame
+                    switchToMainFrame();
                     // Add IE Toolset
                     AddToolset();
                     // Track unhandled errors
@@ -501,8 +530,6 @@ namespace TrifleJS.API.Modules
                         Handle(e.Description, e.LineNumber, e.Url);
                         e.Handled = true;
                     };
-                    // Set current frame
-                    switchToMainFrame();
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
