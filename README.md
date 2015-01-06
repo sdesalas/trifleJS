@@ -20,17 +20,19 @@ We are targetting version 1.7 as webdriver support (added in v 1.8) is too much 
 
 We are a bit over two-thirds through the [PhantomJS API](http://phantomjs.org/api/) at `v1.7`.
 
-- [API Status (73%)](http://triflejs.org#post-112)
+- [API Status (72%)](http://triflejs.org#post-112)
 
 More information on each component is available on [triflejs.org](http://triflejs.org):
 
+- [Command Line Options](http://triflejs.org#post-29)
 - [Global Methods](http://triflejs.org#post-11)
 - [Object: phantom](http://triflejs.org#post-18)
-- [Module: WebPage](http://triflejs.org#post-20)
 - [Module: System](http://triflejs.org#post-24)
 - [Module: FileSystem](http://triflejs.org#post-27)
+- [Module: WebPage](http://triflejs.org#post-20)
 - [Module: WebServer](http://triflejs.org#post-63)
-- [Command Line Options](http://triflejs.org#post-29)
+- [Module: ChildProcess](http://triflejs.org#post-222)
+- [New Features](http://triflejs.org/#post-31)
 
 Some of the big ticket items currently missing from the automation are: 
 
