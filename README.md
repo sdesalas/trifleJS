@@ -63,7 +63,7 @@ This code is still very much in beta. Check again for updates.
 - [Latest Stable `v0.4`](https://github.com/sdesalas/trifleJS/releases/download/v0.4/TrifleJS.zip)
 - [Latest Beta `v0.5`](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip)
 
-You can download the latest binary [here](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip) if you want to play around with the beta version. 
+If you are not sure which version to use then download the ‘Latest Stable’ version.
 
 #### System Requirements
 
