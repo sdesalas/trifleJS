@@ -48,7 +48,7 @@ ECHO
 ECHO Merging and zipping to \Build\Binary directory. 
 ECHO NOTE: This will take about 2 minutes..
 
-%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll %CompilePath%\Newtonsoft.Json.dll
+%ILMerge% /out:%MergePath%\TrifleJS.exe %CompilePath%\TrifleJS.exe %CompilePath%\Microsoft.mshtml.dll %CompilePath%\Interop.IWshRuntimeLibrary.dll %CompilePath%\Newtonsoft.Json.dll
 DEL %MergePath%\TrifleJS.pdb
 CD %MergePath%
 ..\%Zip% a ..\Binary\TrifleJS.Latest.zip -r *.*
