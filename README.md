@@ -47,7 +47,7 @@ Some items that are being deliberately left out:
 ### Roadmap
 
 - [`v0.3`](https://github.com/sdesalas/trifleJS/releases/tag/v0.3) - **DONE** - 56% of PhantomJS API 
-- [`v0.4`](https://github.com/sdesalas/trifleJS/releases/tag/v0.4) - **DONE**- 72% of PhantomJS API 
+- [`v0.4`](https://github.com/sdesalas/trifleJS/releases/tag/v0.4) - **DONE** - 72% of PhantomJS API 
 - `v0.5` - (work in progress..)
 - `v0.6` - 100% of PhantomJS non-WebPage modules, 80% of WebPage module API
 - `v0.7` - 100% of PhantomJS Core API (v1.7) + internal unit tests
