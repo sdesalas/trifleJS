@@ -106,6 +106,12 @@ namespace TrifleJS
                     case "--emulate":
                         isVersionSet = Browser.Emulate(arg.Replace("--emulate=", "").ToUpper()); 
                         break;
+                    case "--output-encoding":
+                        API.Phantom.outputEncoding = arg.Replace("--output-encoding=", ""); 
+                        break;
+                    case "--script-encoding":
+                        API.Phantom.scriptEncoding = arg.Replace("--script-encoding=", "");
+                        break;
                     case "--proxy":
                         Proxy.server = arg.Replace("--proxy=", "");
                         break;

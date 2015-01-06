@@ -2,6 +2,7 @@
 using System.Net;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 
 namespace TrifleJS.API
@@ -132,12 +133,52 @@ namespace TrifleJS.API
             {
                 try
                 {
-                    System.Console.OutputEncoding = Encoding.GetEncoding(value);
+                    string encoding = SanitizeEncoding(value);
+                    System.Console.OutputEncoding = Encoding.GetEncoding(encoding);
                 }
-                catch {
+                catch
+                {
                     Console.error(String.Format("Unknown Encoding '{0}'", value));
-                };
+                }
             }
+        }
+
+        /// <summary>
+        /// Note that windows uses "UTF-8" instead of "UTF8"
+        /// so we have to sanitize these strings
+        /// </summary>
+        internal static string scriptEncoding
+        {
+            get { return Context.Encoding.WebName.ToUpper(); }
+            set
+            {
+                try
+                {
+                    string encoding = SanitizeEncoding(value);
+                    Context.Encoding = Encoding.GetEncoding(encoding);
+                }
+                catch
+                {
+                    Console.error(String.Format("Unknown Encoding '{0}'", value));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Note that windows uses "UTF-8" instead of "UTF8"
+        /// so we have to sanitize these strings
+        /// </summary>
+        internal static string SanitizeEncoding(string encoding)
+        {
+            if (encoding != null)
+            {
+                if (encoding.IndexOf("utf", StringComparison.InvariantCultureIgnoreCase) == 0
+                        && !encoding.Contains("-"))
+                {
+                    return Regex.Replace(encoding, "utf", "UTF-", RegexOptions.IgnoreCase);
+                }
+            }
+            return encoding;
         }
 
         #region Cookies

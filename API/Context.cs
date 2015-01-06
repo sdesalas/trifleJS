@@ -25,7 +25,7 @@ namespace TrifleJS.API
                 throw new Exception(String.Format("File does not exist {0}.", filepath));
             }
             // Read file 
-            string script = File.ReadAllText(file.FullName);
+            string script = File.ReadAllText(file.FullName, Context.Encoding ?? Encoding.UTF8);
             // Execute file
             return RunScript(script, file.Name);
         }
@@ -74,6 +74,12 @@ namespace TrifleJS.API
         {
             get { return Program.Context; }
         }
+
+        /// <summary>
+        /// Encoding for reading script files
+        /// </summary>
+        /// <param name="encoding"></param>
+        public static Encoding Encoding { get; set; }
 
         /// <summary>
         /// Handles an exception
