@@ -158,6 +158,9 @@
     <Content Include="examples\universe.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="examples\version.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
     <Content Include="test\feature\page.clipRect.js" />
