@@ -63,8 +63,29 @@ namespace TrifleJS.API
         /// </summary>
         public object navigator {
             get {
-                string info = page._evaluate("function() {var nav = {}; for (var prop in window.navigator) nav[prop] = window.navigator[prop]; return JSON.stringify(nav);}", new object[] {}) as string;
+                string info = page._evaluate("function() {var nav = {}; for (var prop in window.navigator) nav[prop] = window.navigator[prop]; return JSON.stringify(nav);}", new object[] { }) as string;
                 return Utils.Deserialize(info);
+            }
+        }
+
+        /// <summary>
+        /// Returns the location object
+        /// </summary>
+        public object location
+        {
+            get
+            {
+                return new Dictionary<string, object> { 
+                    {"hash", ""},
+                    {"host", ""},
+                    {"hostname", ""},
+                    {"href", "file://" + Phantom.scriptName ?? "/"},
+                    {"origin", "null"},
+                    {"pathname", Phantom.scriptName ?? "/"},
+                    {"port", ""},
+                    {"protocol", "file://"},
+                    {"search", ""}
+                };
             }
         }
 

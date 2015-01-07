@@ -42,7 +42,7 @@ assert.suite('Object: phantom', function() {
 
 	phantom.libraryPath = "..\\..\\test\\unit\\ref\\";
 
-	assert(phantom.scriptName === 'test/unit/spec/phantom.js', 'phantom.scriptName is the currently executing script');
+	assert(phantom.scriptName === '', 'phantom.scriptName is the currently executing script');
 	assert(phantom.libraryPath !== fs.workingDirectory, 'changing phantom.libraryPath does not alter fs.workingDirectory');
 	assert(phantom.version.major === 1, 'phantom.version.major is 1');
 	

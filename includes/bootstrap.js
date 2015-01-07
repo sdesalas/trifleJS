@@ -78,6 +78,7 @@
     });
 
     // Apply to global
+    GLOBAL.location = window.location;
     GLOBAL.navigator = window.navigator;
     GLOBAL.setTimeout = window.setTimeout;
     GLOBAL.setInterval = window.setInterval;

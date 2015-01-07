@@ -417,6 +417,7 @@ namespace TrifleJS
         {
             // Create new context
             API.Context context = new API.Context();
+            API.Phantom.scriptName = "";
 
             // Setting core global variables
             context.SetParameter("console", new API.Console());

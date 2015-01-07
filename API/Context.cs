@@ -26,6 +26,8 @@ namespace TrifleJS.API
             }
             // Read file 
             string script = File.ReadAllText(file.FullName, Context.Encoding ?? Encoding.UTF8);
+            // Tag which file we are executing
+            Phantom.scriptName = file.Name;
             // Execute file
             return RunScript(script, file.Name);
         }
@@ -42,8 +44,6 @@ namespace TrifleJS.API
             // in Javascript.NET where it tries
             // to return an object with circular reference
             script += ";(function() {})();";
-            // Tag which file we are executing
-            Phantom.scriptName = scriptName;
             // Execute 
             return base.Run(script, scriptName);
         }

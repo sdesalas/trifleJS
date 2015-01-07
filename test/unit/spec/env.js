@@ -9,6 +9,7 @@ assert.suite('Global Environment', function() {
 		assert.checkMembers(this, 'GLOBAL', {
 			'window': 'object',
 			'navigator': 'object',
+			'location': 'object',
 			'setTimeout': 'function',
 			'setInterval': 'function',
 			'clearTimeout': 'function',
@@ -133,6 +134,23 @@ assert.suite('Global Environment', function() {
 		
 	});
 	
+
+	// --------------------------------------------
+	assert.section('Location object', function() {
+	
+		assert.checkMembers(window, 'location', {
+			hash: 'string',
+			host: 'string',
+			hostname: 'string',
+			href: 'string',
+			origin: 'string',
+			pathname: 'string',
+			port: 'string',
+			protocol: 'string',
+			search: 'string'
+		});
+		
+	});
 	
 	
 	// --------------------------------------------
