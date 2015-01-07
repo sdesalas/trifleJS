@@ -38,6 +38,24 @@ assert.isError = function(callback, message) {
 	assert.fail(message);
 }
 
+assert.checkMembers = function(scope, objName, config) {
+	if (scope && objName && config) {
+		var obj = scope[objName];
+		assert(typeof obj !== 'undefined', 'Object "' + objName + '" exists.');
+		if (config instanceof Array) {
+			config.forEach(function(prop) {
+				assert(typeof obj[prop] !== 'undefined', objName + '.' + prop + ' exists');
+			});
+			return;
+		} else if (config instanceof Object) {
+			Object.keys(config).forEach(function(prop) {
+				assert(typeof obj[prop] === config[prop], objName + '.' + prop + ' exists and is of type "' + config[prop] + '"'); 
+			});
+			return;
+		}
+	}
+	throw new Error('assert.checkMembers() received an incorrect config object');
+}
 
 assert.reset = function() {
 	assert.n = 0;

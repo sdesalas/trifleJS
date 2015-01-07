@@ -159,6 +159,16 @@ namespace TrifleJS
         }
 
         /// <summary>
+        /// Deserialises a JSON string into an object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static object Deserialize(string json)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        }
+
+        /// <summary>
         /// Returns a unique ID string (16^8 = 4.3 trillion combinations)
         /// </summary>
         /// <returns></returns>

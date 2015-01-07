@@ -17,23 +17,24 @@
         phantom: GLOBAL.phantom,
         trifle: GLOBAL.trifle,
         console: GLOBAL.console,
-        window: GLOBAL.window
+        decorate: function(obj, config) {
+			for (var prop in config) {
+				obj[prop] = config[prop];
+			}
+        }
     };
 
     delete GLOBAL.phantom;
     delete GLOBAL.trifle;
     delete GLOBAL.console;
-    delete GLOBAL.window;
 
-    // Initialise window object
-    var window = GLOBAL.window = {
-        API: API.window,
-        window: window,
+    // Decorate window object
+    API.decorate(window, {
         phantom: API.phantom,
         setTimeout: function(callback, ms) {
             console.xdebug('window.setTimeout(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return window.API.SetTimeout((new trifle.Callback(function() {
+                return this.SetTimeout((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
@@ -41,13 +42,13 @@
         clearTimeout: function(id) {
             console.xdebug('window.clearTimeout(' + id + ')');
             if (typeof id === 'number') {
-                window.API.ClearTimeout(id);
+                this.ClearTimeout(id);
             }
         },
         setInterval: function(callback, ms) {
             console.xdebug('window.setInterval(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return window.API.SetInterval((new trifle.Callback(function() {
+                return this.SetInterval((new trifle.Callback(function() {
                     callback.call(window);
                 })).id, ms);
             }
@@ -55,7 +56,7 @@
         clearInterval: function(id) {
             console.xdebug('window.clearInterval(' + id + ')');
             if (typeof id === 'number') {
-                window.API.ClearInterval(id);
+                this.ClearInterval(id);
             }
         },
         addEventListener: function(event, callback, useCapture) {
@@ -74,10 +75,10 @@
                 }, 1);
             }
         }
-    };
+    });
 
     // Apply to global
-    GLOBAL.window = window;
+    GLOBAL.navigator = window.navigator;
     GLOBAL.setTimeout = window.setTimeout;
     GLOBAL.setInterval = window.setInterval;
     GLOBAL.clearTimeout = window.clearTimeout;

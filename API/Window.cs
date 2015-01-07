@@ -6,6 +6,12 @@ namespace TrifleJS.API
 {
     public class Window
     {
+        private Modules.WebPage page;
+
+        public Window() {
+            page = new Modules.WebPage();
+        }
+
         /// <summary>
         /// List of currently executing timers for window.setTimeout() and window.setInterval()
         /// </summary>
@@ -50,6 +56,16 @@ namespace TrifleJS.API
         /// <param name="intervalId"></param>
         public static void ClearInterval(int intervalId) {
             ClearTimer(intervalId);
+        }
+
+        /// <summary>
+        /// Returns the navigator object
+        /// </summary>
+        public object navigator {
+            get {
+                string info = page._evaluate("function() {var nav = {}; for (var prop in window.navigator) nav[prop] = window.navigator[prop]; return JSON.stringify(nav);}", new object[] {}) as string;
+                return Utils.Deserialize(info);
+            }
         }
 
         private static int SetTimer(string callbackId, int ms, bool once) {

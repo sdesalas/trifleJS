@@ -276,6 +276,7 @@ namespace TrifleJS
                     Context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
                     // Execute Specs
+                    Context.RunScript(Resources.test_unit_spec_env, "test/unit/spec/env.js");
                     Context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
                     Context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
                     Context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
