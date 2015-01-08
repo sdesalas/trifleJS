@@ -193,6 +193,19 @@ namespace TrifleJS
                 API.Console.error("Windows XP SP2 or Server 2003 is required.");
                 Program.Exit(1);
             }
+            // TODO: There has to be a better way to do this.
+            // 1. Why doesnt it work with older VC2008 redistributables?
+            // 2. If we need exact VC2008 distro, why cant we bundle it up?
+            if (!API.Native.Methods.MsiProductInstalled(new string[] {
+                "{1F1C2DFC-2D24-3E06-BCB8-725134ADF989}",
+                "{9BE518E6-ECC6-35A9-88E4-87755C07200F}"}))
+            {
+                // @see https://github.com/sdesalas/trifleJS/issues/25
+                // @see http://blogs.msdn.com/b/astebner/archive/2009/01/29/9384143.aspx
+                API.Console.error("Latest Visual C++ 2008 SP1 Redistributable x86 is required.");
+                API.Console.error("Please download. http://www.microsoft.com/en-us/download/details.aspx?id=26368");
+                Program.Exit(1);
+            }
         }
 
         /// <summary>
