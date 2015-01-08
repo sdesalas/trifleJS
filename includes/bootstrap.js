@@ -218,6 +218,8 @@
 
     // Loading module framework
     // @see http://wiki.commonjs.org/wiki/Modules/1.1.1
+    // @see https://github.com/mschwartz/SilkJS/blob/master/builtin/require.js
+    // @see http://wiki.commonjs.org/wiki/Implementations
     var require = GLOBAL.require = function(module) {
 
         // Initialise if required

@@ -68,6 +68,7 @@ namespace TrifleJS
             // Define environment
             bool isExecuted = false;
             bool isVersionSet = false;
+            bool optClearCache = false;
             List<string> configLoop = new List<string>(args);
             List<string> commandLoop = new List<string>();
             API.Phantom.outputEncoding = "UTF-8";
@@ -112,6 +113,12 @@ namespace TrifleJS
                     case "--script-encoding":
                         API.Phantom.scriptEncoding = arg.Replace("--script-encoding=", "");
                         break;
+                    case "--clear-cache":
+                        var __clear_cache = arg.Replace("--clear-cache=", "");
+                        if (__clear_cache.ToLower() == "true") optClearCache = true;
+                        else if (__clear_cache.ToLower() == "false") optClearCache = false;
+                        else API.Console.error(String.Format("Invalid option --clear-cache={0}", __clear_cache));
+                        break;
                     case "--proxy":
                         Proxy.server = arg.Replace("--proxy=", "");
                         break;
@@ -130,6 +137,13 @@ namespace TrifleJS
                         commandLoop.Add(arg);
                         break;
                 }
+            }
+
+            // Clear cache?
+            if (optClearCache)
+            {
+                API.Console.xdebug("Clearing Cache...");
+                API.Native.CacheHelper.ClearCache();
             }
 
             // Default to Installed Version
@@ -197,6 +211,8 @@ namespace TrifleJS
             // 1. Why doesnt it work with older VC2008 redistributables?
             // 2. If we need exact VC2008 distro, why cant we bundle it up?
             if (!API.Native.Methods.MsiProductInstalled(new string[] {
+                "{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}",
+                "{9A25302D-30C0-39D9-BD6F-21E6EC160475}",
                 "{1F1C2DFC-2D24-3E06-BCB8-725134ADF989}",
                 "{9BE518E6-ECC6-35A9-88E4-87755C07200F}"}))
             {

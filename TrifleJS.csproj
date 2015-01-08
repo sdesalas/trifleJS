@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="API\CookieJar.cs" />
     <Compile Include="API\Modules\WebServer.cs" />
+    <Compile Include="API\Native\CacheHelper.cs" />
     <Compile Include="API\Trifle.cs" />
     <Compile Include="EnhancedBrowser.cs">
       <SubType>Component</SubType>
