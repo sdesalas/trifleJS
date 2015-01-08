@@ -48,7 +48,7 @@ namespace TrifleJS
             Console.WriteLine("  --proxy-auth=[user:passw]         Authentication information for the proxy.");
             Console.WriteLine();
             Console.WriteLine("  -h, --help                  Show this message and quits");
-            Console.WriteLine("  -u, --unit-test             Runs a Regression Test and quits");
+            Console.WriteLine("  -u, --unit-test             Runs a full system test and quits");
             Console.WriteLine("  -v, --version               Prints out TrifleJS version and quits");
             Console.WriteLine();
             Console.WriteLine("Without arguments, TrifleJS will launch in interactive mode (REPL)");
@@ -310,6 +310,8 @@ namespace TrifleJS
                     Context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
                     // Execute Specs
+                    // These are held as internal resources to enable scripts 
+                    // to be executed on any machine where the application is running.
                     Context.RunScript(Resources.test_unit_spec_env, "test/unit/spec/env.js");
                     Context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
                     Context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
