@@ -6,8 +6,6 @@ assert.suite('WEBSERVER MODULE', function() {
 	var fs = require("fs");
 	var server = require('webserver').create();
 	var page = require('webpage').create();
-	var refdir = "../../test/unit/ref/";
-	var textfile = refdir + "fs.txt";
 	var workingDirectory = fs.workingDirectory;
 	var loadCount = 0;
 	var helloWorldListener = function(request, response) { loadCount++; response.write("Hello World"); response.close(); }

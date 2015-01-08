@@ -653,9 +653,10 @@ assert.suite('WEBPAGE MODULE', function() {
 
 
 
+
 	// Tear down
 	server.close();
-
+	fs.removeTree('test');
 
 });
 
