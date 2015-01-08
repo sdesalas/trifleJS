@@ -3,6 +3,7 @@ using System.Net;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.IO;
 using IWshRuntimeLibrary;
 
 namespace TrifleJS.API.Native
@@ -76,6 +77,27 @@ namespace TrifleJS.API.Native
             }
             catch { }
             return "";
+        }
+
+        /// <summary>
+        /// Creates a shortcut programatically, used for testing
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="target"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        public static bool CreateLink(string file, string target, string arguments) {
+            try
+            {
+                IWshShell wsh = new WshShellClass();
+                IWshShortcut sc = (IWshShortcut)wsh.CreateShortcut(file);
+                sc.WorkingDirectory = Phantom.libraryPath;
+                sc.TargetPath = Path.Combine(Phantom.libraryPath, target);
+                sc.Arguments = arguments ?? "";
+                sc.Save();
+            }
+            catch { }
+            return false;
         }
 
         #endregion

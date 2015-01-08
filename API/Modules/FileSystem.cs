@@ -237,6 +237,22 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Creates a symbolic link, used for testing
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="target"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        public bool makeLink(string file, string target)
+        {
+            if (new FileInfo(file).Directory.Exists)
+            {
+                return Native.Methods.CreateLink(file, target, null);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns true if path exists
         /// </summary>
         /// <param name="path"></param>

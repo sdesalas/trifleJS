@@ -4,9 +4,8 @@ assert.suite('FS MODULE', function() {
 
 	// SETUP
 	var fs = require("fs");
-	var refdir = "../../test/unit/ref/";
-	var textfile = refdir + "fs.txt";
-	var linkfile = refdir + "sample_link.lnk";
+	var testdir = "test";
+	var fsdir = testdir + "/fs";
 	var workingDirectory = fs.workingDirectory;
 
 	// --------------------------------------------
@@ -49,26 +48,65 @@ assert.suite('FS MODULE', function() {
 	assert(typeof fs.touch === 'function', 'fs.touch() is defined');
 
 	// --------------------------------------------
-	assert.section('Stream instantiation');
+	assert.section('Directory Functions');
 	// --------------------------------------------
 
-	assert(fs.exists(textfile), 'file fs.txt exists')
+	fs.changeWorkingDirectory("C:\\");
 
-	var stream = fs.open(textfile, "rw");
+	assert(fs.workingDirectory === "C:\\", 'fs.changeWorkingDirectory() will change the working directory');
 
-	assert(typeof stream === 'object', 'file stream can be instantiated');
-	assert(typeof stream.atEnd === 'function', 'stream.atEnd() is defined');
-	assert(typeof stream.close === 'function', 'stream.close() is defined');
-	assert(typeof stream.flush === 'function', 'stream.flush() is defined');
-	assert(typeof stream.read === 'function', 'stream.read() is defined');
-	assert(typeof stream.readLine === 'function', 'stream.readLine() is defined');
-	assert(typeof stream.seek === 'function', 'stream.seek() is defined');
-	assert(typeof stream.write === 'function', 'stream.write() is defined');
-	assert(typeof stream.writeLine === 'function', 'stream.writeLine() is defined');
+	fs.changeWorkingDirectory("C:/Program Files/");
 
-	stream.close();
-	stream = null;
+	assert(fs.workingDirectory === "C:\\Program Files", 'fs.changeWorkingDirectory() uses slash (/) and backslash(\\)');
 
+	fs.changeWorkingDirectory(workingDirectory);
+
+	fs.removeTree(testdir); // Make sure we start with a clean solution.
+
+	fs.makeDirectory(testdir);
+
+	assert(fs.exists(testdir) === true, 'fs.makeDirectory() can create a directory');
+
+	fs.makeDirectory(fsdir);
+
+	assert(fs.exists(fsdir) === true, 'fs.makeDirectory() can create a subdirectory');
+
+	fs.removeDirectory(fsdir);
+
+	assert(fs.exists(fsdir) === false, 'fs.makeDirectory() can remove a directory');
+	
+	fs.makeDirectory(fsdir);
+	
+	// --------------------------------------------
+	assert.section('File Functions');
+	// --------------------------------------------
+
+	var textfile = fsdir + "/fs.txt";
+	
+	fs.write(textfile, 'initial text', 'w');	
+	
+	assert(fs.exists(textfile) === true, 'fs.write() can create files');
+	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when writing')
+	assert(fs.read(textfile) === 'initial text', 'fs.read() can read text sucessfully');
+
+	var size = fs.size(textfile);
+	
+	assert(typeof size === 'number', 'fs.size() returns a number');
+	assert(size === 15, 'fs.size() returns number of bytes in a file');
+	assert(fs.size(workingDirectory) === -1, 'fs.size() returns -1 for directories');
+
+	fs.write(textfile, ', extra text', 'a');
+
+	assert(fs.read(textfile) === 'initial text, extra text', 'fs.write() can append text sucessfully');
+	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when appending')
+	assert(fs.size(textfile) > size, 'fs.size() file size increases when appended to');
+
+	fs.remove(textfile);
+
+	assert(fs.exists(textfile) === false, 'fs.remove() works properly')
+	
+	fs.write(textfile, 'initial text', 'w');
+	
 	// --------------------------------------------
 	assert.section('Query Functions');
 	// --------------------------------------------
@@ -94,102 +132,80 @@ assert.suite('FS MODULE', function() {
 	assert(fs.isFile('') === false, 'fs.isFile() returns false for empty string');
 	assert(fs.isFile(null) === false, 'fs.isFile() returns false for null');
 
-	assert(fs.isWritable(textfile) === true, 'fs.isWritable() returns true for general files');
-	assert(fs.isReadable(textfile) === true, 'fs.isReadable() returns true for general files')
-	var f = fs.open(textfile, 'w');
-	f.write('');
-	assert(fs.isWritable(textfile) === false, 'fs.isWritable() returns false when files are being written to');
-	assert(fs.isReadable(textfile) === false, 'fs.isReadable() returns false when files are being written to');
-	f.close();
-	f = null;
 	assert(fs.isExecutable(textfile) === false, 'fs.isExecutable() returns false for text files');
 	assert(fs.isExecutable('calc.exe') === true, 'fs.isExecutable() returns true for executables');
 
+	assert(typeof fs.list(fsdir) === 'object' && !!fs.list(testdir).push, 'fs.list() returns an array');
+	assert(typeof fs.list(fsdir)[0] === 'string', 'fs.list() returns an array of strings');
+	assert(fs.exists(fs.list(fsdir)[0]), 'fs.list() returns files that exist in the filesystem');
+	
+	// --------------------------------------------
+	assert.section('Symlink Functions');
+	// --------------------------------------------
+	
+	var linkfile = fsdir + "/sample_link.lnk";
+	
+	fs.makeLink(linkfile, textfile);
+	
+	assert(fs.exists(linkfile) === true, 'fs.makeLink() creates a symbolic link')
 	assert(fs.isLink(textfile) === false, 'fs.isLink() returns false for text files');
 	assert(fs.isLink(linkfile) === true, 'fs.isLink() returns true for links');
-
-	assert(fs.readLink(textfile) === "", 'fs.readLink() returns empty string for text files');
-	assert(fs.readLink(linkfile) === "C:\\boot.ini", 'fs.readLink() returns a link location for link files');
-
-	assert(typeof fs.list(refdir) === 'object' && !!fs.list(refdir).push, 'fs.list() returns an array');
-	assert(typeof fs.list(refdir)[0] === 'string', 'fs.list() returns an array of strings');
-	assert(fs.exists(fs.list(refdir)[0]), 'fs.list() returns files that exist in the filesystem');
-
-	// --------------------------------------------
-	assert.section('Directory Functions');
-	// --------------------------------------------
-
-	fs.changeWorkingDirectory("C:\\");
-
-	assert(fs.workingDirectory === "C:\\", 'fs.changeWorkingDirectory() will change the working directory');
-
-	fs.changeWorkingDirectory("C:/Program Files/");
-
-	assert(fs.workingDirectory === "C:\\Program Files", 'fs.changeWorkingDirectory() uses slash (/) and backslash(\\)');
-
-	fs.changeWorkingDirectory(workingDirectory);
-
-	var testdir = refdir + 'testdir';
-	var leafdir = testdir + '/leaf'
-
-	fs.removeTree(testdir);
-
-	assert(fs.exists(testdir) === false, 'there is no test folder when commencing directory tests');
-
-	fs.makeDirectory(testdir);
-
-	assert(fs.exists(testdir) === true, 'fs.makeDirectory() can create a directory');
-
-	fs.removeDirectory(testdir);
-
-	assert(fs.exists(testdir) === false, 'fs.makeDirectory() can remove a directory');
-
-	fs.makeTree(leafdir);
-	assert(fs.exists(testdir) === true && fs.exists(leafdir) === true, 'fs.makeTree() can create directory trees');
-
-	fs.removeTree(testdir);
-
-	assert(fs.exists(leafdir) === false, 'fs.removeTree() can remove directory trees');
-
-	fs.copyTree(refdir + 'tree', leafdir);
-
-	assert(fs.exists(leafdir + '/sample.txt') === true, 'fs.copyTree() can copy directory trees');
-
-	fs.removeTree(testdir);
-
-	// --------------------------------------------
-	assert.section('File Functions');
-	// --------------------------------------------
-
-	var size = fs.size(textfile);
-
-	assert(fs.read(textfile) === 'original text', 'fs.read() can read text sucessfully');
-
-	fs.write(textfile, 'some new text', 'w');	
-
-	assert(fs.read(textfile) === 'some new text', 'fs.write() can write text sucessfully');
-	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when writing')
-
-	assert(typeof size === 'number', 'fs.size() returns a number');
-	assert(size === 16, 'fs.size() returns number of bytes in a file');
-	assert(fs.size(workingDirectory) === -1, 'fs.size() returns -1 for directories');
-
-	fs.write(textfile, ', extra text', 'a');
-
-	assert(fs.read(textfile) === 'some new text, extra text', 'fs.write() can append text sucessfully');
-	assert(fs.isReadable(textfile) === true, 'fs.write() does not keep a lock on a text file when appending')
-	assert(fs.size(textfile) > size, 'fs.size() file size increases when appended to');
-
-	fs.remove(textfile);
-
-	assert(fs.exists(textfile) === false, 'fs.remove() works properly')
-
-	fs.write(textfile, 'original text', 'w');
+	assert(fs.readLink(linkfile) === fs.absolute(textfile), 'fs.readLink() reads a symbolic link')
 
 	var lastModified = fs.lastModified(linkfile);
 
+	trifle.wait(10);
+
 	fs.touch(linkfile);
 	assert(fs.lastModified(linkfile) > lastModified, 'fs.touch() updates the last modified timestamp');
+
+	// --------------------------------------------
+	assert.section('Tree Functions');
+	// --------------------------------------------
+
+	var leafdir = fsdir + '/leaf';
+	var leaffile = leafdir + '/file.txt'
+
+	var leafclone = fsdir + '/leafclone';
+	var leafclonefile = leafclone + '/file.txt'
+
+	fs.makeTree(leafdir);
+	
+	assert(fs.exists(fsdir) === true && fs.exists(leafdir) === true, 'fs.makeTree() can create directory trees');
+
+	fs.write(leaffile, 'some new text', 'w');
+
+	fs.copyTree(leafdir, leafclone);
+
+	assert(fs.exists(leafclonefile) === true, 'fs.copyTree() can copy directory trees');
+
+	fs.removeTree(fsdir);
+	
+	assert(fs.exists(fsdir) === false && fs.exists(leafdir) === false, 'fs.removeTree() can remove directory trees');
+
+	fs.makeDirectory(fsdir);
+	fs.write(textfile, 'initial text', 'w');
+
+	// --------------------------------------------
+	assert.section('Stream instantiation');
+	// --------------------------------------------
+	
+	assert(fs.exists(textfile), 'file fs.txt exists')
+
+	var stream = fs.open(textfile, "rw");
+
+	assert(typeof stream === 'object', 'file stream can be instantiated');
+	assert(typeof stream.atEnd === 'function', 'stream.atEnd() is defined');
+	assert(typeof stream.close === 'function', 'stream.close() is defined');
+	assert(typeof stream.flush === 'function', 'stream.flush() is defined');
+	assert(typeof stream.read === 'function', 'stream.read() is defined');
+	assert(typeof stream.readLine === 'function', 'stream.readLine() is defined');
+	assert(typeof stream.seek === 'function', 'stream.seek() is defined');
+	assert(typeof stream.write === 'function', 'stream.write() is defined');
+	assert(typeof stream.writeLine === 'function', 'stream.writeLine() is defined');
+
+	stream.close();
+	stream = null;
 
 	// --------------------------------------------
 	assert.section('Stream object');
@@ -199,7 +215,7 @@ assert.suite('FS MODULE', function() {
 
 	assert(fs.isReadable(textfile) === false, 'fs.open(file, "r") keeps a read lock on file when reading');
 	assert(fs.isWritable(textfile) === false, 'fs.open(file, "r") keeps a write lock on file when reading');
-	assert(stream.read() === 'original text', 'fs.open(file, "r") can read file sucessfully');
+	assert(stream.read() === 'initial text', 'fs.open(file, "r") can read file sucessfully');
 
 	stream.close();
 	stream = null;
@@ -261,11 +277,21 @@ assert.suite('FS MODULE', function() {
 	stream.close();
 	stream = null;
 
-	// TEARDOWN
+	// --------------------------------------------
+	assert.section('File locking');
+	// --------------------------------------------
 
-	// reset file to original
-	fs.remove(textfile);
-	fs.write(textfile, 'original text');
+	assert(fs.isWritable(textfile) === true, 'fs.isWritable() returns true for general files');
+	assert(fs.isReadable(textfile) === true, 'fs.isReadable() returns true for general files')
+	var f = fs.open(textfile, 'w');
+	f.write('');
+	assert(fs.isWritable(textfile) === false, 'fs.isWritable() returns false when files are being written to');
+	assert(fs.isReadable(textfile) === false, 'fs.isReadable() returns false when files are being written to');
+	f.close();
+	f = null;
+
+	// TEARDOWN
+	fs.removeTree(fsdir);
 
 });
 
