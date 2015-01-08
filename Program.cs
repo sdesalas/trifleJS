@@ -39,13 +39,16 @@ namespace TrifleJS
             Console.WriteLine("Options: ");
             Console.WriteLine("  --debug                           Prints additional warning and debug messages.");
             //Console.WriteLine("  --ignore-ssl-errors=[true|false]  Ignores SSL errors (cert expired, invalid etc). Defaults to 'false'.");
-            Console.WriteLine("  --proxy=[address:port]            Specifies proxy server to use.");
-            Console.WriteLine("  --proxy-auth=[user:passw]         Authentication information for the proxy.");
             Console.WriteLine("  --render=[url]                    Opens a url, renders into a file and quits.");
             Console.WriteLine("  --emulate=[version]               Emulates an earlier version of IE (IE7, IE8, IE9 etc).");
+            Console.WriteLine("  --output-encoding=[enc]           Encoding for terminal output (default utf8).");
+            Console.WriteLine("  --script-encoding=[enc]           Encoding for starting script (default utf8).");
+            Console.WriteLine("  --clear-history                   Clears IE History before starting (Cache + Cookies).");
+            Console.WriteLine("  --proxy=[address:port]            Specifies proxy server to use.");
+            Console.WriteLine("  --proxy-auth=[user:passw]         Authentication information for the proxy.");
             Console.WriteLine();
             Console.WriteLine("  -h, --help                  Show this message and quits");
-            Console.WriteLine("  -t, --test                  Runs a System Test and quits");
+            Console.WriteLine("  -u, --unit-test             Runs a Regression Test and quits");
             Console.WriteLine("  -v, --version               Prints out TrifleJS version and quits");
             Console.WriteLine();
             Console.WriteLine("Without arguments, TrifleJS will launch in interactive mode (REPL)");
@@ -101,7 +104,7 @@ namespace TrifleJS
                         break;
                     case "-v":
                     case "--version":
-                        var v = API.Phantom.version;
+                        var v = API.Trifle.Version;
                         Console.WriteLine("{0}.{1}.{2}", v["major"], v["minor"], v["patch"]);
                         return;
                     case "--emulate":
