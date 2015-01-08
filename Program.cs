@@ -68,7 +68,7 @@ namespace TrifleJS
             // Define environment
             bool isExecuted = false;
             bool isVersionSet = false;
-            bool optClearCache = false;
+            bool optClearHistory = false;
             List<string> configLoop = new List<string>(args);
             List<string> commandLoop = new List<string>();
             API.Phantom.outputEncoding = "UTF-8";
@@ -113,11 +113,8 @@ namespace TrifleJS
                     case "--script-encoding":
                         API.Phantom.scriptEncoding = arg.Replace("--script-encoding=", "");
                         break;
-                    case "--clear-cache":
-                        var __clear_cache = arg.Replace("--clear-cache=", "");
-                        if (__clear_cache.ToLower() == "true") optClearCache = true;
-                        else if (__clear_cache.ToLower() == "false") optClearCache = false;
-                        else API.Console.error(String.Format("Invalid option --clear-cache={0}", __clear_cache));
+                    case "--clear-history":
+                        optClearHistory = true;
                         break;
                     case "--proxy":
                         Proxy.server = arg.Replace("--proxy=", "");
@@ -140,10 +137,10 @@ namespace TrifleJS
             }
 
             // Clear cache?
-            if (optClearCache)
+            if (optClearHistory)
             {
-                API.Console.xdebug("Clearing Cache...");
-                API.Native.CacheHelper.ClearCache();
+                API.Console.xdebug("Clearing Browser History (Cache and Cookies)...");
+                API.Native.CacheHelper.ClearCache(true);
             }
 
             // Default to Installed Version
