@@ -165,9 +165,14 @@ namespace TrifleJS
                 string[] parts = arg.Split('=');
                 switch (parts[0]) 
                 { 
-                    case "-t":
-                    case "--test":
+                    case "-u":
+                    case "--unit-test":
                         UnitTest();
+                        Exit(0);
+                        return;
+                    case "-p":
+                    case "--phantom-test":
+                        PhantomTest();
                         Exit(0);
                         return;
                     case "--render":
