@@ -18,25 +18,28 @@ assert.suite('REQUIRE', function() {
 
     assert.section('Calling Modules using a path');
 
-    var path = '../../test/unit/ref/sample_module';
+    var path = 'examples/universe';
     var sample_module = require(path);
-    assert(typeof sample_module === 'object', 'a sample_module can be instantiated without an extension');
-    assert(!!sample_module.module, 'a sample_module has a module argument passed in');
-    assert(!!sample_module.module.id, 'the module argument in a sample_module has an id');
-    assert(sample_module.ok === true, 'sample_module.ok is set to true');
+    assert(typeof sample_module === 'object', 'module can be instantiated without an extension');
+    assert(!!sample_module.id, 'module has an id property');
+    
+    assert(sample_module.answer === 42, 'module.answer is set to 42');
 
-    path = '../../test/unit/ref/sample_module.js';
+    path = 'examples/universe.js';
     sample_module = require(path);
-    assert(typeof sample_module === 'object', 'sample_module can be instantiated using a file path');
-    assert(sample_module.ok === true, 'sample_module.ok is set to true');
+    assert(typeof sample_module === 'object', 'module can be instantiated using a file path');
+    assert(sample_module.answer === 42, 'module.answer is set to 42');
 
     var sample_module2 = require(path);
-    assert(typeof sample_module2 === 'object', 'a sample_module can be instantiated a second time');
-    assert(sample_module2.ok === true, 'sample_module.ok is set to true when instantiated a second time');
+    
+    assert(typeof sample_module2 === 'object', 'module can be instantiated a second time');
+    assert(sample_module2.answer === 42, 'module.answer is set to 42 when instantiated a second time');
 	assert(sample_module === sample_module2, 'module returns same object when instantiated a second time');
 
-    var sample_module3 = require('..\\..\\test\\unit\\ref\\sample_module.js');
-    assert(typeof sample_module3 === 'object', 'a sample_module can be instantiated using a windows path');
-    assert(sample_module3.ok === true, 'sample_module.ok is set to true when instantiated using a windows path');
+    var sample_module3 = require('examples\\universe.js');
+
+    assert(typeof sample_module3 === 'object', 'module can be instantiated using a windows path');
+    assert(sample_module3.answer === 42, 'module.answer is set to 42 when instantiated using windows path');
+	assert(sample_module === sample_module3, 'module returns same object when instantiated using windows path');
 
 });

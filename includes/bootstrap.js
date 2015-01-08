@@ -222,6 +222,9 @@
     // @see http://wiki.commonjs.org/wiki/Implementations
     var require = GLOBAL.require = function(module) {
 
+		// Normalise paths
+		module = module.replace("\\", "/");
+
         // Initialise if required
         if (typeof require.cache.initialise === 'function') {
             require.cache.initialise.call({});
@@ -238,8 +241,8 @@
         // Is it a file path?
         if (fs.exists(module)) {
             // Add to cache and load
-            var path = module;
-            require.cache[path] = { id: path, exports: {} };
+            var path = fs.absolute(module);
+            require.cache[path] = { id: path, exports: { id: path } };
             phantom.createModule(path, fs.read(path));
             return require.cache[path].exports;
 
@@ -247,7 +250,7 @@
         } else if (fs.exists(module + '.js')) {
             // Add to cache and load
             var path = module + '.js';
-            require.cache[path] = { id: path, exports: {} };
+            require.cache[path] = { id: path, exports: { id: path } };
             phantom.createModule(path, fs.read(path));
             return require.cache[path].exports;
 

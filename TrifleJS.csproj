@@ -159,6 +159,9 @@
     <Content Include="examples\universe.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="examples\variable.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="examples\version.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
