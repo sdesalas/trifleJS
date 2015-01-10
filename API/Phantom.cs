@@ -133,8 +133,7 @@ namespace TrifleJS.API
             {
                 try
                 {
-                    string encoding = SanitizeEncoding(value);
-                    System.Console.OutputEncoding = Encoding.GetEncoding(encoding);
+                    System.Console.OutputEncoding = Utils.GetEncoding(value);
                 }
                 catch
                 {
@@ -154,31 +153,13 @@ namespace TrifleJS.API
             {
                 try
                 {
-                    string encoding = SanitizeEncoding(value);
-                    Context.Encoding = Encoding.GetEncoding(encoding);
+                    Context.Encoding = Utils.GetEncoding(value);
                 }
                 catch
                 {
                     Console.error(String.Format("Unknown Encoding '{0}'", value));
                 }
             }
-        }
-
-        /// <summary>
-        /// Note that windows uses "UTF-8" instead of "UTF8"
-        /// so we have to sanitize these strings
-        /// </summary>
-        internal static string SanitizeEncoding(string encoding)
-        {
-            if (encoding != null)
-            {
-                if (encoding.IndexOf("utf", StringComparison.InvariantCultureIgnoreCase) == 0
-                        && !encoding.Contains("-"))
-                {
-                    return Regex.Replace(encoding, "utf", "UTF-", RegexOptions.IgnoreCase);
-                }
-            }
-            return encoding;
         }
 
         #region Cookies

@@ -40,7 +40,7 @@ namespace TrifleJS.API.Modules
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
-            this.uuid = Utils.newUid();
+            this.uuid = Utils.NewUid();
             this.clipRect = new Dictionary<string, object>() {
                 { "top", 0 },
                 { "left", 0 },

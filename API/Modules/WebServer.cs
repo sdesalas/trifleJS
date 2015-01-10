@@ -497,7 +497,7 @@ namespace TrifleJS.API.Modules
 
             public Connection(string callbackId, HttpListenerContext context) {
                 this.callbackId = callbackId;
-                this.id = Utils.newUid();
+                this.id = Utils.NewUid();
                 this.isProcessing = false;
                 this.request = new Request(context.Request);
                 this.response = new Response(context.Response, this.id);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Text;
@@ -172,9 +173,27 @@ namespace TrifleJS
         /// Returns a unique ID string (16^8 = 4.3 trillion combinations)
         /// </summary>
         /// <returns></returns>
-        public static string newUid()
+        public static string NewUid()
         {
             return Guid.NewGuid().ToString().Substring(0, 8);
+        }
+
+        /// <summary>
+        /// Note that windows uses "UTF-8" instead of "UTF8"
+        /// so we have to sanitize these strings
+        /// </summary>
+        internal static Encoding GetEncoding(string encoding)
+        {
+            if (encoding != null)
+            {
+                if (encoding.IndexOf("utf", StringComparison.InvariantCultureIgnoreCase) == 0
+                        && !encoding.Contains("-"))
+                {
+                    encoding = Regex.Replace(encoding, "utf", "UTF-", RegexOptions.IgnoreCase);
+                }
+                return Encoding.GetEncoding(encoding);
+            }
+            return Encoding.UTF8;
         }
     }
 }
