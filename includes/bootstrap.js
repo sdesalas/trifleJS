@@ -283,6 +283,10 @@
                     exports: {
                         create: function() { return new trifle.modules.WebServer(); }
                     }
+                },
+                child_process: {
+					id: 'child_process',
+					exports: new trifle.modules.ChildProcess()
                 }
             }
         }

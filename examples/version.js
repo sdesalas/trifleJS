@@ -7,4 +7,5 @@ var ie_version = trifle.emulation;
 console.log('phantomjs -> ' + phantom_version.join('.'));
 console.log('triflejs -> ' + trifle_version.join('.'));
 console.log('internet explorer -> ' + ie_version);
+console.log('userAgent -> ' + navigator.userAgent);
 

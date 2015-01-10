@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\CookieJar.cs" />
+    <Compile Include="API\Modules\ChildProcess.cs" />
     <Compile Include="API\Modules\WebServer.cs" />
     <Compile Include="API\Native\CacheHelper.cs" />
     <Compile Include="API\Trifle.cs" />
@@ -165,6 +166,7 @@
     <Content Include="examples\version.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="includes\trifle\modules\ChildProcess.js" />
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
     <Content Include="test\feature\page.clipRect.js" />
@@ -211,6 +213,7 @@
     <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
     <Content Include="test\unit\ref\script.js" />
+    <Content Include="test\unit\spec\child_process.js" />
     <Content Include="test\unit\spec\env.js" />
     <Content Include="test\unit\spec\fs.js" />
     <Content Include="test\unit\spec\phantom.js" />

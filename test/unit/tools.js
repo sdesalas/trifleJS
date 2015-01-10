@@ -41,7 +41,9 @@ assert.isError = function(callback, message) {
 assert.checkMembers = function(scope, objName, config) {
 	if (scope && objName && config) {
 		var obj = scope[objName];
-		assert(typeof obj !== 'undefined', 'Object "' + objName + '" exists.');
+		if (typeof obj === 'undefined') {
+			obj = scope;
+		}
 		if (config instanceof Array) {
 			config.forEach(function(prop) {
 				assert(typeof obj[prop] !== 'undefined', objName + '.' + prop + ' exists');

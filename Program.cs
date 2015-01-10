@@ -14,6 +14,7 @@ namespace TrifleJS
         public static API.Context Context { get; set; }
         public static string[] Args { get; set; }
         public static bool Verbose { get; set; }
+        public static bool ParanoidMode { get; set; }
         public static bool InEventLoop { get; set; }
 
         /// <summary>
@@ -42,7 +43,8 @@ namespace TrifleJS
             Console.WriteLine("  --emulate=[version]         Emulates earlier version of IE (IE7, IE8, IE9 ..)");
             Console.WriteLine("  --output-encoding=[enc]     Encoding for terminal output (default utf8)");
             Console.WriteLine("  --script-encoding=[enc]     Encoding for starting script (default utf8)");
-            Console.WriteLine("  --clear-history             Clears IE History before start (cache + cookies)");
+            Console.WriteLine("  --clear-cache               Clears IE cache history before starting.");
+            Console.WriteLine("  --paranoid-mode             Disables ChildProcess and FileSystem modules");
             Console.WriteLine("  --proxy=[address:port]      Specifies proxy server to use");
             Console.WriteLine("  --proxy-auth=[user:passw]   Authentication information for the proxy");
             Console.WriteLine();
@@ -70,7 +72,7 @@ namespace TrifleJS
             // Define environment
             bool isExecuted = false;
             bool isVersionSet = false;
-            bool optClearHistory = false;
+            bool optClearCache = false;
             List<string> configLoop = new List<string>(args);
             List<string> commandLoop = new List<string>();
             API.Phantom.outputEncoding = "UTF-8";
@@ -115,8 +117,11 @@ namespace TrifleJS
                     case "--script-encoding":
                         API.Phantom.scriptEncoding = arg.Replace("--script-encoding=", "");
                         break;
-                    case "--clear-history":
-                        optClearHistory = true;
+                    case "--clear-cache":
+                        optClearCache = true;
+                        break;
+                    case "--paranoid-mode":
+                        Program.ParanoidMode = true;
                         break;
                     case "--proxy":
                         Proxy.server = arg.Replace("--proxy=", "");
@@ -139,10 +144,10 @@ namespace TrifleJS
             }
 
             // Clear cache?
-            if (optClearHistory)
+            if (optClearCache)
             {
-                API.Console.xdebug("Clearing Browser History (Cache and Cookies)...");
-                API.Native.CacheHelper.ClearCache(true);
+                API.Console.xdebug("Clearing IE Cache History...");
+                API.Native.CacheHelper.ClearCache(false);
             }
 
             // Default to Installed Version
@@ -317,6 +322,7 @@ namespace TrifleJS
                     Context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
                     Context.RunScript(Resources.test_unit_spec_phantom, "test/unit/spec/phantom.js");
                     Context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
+                    Context.RunScript(Resources.test_unit_spec_child_process, "test/unit/spec/child_process.js");
 
                     // Finish
                     Context.RunScript(Resources.test_unit_finish, "test/unit/finish.js");
@@ -469,6 +475,7 @@ namespace TrifleJS
                 context.RunScript(Resources.trifle_modules_FileSystem, "trifle.modules.FileSystem.js");
                 context.RunScript(Resources.trifle_modules_System, "trifle.modules.System.js");
                 context.RunScript(Resources.trifle_modules_WebServer, "trifle.modules.WebServer.js");
+                context.RunScript(Resources.trifle_modules_ChildProcess, "trifle.modules.ChildProcess.js");
             }
             catch (Exception ex)
             {

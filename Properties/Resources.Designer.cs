@@ -80,16 +80,16 @@ namespace TrifleJS.Properties {
         ///        phantom: GLOBAL.phantom,
         ///        trifle: GLOBAL.trifle,
         ///        console: GLOBAL.console,
-        ///        window: GLOBAL.window
+        ///        decorate: function(obj, config) {
+        ///			for (var prop in config) {
+        ///				obj[prop] = config[prop];
+        ///			}
+        ///        }
         ///    };
         ///
         ///    delete GLOBAL.phantom;
         ///    delete GLOBAL.trifle;
-        ///    delete GLOBAL.console;
-        ///    delete GLOBAL.window;
-        ///
-        ///    // Initialise window object
-        ///  [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string bootstrap {
             get {
@@ -345,27 +345,56 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* child_process.js
+        ///* 
+        ///* Runs a set of unit tests used that check
+        ///* the functionality of the child process object
+        ///* 
+        ///*/
+        ///
+        ///
+        ///assert.suite(&apos;Module: ChildProcess&apos;, function() {
+        ///
+        ///	var child_process = require(&quot;child_process&quot;);
+        ///	var checker = {child_process: child_process};
+        ///	// --------------------------------------------
+        ///	assert.section(&apos;Instantiation&apos;);
+        ///	// --------------------------------------------
+        ///
+        ///	assert(!!child_process, &apos;child_process can be instantiated using require()&apos;);
+        ///	assert(typeo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string test_unit_spec_child_process {
+            get {
+                return ResourceManager.GetString("test_unit_spec_child_process", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* env.js
+        ///* 
+        ///* Runs a set of unit tests used that check
+        ///* global objects and special functions used
+        ///* in the V8 execution context.
+        ///*
+        ///* Most of the functionality here is defined
+        ///* in bootstrap.js
+        ///* 
+        ///*/
+        ///
         ///assert.suite(&apos;Global Environment&apos;, function() {
         ///
-        ///	// SETUP
-        ///	var knownGlobals = {
-        ///		&apos;window&apos;: &apos;object&apos;,
-        ///		&apos;setTimeout&apos;: &apos;function&apos;,
-        ///		&apos;setInterval&apos;: &apos;function&apos;,
-        ///		&apos;clearTimeout&apos;: &apos;function&apos;,
-        ///		&apos;clearInterval&apos;: &apos;function&apos;,
-        ///		&apos;addEventListener&apos;: &apos;function&apos;,
-        ///		&apos;console&apos;: &apos;object&apos;,
-        ///		&apos;trifle&apos;: &apos;object&apos;
-        ///	};
-        ///
-        ///	Object.keys(knownGlobals).map(function(prop) {
-        ///		assert(typeof this[prop] === knownGlobals[prop], prop + &apos; exists and is of type &quot;&apos; + knownGlobals[prop] + &apos;&quot;;); 
-        ///	});
-        ///
-        ///});
-        ///.
+        ///	// --------------------------------------------
+        ///	assert.section(&apos;Global objects&apos;, function() {
+        ///	
+        ///		this[&apos;GLOBAL&apos;] = this;
+        ///	
+        ///		assert.checkMembers(this, &apos;GLOBAL&apos;, {
+        ///			&apos;window&apos;: &apos;object&apos;,
+        ///			&apos;navigator&apos;: &apos;object&apos;,
+        ///			&apos;location&apos;: &apos;object&apos; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_env {
             get {
@@ -374,15 +403,20 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* fs.js
+        ///* 
+        ///* Runs a set of unit tests used that check
+        ///* the functionality of the filesystem object
+        ///* 
+        ///*/
         ///
-        ///assert.suite(&apos;FS MODULE&apos;, function() {
+        ///assert.suite(&apos;Module: FileSystem&apos;, function() {
         ///
         ///	// SETUP
         ///	var fs = require(&quot;fs&quot;);
-        ///	var refdir = &quot;../../test/unit/ref/&quot;;
-        ///	var textfile = refdir + &quot;fs.txt&quot;;
-        ///	var linkfile = refdir + &quot;sample_link.lnk&quot;;
+        ///	var testdir = &quot;test&quot;;
+        ///	var fsdir = testdir + &quot;/fs&quot;;
         ///	var workingDirectory = fs.workingDirectory;
         ///
         ///	// --------------------------------------------
@@ -390,9 +424,7 @@ namespace TrifleJS.Properties {
         ///	// --------------------------------------------
         ///
         ///	assert(!!fs, &apos;fs can be instantiated using require()&apos;);
-        ///	assert(typeof fs === &apos;object&apos;, &apos;fs is an object&apos;);
-        ///
-        ///	// ------- [rest of string was truncated]&quot;;.
+        ///	assert(t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_fs {
             get {
@@ -401,7 +433,14 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* phantom.js
+        ///* 
+        ///* Runs a set of unit tests used that check
+        ///* the functionality of the global &apos;phantom&apos; object.
+        ///* 
+        ///*/
+        ///
         ///
         ///assert.suite(&apos;Object: phantom&apos;, function() {
         ///
@@ -414,9 +453,7 @@ namespace TrifleJS.Properties {
         ///	assert.section(&apos;Object availability&apos;);
         ///
         ///	assert(this.hasOwnProperty(&apos;phantom&apos;), &apos;this.phantom exists&apos;);
-        ///	assert(typeof this.phantom === &apos;object&apos;, &apos;this.phantom is an object&apos;);
-        ///	assert(window.hasOwnProperty(&apos;phantom&apos;), &apos;window.phantom exists&apos;);
-        ///	assert(typeof window.phantom == [rest of string was truncated]&quot;;.
+        ///	assert(typeof this.phantom === &apos;object&apos;, &apos;this [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_phantom {
             get {
@@ -425,10 +462,15 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* require.js
+        ///* 
+        ///* Runs a set of unit tests used to verify the 
+        ///* commonJS module functionality.
+        ///* 
+        ///*/
         ///
-        ///
-        ///assert.suite(&apos;REQUIRE&apos;, function() {
+        ///assert.suite(&apos;CommonJS functionality&apos;, function() {
         ///
         ///    assert.section(&apos;Globals&apos;);
         ///    
@@ -438,9 +480,7 @@ namespace TrifleJS.Properties {
         ///
         ///    var fs = require(&apos;fs&apos;);
         ///    assert(typeof fs === &apos;object&apos;, &apos;fs module can be instantiated&apos;);
-        ///    assert(typeof fs.workingDirectory === &apos;string&apos;, &apos;fs module contains a workingDirectory&apos;)
-        ///    var fs2 = require(&apos;fs&apos;);
-        ///    assert(typeof fs2 === &apos;object&apos;, &apos;fs module can be instantiated a second time&apos;);        /// [rest of string was truncated]&quot;;.
+        ///    assert(typeof fs.workingDirectory === &apos;string&apos;, &apos;fs module contains a workingDire [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_require {
             get {
@@ -449,9 +489,15 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* webpage.js
+        ///* 
+        ///* Runs a set of unit tests used to verify the 
+        ///* functionality of the webpage module.
+        ///* 
+        ///*/
         ///
-        ///assert.suite(&apos;WEBPAGE MODULE&apos;, function() {
+        ///assert.suite(&apos;Module: WebPage&apos;, function() {
         ///
         ///	// SETUP
         ///	var fs = require(&apos;fs&apos;);
@@ -463,8 +509,7 @@ namespace TrifleJS.Properties {
         ///
         ///	assert(this.hasOwnProperty(&apos;WebPage&apos;), &apos;this.WebPage exists&apos;);
         ///	assert(typeof this.WebPage === &apos;function&apos;, &apos;this.WebPage is a function&apos;);
-        ///	assert(window.hasOwnProperty(&apos;WebPage&apos;), &apos;window.WebPage exists&apos;);
-        ///	assert(typeof window.WebPage === &apos;function&apos;, &apos;window.WebP [rest of string was truncated]&quot;;.
+        ///	assert(wi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_webpage {
             get {
@@ -473,20 +518,24 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
+        ///   Looks up a localized string similar to /*
+        ///* webserver.js
+        ///* 
+        ///* Runs a set of unit tests used that check
+        ///* the the functionality in the webserver module
+        ///* 
+        ///*/
         ///
-        ///assert.suite(&apos;WEBSERVER MODULE&apos;, function() {
+        ///assert.suite(&apos;Module: WebServer&apos;, function() {
         ///
         ///	// SETUP
         ///	var fs = require(&quot;fs&quot;);
         ///	var server = require(&apos;webserver&apos;).create();
         ///	var page = require(&apos;webpage&apos;).create();
-        ///	var refdir = &quot;../../test/unit/ref/&quot;;
-        ///	var textfile = refdir + &quot;fs.txt&quot;;
         ///	var workingDirectory = fs.workingDirectory;
         ///	var loadCount = 0;
         ///	var helloWorldListener = function(request, response) { loadCount++; response.write(&quot;Hello World&quot;); response.close(); }
-        ///	var helloWorld2Listener = function(request, response) { loadCount++; r [rest of string was truncated]&quot;;.
+        ///	var helloWorld2Listen [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_webserver {
             get {
@@ -553,6 +602,37 @@ namespace TrifleJS.Properties {
         internal static string trifle_Callback {
             get {
                 return ResourceManager.GetString("trifle_Callback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* ChildProcess.js
+        ///*
+        ///* By: Steven de Salas
+        ///* On: Jan 2015
+        ///* 
+        ///* Defines a ChildProcess class representing a
+        ///* helper to spawn and manage new child processes
+        ///* 
+        ///*/
+        ///
+        ///// Initialise Namespace
+        ///this.trifle = this.trifle || {};
+        ///trifle.modules = trifle.modules || {};
+        ///
+        ///// Wrap code to avoid global vars
+        ///(function(trifle) {
+        ///
+        ///    // Define Module
+        ///    var ChildProcess = trifle.modules.ChildProcess = trifle.extend({
+        ///		
+        ///		// Derives functionality from ChildProcess.cs
+        ///		module: trifle.API.ChildProces [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string trifle_modules_ChildProcess {
+            get {
+                return ResourceManager.GetString("trifle_modules_ChildProcess", resourceCulture);
             }
         }
         
