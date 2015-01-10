@@ -1,6 +1,12 @@
-﻿
+﻿/*
+* webpage.js
+* 
+* Runs a set of unit tests used to verify the 
+* functionality of the webpage module.
+* 
+*/
 
-assert.suite('WEBPAGE MODULE', function() {
+assert.suite('Module: WebPage', function() {
 
 	// SETUP
 	var fs = require('fs');

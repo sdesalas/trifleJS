@@ -1,4 +1,15 @@
-﻿
+﻿/*
+* env.js
+* 
+* Runs a set of unit tests used that check
+* global objects and special functions used
+* in the V8 execution context.
+*
+* Most of the functionality here is defined
+* in bootstrap.js
+* 
+*/
+
 assert.suite('Global Environment', function() {
 
 	// --------------------------------------------

@@ -1,4 +1,11 @@
-﻿
+﻿/*
+* phantom.js
+* 
+* Runs a set of unit tests used that check
+* the functionality of the global 'phantom' object.
+* 
+*/
+
 
 assert.suite('Object: phantom', function() {
 

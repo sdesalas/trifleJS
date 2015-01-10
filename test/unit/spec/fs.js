@@ -1,6 +1,12 @@
-﻿
+﻿/*
+* fs.js
+* 
+* Runs a set of unit tests used that check
+* the functionality of the filesystem object
+* 
+*/
 
-assert.suite('FS MODULE', function() {
+assert.suite('Module: FileSystem', function() {
 
 	// SETUP
 	var fs = require("fs");

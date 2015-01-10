@@ -1,6 +1,12 @@
+/*
+* webserver.js
+* 
+* Runs a set of unit tests used that check
+* the the functionality in the webserver module
+* 
+*/
 
-
-assert.suite('WEBSERVER MODULE', function() {
+assert.suite('Module: WebServer', function() {
 
 	// SETUP
 	var fs = require("fs");

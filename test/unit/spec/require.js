@@ -1,7 +1,12 @@
-﻿
+﻿/*
+* require.js
+* 
+* Runs a set of unit tests used to verify the 
+* commonJS module functionality.
+* 
+*/
 
-
-assert.suite('REQUIRE', function() {
+assert.suite('CommonJS functionality', function() {
 
     assert.section('Globals');
     
