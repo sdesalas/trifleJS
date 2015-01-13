@@ -68,11 +68,20 @@ namespace TrifleJS
                     case "IE10":
                         dWord = 10001; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
+                    case "IE10_STANDARDS":
+                        dWord = 10000; // Default - Enables Auto-downgrade (aka. Doctype "Standards")
+                        break;
                     case "IE9":
                         dWord = 9999; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;
+                    case "IE9_STANDARDS":
+                        dWord = 9000; // Default - Enables Auto-downgrade (aka. Doctype "Standards")
+                        break;
                     case "IE8":
                         dWord = 8888; // "Forced" (ie IGNORE_DOCTYPE mode)
+                        break;
+                    case "IE8_STANDARDS":
+                        dWord = 8000; // Default - Enables Auto-downgrade (aka. Doctype "Standards")
                         break;
                     case "IE7":
                         dWord = 7000; 
