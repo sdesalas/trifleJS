@@ -22,8 +22,8 @@ namespace TrifleJS.API.Modules
             if (opts != null) {
                 context.setEncoding(opts.Get<string>("encoding"));
             }
+            context.exitCallbackId = callbackId;
             context.start(cmd, args);
-            Callback.ExecuteOnce(callbackId, context.stdOut, context.stdErr);
             return context;
         }
 
@@ -47,15 +47,28 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Running list of processes
         /// </summary>
-        public static List<Context> runningProceses = new List<Context>();
+        public static Dictionary<string, Context> runningProceses = new Dictionary<string, Context>();
 
         /// <summary>
         /// Closes all running processes
         /// </summary>
         public void terminate() { 
-            foreach(Context ctx in runningProceses) {
+            foreach(Context ctx in runningProceses.Values) {
                 ctx.kill();
             }
+        }
+
+        /// <summary>
+        /// Returns a context from list of running processes
+        /// </summary>
+        /// <param name="contextId"></param>
+        /// <returns></returns>
+        public Context _findContext(string contextId) {
+            if (runningProceses.ContainsKey(contextId))
+            {
+                return runningProceses[contextId];
+            }
+            return null;
         }
 
         /// <summary>
@@ -66,15 +79,17 @@ namespace TrifleJS.API.Modules
         public class Context
         {
             private Process process;
+            private string id;
 
             internal string exitCallbackId;
             internal string outputCallbackId;
             internal string errorCallbackId;
 
-            public string stdOut { get; set; }
-            public string stdErr { get; set; }
+            public string output { get; set; }
+            public string errorOutput { get; set; }
 
             public bool exited { get; set; }
+            public int? exitCode { get; set; }
 
             public Context()
             {
@@ -89,9 +104,13 @@ namespace TrifleJS.API.Modules
                         WorkingDirectory = Phantom.libraryPath
                     }
                 };
-                ChildProcess.runningProceses.Add(this);
+                this.id = Utils.NewUid();
             }
 
+            /// <summary>
+            /// Sets encoding
+            /// </summary>
+            /// <param name="encoding"></param>
             internal void setEncoding(string encoding)
             {
                 if (process != null && !String.IsNullOrEmpty(encoding))
@@ -112,14 +131,16 @@ namespace TrifleJS.API.Modules
                 {
                     process.StartInfo.FileName = cmd;
                     process.StartInfo.Arguments = String.Join(" ", args);
+                    process.EnableRaisingEvents = true;
                     process.Exited += Exited;
                     process.OutputDataReceived += OutputDataReceived;
                     process.ErrorDataReceived += ErrorDataReceived;
                     process.Start();
-                    stdOut = "";
-                    stdErr = "";
+                    output = "";
+                    errorOutput = "";
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
+                    ChildProcess.runningProceses.Add(this.id, this);
                     return true;
                 }
                 return false;
@@ -141,9 +162,11 @@ namespace TrifleJS.API.Modules
                     process.StartInfo.Arguments = String.Format("/C \"{0} {1}\"", cmd, String.Join(" ", args));
                     process.Start();
                     process.WaitForExit();
-                    stdOut = process.StandardOutput.ReadToEnd();
-                    stdErr = process.StandardError.ReadToEnd();
+                    output = process.StandardOutput.ReadToEnd();
+                    errorOutput = process.StandardError.ReadToEnd();
+                    exitCode = (int?)process.ExitCode;
                     exited = true;
+                    process.Dispose();
                     return true;
                 }
                 return false;
@@ -155,40 +178,66 @@ namespace TrifleJS.API.Modules
             /// <returns></returns>
             public bool kill()
             {
-                try
+                if (process != null)
                 {
-                    process.Kill();
-                    process.Dispose();
-                    return true;
+                    try
+                    {
+                        process.Kill();
+                        process.Dispose();
+                        return true;
+                    }
+                    catch { }
                 }
-                catch { }
-                return true;
+                return false;
             }
 
+            /// <summary>
+            /// Event handler for Exit.
+            /// NOTE: This executes on a separate thread 
+            /// (the thread of the child process).
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="args"></param>
             private void Exited(object sender, EventArgs args)
             {
                 exited = true;
+                exitCode = (process != null) ? (int?)process.ExitCode : null;
                 if (!String.IsNullOrEmpty(exitCallbackId))
                 {
-                    Callback.ExecuteOnce(exitCallbackId, this);
+                    // We have to ensure that the callback to the V8 API
+                    // is made on the parent thread, otherwise the context 
+                    // will be different and we wont be able to continue.
+                    Callback.Queue(exitCallbackId, true, this.id);
                 }
             }
 
+            /// <summary>
+            /// Event handler for STDOUT.
+            /// NOTE: this executes on a separate thread.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="args"></param>
             private void OutputDataReceived(object sender, DataReceivedEventArgs args)
             {
-                stdOut = String.Format("{0}{1}", stdOut, args.Data);
+                output = String.Format("{0}{1}", output, args.Data);
                 if (!String.IsNullOrEmpty(outputCallbackId))
                 {
-                    Callback.Execute(outputCallbackId, args.Data);
+                    Callback.Queue(outputCallbackId, false, args.Data);
                 }
             }
 
+            /// <summary>
+            /// Event handler for STDERR.
+            /// NOTE: this executes on a separate thread.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="args"></param>
             private void ErrorDataReceived(object sender, DataReceivedEventArgs args)
             {
-                stdErr = String.Format("{0}{1}", stdOut, args.Data);
+                errorOutput = String.Format("{0}{1}", errorOutput, args.Data);
                 if (!String.IsNullOrEmpty(errorCallbackId))
                 {
-                    Callback.Execute(errorCallbackId, args.Data);
+                    Callback.Queue(errorCallbackId, false, args.Data);
                 }
             }
         }

@@ -446,6 +446,7 @@ namespace TrifleJS
             GC.Collect();
             API.Window.CheckTimers();
             API.Modules.WebServer.ProcessConnections();
+            Callback.ProcessQueue();
             System.Windows.Forms.Application.DoEvents();
             Program.InEventLoop = false;
         }

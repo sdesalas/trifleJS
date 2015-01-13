@@ -33,7 +33,16 @@ trifle.modules = trifle.modules || {};
 
 			},
 			execFile: function(cmd, args, opts, callback) {
-			
+				var child_process = this;
+				var complete = function(contextId) {
+					// Execute callback
+					var context = child_process._findContext(contextId);
+					if (context && callback && callback.call) {
+						return callback.call(child_process, null, context.output, context.errorOutput);
+					}
+				};
+				// Execute and return context object
+				return this._execFile(cmd, args || [], opts, (new trifle.Callback(complete)).id);
 			},
 			execSync: function(cmd, args, opts) {
 				if (cmd) {

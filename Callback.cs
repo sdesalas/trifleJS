@@ -12,6 +12,43 @@ namespace TrifleJS
     public class Callback
     {
         /// <summary>
+        /// A queue of pending callbacks that should be executed in
+        /// the V8 environment. This is used for event handling on 
+        /// modules that use a separate thread (ie. ChildProcess), 
+        /// as making the callback inside those threads does not
+        /// expose our current V8 environment.
+        /// </summary>
+        public static Queue<Callback> queue = new Queue<Callback>();
+
+        /// <summary>
+        /// Adds items to the callback queue
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="arguments"></param>
+        public static void Queue(string id, bool once, params object[] arguments) {
+
+            queue.Enqueue(new Callback { Id = id, Once = once, Arguments = arguments } );
+        }
+
+        /// <summary>
+        /// Processes the callback queue 
+        /// (used in the event loop)
+        /// </summary>
+        public static void ProcessQueue() {
+            while(queue.Count > 0) {
+                Callback callback = queue.Dequeue();
+                Callback.Execute(callback.Id, callback.Once, callback.Arguments);
+            }
+        }
+
+        /// <summary>
+        /// Used for queueing callbacks
+        /// </summary>
+        internal string Id {get; set;}
+        internal bool Once { get; set; }
+        internal object[] Arguments { get; set; }
+
+        /// <summary>
         /// Allows callback from C# middleware to the V8 JavaScript Runtime.
         /// Deletes the original callback function.
         /// </summary>

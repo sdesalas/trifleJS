@@ -380,7 +380,7 @@ namespace TrifleJS.API.Modules
                 string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
                 _evaluateJavaScript(script);
                 object result = CurrentFrame.Document.InvokeScript(guid);
-                // Before returning, clear any events
+                // Before returning, clear any IE events
                 // generated as a result of the script
                 Application.DoEvents();
                 return result;
