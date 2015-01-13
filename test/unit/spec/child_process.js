@@ -88,6 +88,8 @@ assert.suite('Module: ChildProcess', function() {
 	assert.section('Asynchronous execution', function() {
 	
 		var finished = false;
+		var version = [];
+		Object.keys(trifle.version).forEach(function(k) {version.push(trifle.version[k]);});
 		var context = child_process.execFile('triflejs.exe', ['--version'], null, function(err, stdout, stderr) {
 			finished = true;
 			assert.ready = true;
@@ -95,10 +97,20 @@ assert.suite('Module: ChildProcess', function() {
 		
 		assert(!!context, '.execFile() returns a context');
 		assert(finished === false, '.execFile() runs asynchronously');
+		
+		assert(context.output === '', 'context.output is an empty string');
+		assert(context.errorOutput === '', 'context.errorOutput is an empty string');
+		assert(context.exited === false, 'context.exited is false');
+		assert(context.exitCode === null, 'context.exitCode is null');
 	
 		assert.waitUntilReady();
 		
+		// Finished
 		assert(finished === true, '.execFile() runs asynchronously');
+		assert(context.output.indexOf(version.join('.')) > 0, 'context.output contains ' + version.join('.'));
+		assert(context.errorOutput === '', 'context.errorOutput is an empty string');
+		assert(context.exited === true, 'context.exited is true');
+		assert(context.exitCode === 0, 'context.exitCode is 0');
 
 	
 	
