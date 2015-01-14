@@ -10,6 +10,24 @@ namespace TrifleJS.API.Modules
     public class ChildProcess 
     {
         /// <summary>
+        /// Invokes process and listens on stdout/stderr
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="args"></param>
+        /// <param name="opts"></param>
+        /// <returns></returns>
+        public Context _spawn(string cmd, string[] args, Dictionary<string, object> opts) {
+            Context context = new Context();
+            if (opts != null)
+            {
+                context.setEncoding(opts.Get<string>("encoding"));
+            }
+            context.start(cmd, args);
+            return context;
+        }
+
+
+        /// <summary>
         /// Executes s file and runs a callback
         /// </summary>
         /// <param name="cmd"></param>
@@ -91,6 +109,9 @@ namespace TrifleJS.API.Modules
             public bool exited { get; set; }
             public int? exitCode { get; set; }
 
+            /// <summary>
+            /// Creates a new execution context for child process
+            /// </summary>
             public Context()
             {
                 process = new Process
@@ -104,6 +125,8 @@ namespace TrifleJS.API.Modules
                         WorkingDirectory = Phantom.libraryPath
                     }
                 };
+                // Give the context a UID so we can find it 
+                // when returning to the V8 context
                 this.id = Utils.NewUid();
             }
 
@@ -121,7 +144,7 @@ namespace TrifleJS.API.Modules
             }
 
             /// <summary>
-            /// Runs a process asynchronously 
+            /// Starts an asynchronous process and listens on stdout/stderr
             /// </summary>
             /// <param name="cmd"></param>
             /// <param name="args"></param>
@@ -147,7 +170,7 @@ namespace TrifleJS.API.Modules
             }
 
             /// <summary>
-            /// Runs a process syncronously
+            /// Runs a process syncronously and waits for execution
             /// </summary>
             /// <param name="cmd"></param>
             /// <param name="args"></param>
@@ -204,9 +227,11 @@ namespace TrifleJS.API.Modules
                 exitCode = (process != null) ? (int?)process.ExitCode : null;
                 if (!String.IsNullOrEmpty(exitCallbackId))
                 {
-                    // We have to ensure that the callback to the V8 API
+                    // We need to ensure that the callback to the V8 API
                     // is made on the parent thread, otherwise the context 
                     // will be different and we wont be able to continue.
+                    // SOLUTION: Queue up the callback ID (+ any arguments)
+                    // and wait for main thread to pick it up.
                     Callback.Queue(exitCallbackId, true, this.id);
                 }
             }

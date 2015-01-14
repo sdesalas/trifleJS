@@ -111,17 +111,53 @@ assert.suite('Module: ChildProcess', function() {
 		assert(context.errorOutput === '', 'context.errorOutput is an empty string');
 		assert(context.exited === true, 'context.exited is true');
 		assert(context.exitCode === 0, 'context.exitCode is 0');
-
-	
 	
 	});
 
 	
-
-
 	// --------------------------------------------
-	assert.section('Event handling');
-	// --------------------------------------------
+	assert.section('Event handling', function() {
+	
+		var finished = false;
+		var context = child_process.spawn('triflejs.exe', ['--help']);
+		var stdout1 = [], stdout2 = [], stdout3 = [];
+		var stderr1 = [], stdout2 = [], stdout3 = [];
+		
+		assert(!!context, '.spawn() returns a context');
+		assert(finished === false, '.spawn() runs asynchronously');
+
+		assert(context.output === '', 'context.output is an empty string');
+		assert(context.errorOutput === '', 'context.errorOutput is an empty string');
+		assert(context.exited === false, 'context.exited is false');
+		assert(context.exitCode === null, 'context.exitCode is null');
+
+		// Try different subscription methods
+
+		// Default
+		child_process.on("stdout", function(data) {
+			stdout1.push(data);	
+		});
+		
+		// Via child
+		child_process.stdout.on("data", function(data) {
+			stdout2.push(data);
+		});
+		
+		// Via Setter
+		child_process.onStdOut = function(data) {
+			stdout3.push(data);
+		}
+		
+		child_process.on("exit", function() {
+			assert.ready = true;
+		});
+	
+		assert.waitUntilReady();
+		
+		assert(finished === true, '.spawn() runs asynchronously');
+
+	
+	});
 
 
 });

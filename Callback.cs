@@ -25,8 +25,8 @@ namespace TrifleJS
         /// </summary>
         /// <param name="id"></param>
         /// <param name="arguments"></param>
-        public static void Queue(string id, bool once, params object[] arguments) {
-
+        public static void Queue(string id, bool once, params object[] arguments) 
+        {
             queue.Enqueue(new Callback { Id = id, Once = once, Arguments = arguments } );
         }
 
@@ -34,8 +34,10 @@ namespace TrifleJS
         /// Processes the callback queue 
         /// (used in the event loop)
         /// </summary>
-        public static void ProcessQueue() {
-            while(queue.Count > 0) {
+        public static void ProcessQueue()
+        {
+            while (queue.Count > 0)
+            {
                 Callback callback = queue.Dequeue();
                 Callback.Execute(callback.Id, callback.Once, callback.Arguments);
             }

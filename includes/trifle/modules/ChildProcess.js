@@ -29,8 +29,9 @@ trifle.modules = trifle.modules || {};
 		
 		// Additional methods
 		methods: {
-			spawn: function(cmd, args) {
-
+			spawn: function(cmd, args, opts) {
+				// Execute and return context object
+				return this._spawn(cmd, args || [], opts);
 			},
 			execFile: function(cmd, args, opts, callback) {
 				var child_process = this;
