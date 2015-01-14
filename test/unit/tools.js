@@ -38,12 +38,8 @@ assert.isError = function(callback, message) {
 	assert.fail(message);
 }
 
-assert.checkMembers = function(scope, objName, config) {
-	if (scope && objName && config) {
-		var obj = scope[objName];
-		if (typeof obj === 'undefined') {
-			obj = scope;
-		}
+assert.checkMembers = function(obj, objName, config) {
+	if (obj && objName && config) {
 		if (config instanceof Array) {
 			config.forEach(function(prop) {
 				assert(typeof obj[prop] !== 'undefined', objName + '.' + prop + ' exists');

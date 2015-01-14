@@ -15,8 +15,6 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('Global objects', function() {
 	
-		this['GLOBAL'] = this;
-	
 		assert.checkMembers(this, 'GLOBAL', {
 			'window': 'object',
 			'navigator': 'object',
@@ -31,14 +29,12 @@ assert.suite('Global Environment', function() {
 			'phantom': 'object'
 		});
 		
-		delete this['GLOBAL'];
-		
 	});
 	
 	// --------------------------------------------
 	assert.section('Console object', function() {
 	
-		assert.checkMembers(this, 'console', {
+		assert.checkMembers(console, 'console', {
 			'clear': 'function',
 			'log': 'function',
 			'warn': 'function',
@@ -52,7 +48,7 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('Window object', function() {
 	
-		assert.checkMembers(this, 'window', {
+		assert.checkMembers(window, 'window', {
 			setTimeout: 'function',
 			setInterval: 'function',
 			clearTimeout: 'function',
@@ -129,7 +125,7 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('Navigator object', function() {
 	
-		assert.checkMembers(window, 'navigator', {
+		assert.checkMembers(navigator, 'navigator', {
 			appCodeName: 'string',
 			appName: 'string',
 			appVersion: 'string',
@@ -149,7 +145,7 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('Location object', function() {
 	
-		assert.checkMembers(window, 'location', {
+		assert.checkMembers(location, 'location', {
 			hash: 'string',
 			host: 'string',
 			hostname: 'string',
@@ -165,7 +161,86 @@ assert.suite('Global Environment', function() {
 	
 	
 	// --------------------------------------------
-	assert.section('Event Handling');
+	assert.section('Event Handling', function() {
+	
+		var observable = new Object();
+		var loading1, loading2, loading1_1, loading2_1, loading_scope1, loading_scope2;
+		var ready1, ready2, ready1_1, ready2_1, ready_scope1, ready_scope2, ready_scope2_2;
+		var loadingCount = 0, readyCount = 0;
+		
+		Object.addEvent(observable, "onLoading");
+		Object.addEvent(observable, "onReady", true);
+		
+		assert.checkMembers(observable, 'observable', {
+			listeners: 'object',
+			fireEvent: 'function',
+			on: 'function',
+			onLoading: 'object',
+			onReady: 'object'
+		});
+		
+		observable.on("loading", function(value) { loading1 = value + loadingCount; loading_scope1 = this; loadingCount++; });	
+		observable.onLoading = function(value) { loading2 = value + loadingCount; loading_scope2 = this; loadingCount++; }
+		observable.on("loading", function(value) { loading1_1 = value + loadingCount; loadingCount++; });
+		observable.onLoading = function(value) { loading2_2 = value + loadingCount; loadingCount++; }
+		
+		observable.on("ready", function(value) { ready1 = value + readyCount; ready_scope1 = this; readyCount++; });	
+		observable.onReady = function(value) { ready2 = value + readyCount; ready_scope2 = this; readyCount++; }
+		observable.on("ready", function(value) { ready1_1 = value + readyCount; readyCount++; });
+		observable.onReady = function(value) { ready2_2 = value + readyCount;  ready_scope2_2 = this; readyCount++; }
+
+		assert(loading1 === undefined, 'Variables are undefined before firing event');
+		assert(loading2 === undefined, 'Variables are undefined before firing event');
+		assert(loadingCount === 0, 'Count has not increased before firing event');
+		assert(ready1 === undefined, 'Variables are undefined before firing event');
+		assert(ready2 === undefined, 'Variables are undefined before firing event');
+		assert(readyCount === 0, 'Count has not increased before firing event');
+	
+		assert(typeof observable.listeners === 'object', 'obj.listeners contains the object listeners');
+		assert(typeof observable.listeners.loading === 'object', 'object.listeners[event] contains the event information');
+		assert(observable.listeners.loading.callbacks instanceof Array, 'object.listeners[event].callbacks contains the current callbacks');
+		assert(observable.listeners.loading.callbacks.length === 4, 'object.listeners[event].callbacks contains 4 callbacks');
+		assert(observable.listeners.loading.callbacks === observable.onLoading, 'observable.onEvent contains an array with callbacks');
+		assert(typeof observable.listeners.ready === 'object', 'object.listeners[event] contains the event information');
+		assert(observable.listeners.ready.callbacks instanceof Array, 'object.listeners[event].callbacks contains the current callbacks');
+		assert(observable.listeners.ready.callbacks.length === 1, 'object.listeners[event].callbacks contains 1 callback (unique event)');
+		assert(observable.listeners.ready.callbacks === observable.onReady, 'observable.onEvent contains an array with callbacks');
+		
+		observable.fireEvent("loading", "loading argument");
+		
+		assert(loading1 === "loading argument0", 'The 1st #loading event fired succesfully');
+		assert(loading2 === "loading argument1", 'The 1st #onLoading event fired successfully');
+		assert(loading1_1 === "loading argument2", 'The 2nd #loading event fired succesfully');
+		assert(loading2_2 === "loading argument3", 'The 2nd #onLoading event fired successfully');
+		assert(loading_scope1 === observable, 'The scope during #loading event is the actual object');
+		assert(loading_scope2 === observable, 'The scope during #onLoading event is the actual object');
+		assert(loadingCount === 4, 'The #loading event fired once per listener');
+
+		assert(ready1 === undefined, '1st #ready event variable undefined before firing');
+		assert(ready2 === undefined, '1st #onReady event variable undefined before firing');
+		assert(ready_scope1 === undefined, '2nd #ready event variable undefined before firing');
+		assert(ready_scope2 === undefined, '2nd #onReady event variable undefined before firing');
+		assert(readyCount === 0, '#ready event did not trigger when loading was fired');
+
+		observable.fireEvent("ready", "ready argument");
+
+		assert(loading1 === "loading argument0", 'The 1st #loading event data did not fire or change');
+		assert(loading2 === "loading argument1", 'The 1st #onLoading event did not fire or change');
+		assert(loading1_1 === "loading argument2", 'The 2nd #loading event did not fire or change');
+		assert(loading2_2 === "loading argument3", 'The 2nd #onLoading event did not fire or change');
+		assert(loadingCount === 4, 'The #loading event did not fire a second time');
+
+		assert(ready1 === undefined, 'The 1st #ready event did not fire (unique event)');
+		assert(ready2 === undefined, 'The 1st #onReady event defined did not fire (unique event)');
+		assert(ready1_1 === undefined, 'The 2nd #ready event did not fire (unique event).');
+		assert(ready2_2 === "ready argument0", 'Only the last #onReady event handler fired (unique event)');
+		assert(ready_scope1 === undefined, 'The scope during 1st #ready event not defined (unique event)');
+		assert(ready_scope2 === undefined, 'The scope during 1st #onReady event not defined (unique event)');
+		assert(ready_scope2_2 === observable, 'The scope during last #onReady event is the actual object');
+		assert(readyCount === 1, 'The #ready event fired once as it is unique.');
+
+
+	});
 
 
 

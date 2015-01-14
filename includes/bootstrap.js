@@ -90,58 +90,79 @@
 	// Internal event handling 
 	// @usage
 	// Object.addEvent(phantom, 'onError', true);
-	// Object.addEvent(page, 'onAlert');
-	Object.addEvent = function(obj, eventName, unique) {
-		if (obj && typeof eventName === 'string') {
+	// phantom.on('error', function(e) { var message = e.message; }
+	// phantom.onError = function(e) {var message = e.message; };
+	Object.addEvent = function(obj, eventFullName, unique) {
+		if (obj && typeof eventFullName === 'string' && eventFullName.length > 2) {
 			// Add event handling capability
+			if (eventFullName.substr(0, 2) !== 'on') {
+				throw new Error("Event names should start with 'on'");
+			}
+			var eventName = eventFullName.substr(2).toLowerCase();
 			obj.listeners = obj.listeners || {};
+			obj.listeners[eventName] = {callbacks: [], unique: unique}
 			obj.fireEvent = function() {
-				if (arguments.length && obj.listeners) {
+				if (arguments.length && this.listeners) {
 					var name = Array.prototype.shift.call(arguments);
-					var listeners = obj.listeners[name];
-					if (listeners && listeners.length) {
-						for(var i = 0; i < listeners.length; i++) {
-							listeners[i].apply(obj, arguments);
+					var listener = this.listeners[name];
+					if (listener && listener.callbacks) {
+						for(var i = 0; i < listener.callbacks.length; i++) {
+							listener.callbacks[i].apply(this, arguments);
 						}
 						return true;
 					}
 				}
 				return false;
 			};
-			// Use setter/getter for event handling
-			Object.defineProperty(obj, eventName, {
-				set: function(listener) {
-					if (obj.listeners) {
-						if (typeof listener === 'function') {
-							// Unique events only ever have one listener
-							if (unique) {
-								obj.listeners[eventName] = [listener];
-							} else {
-								obj.listeners[eventName] = obj.listeners[eventName] || [];
-								obj.listeners[eventName].push(listener);
-							}
-						} else if (listener === null) {
-							// Setting listener to null will wipe existing handler(s)
-							delete obj.listeners[eventName];
+			obj.on = function(name, func) {
+				if (name && func && obj.listeners) {
+					if (!obj.listeners[name]) {
+						obj.listeners[name] = {};
+					}
+					var event = obj.listeners[name];
+					if (typeof func === 'function') {
+						// Unique events only ever have one listener
+						if (event.unique) {
+							event.callbacks = [func];
+						} else {
+							event.callbacks = event.callbacks || [];
+							event.callbacks.push(func);
 						}
 					}
-				},
-				get: function() {
-					if (obj.listeners) {
-						return obj.listeners[eventName] || [];
-					}
 				}
-			});
+			}
+			// Use a function call to store event names in closure scope.
+			// We need to do this as a getter/setter does not know its own name
+			// when executing.
+			var ___defineGetterSetter = function (eventName, eventFullName) {
+				// Use setter/getter for event handling
+				Object.defineProperty(obj, eventFullName, {
+					set: function(listener) {
+						if (this.listeners) {
+							if (typeof listener === 'function') {
+								this.on(eventName, listener);
+							} else if (listener === null) {
+								// Setting listener to null will wipe existing handler(s)
+								delete this.listeners[eventName];
+							}
+						}
+					},
+					get: function() {
+						if (this.listeners && this.listeners[eventName]) {
+							return this.listeners[eventName].callbacks || [];
+						}
+					}
+				});
+			}
+			___defineGetterSetter(eventName, eventFullName);
 		}
 	};
 	
     // Initialise phantom object
     var phantom = GLOBAL.phantom = API.phantom;
 
-
 	// Define phantom event handler
 	Object.addEvent(phantom, 'onError', true);
-
 
     // TrifleJS object
     var trifle = GLOBAL.trifle = {
