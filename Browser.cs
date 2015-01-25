@@ -234,7 +234,12 @@ namespace TrifleJS
         /// <returns></returns>
         public Bitmap Render()
         {
-            return Render(this.Width, this.Height);
+            // Resize to full page size before rendering
+            Size oldSize = this.Size;
+            this.Size = PageSize;
+            Bitmap result = Render(this.Width, this.Height);
+            this.Size = oldSize;
+            return result;
         }
 
         /// <summary>
@@ -244,7 +249,28 @@ namespace TrifleJS
         /// <returns></returns>
         public Bitmap Render(double ratio)
         {
-            return Render(Convert.ToInt32(this.Width * ratio), Convert.ToInt32(this.Height * ratio));
+            // Resize to full page size before rendering
+            Size oldSize = this.Size;
+            this.Size = PageSize;
+            Bitmap result = Render(Convert.ToInt32(this.Width * ratio), Convert.ToInt32(this.Height * ratio));
+            this.Size = oldSize;
+            return result;
+        }
+
+        /// <summary>
+        /// Full-height page size after rendering HTML
+        /// </summary>
+        private Size PageSize {
+            get {
+                if (this.Document != null && this.Document.Body != null && this.Document.Body.ScrollRectangle != null)
+                {
+                    // Add 50 pixels to the bottom of the screen
+                    // to avoid scrolling bars.
+                    Size size = this.Document.Body.ScrollRectangle.Size;
+                    return new Size(this.Size.Width, size.Height + 50);
+                }
+                return this.Size;
+            }
         }
 
         /// <summary>
