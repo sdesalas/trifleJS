@@ -247,6 +247,12 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <NativeReference Include="Microsoft.VC90.CRT, Version=9.0.30729.6161, PublicKeyToken=1fc8b3b9a1e18e3b, ProcessorArchitecture=x86, Type=win32">
+      <Name>Microsoft.VC90.CRT.manifest</Name>
+      <HintPath>Libs\Microsoft.VC90.CRT.manifest</HintPath>
+    </NativeReference>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="test\casper\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
