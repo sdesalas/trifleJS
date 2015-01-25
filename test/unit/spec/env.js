@@ -159,6 +159,43 @@ assert.suite('Global Environment', function() {
 		
 	});
 	
+	// --------------------------------------------
+	assert.section('trifle object', function() {
+	
+		assert.checkMembers(trifle, 'trifle', {
+			version: 'object',
+			emulation: 'string',
+			wait: 'function',
+			extend: 'function',
+			Callback: 'function'
+		});
+		
+	});
+	
+	
+	// --------------------------------------------
+	assert.section('trifle.Callback class', function() {
+	
+		assert.checkMembers(trifle.Callback, 'trifle.Callback', {
+			newUid: 'function',
+			execute: 'function',
+			executeOnce: 'function',
+			id: 'function'
+		});
+		
+		var scope =  {};
+		var args = [];
+		var callback = new trifle.Callback(function() {}, scope, args);
+		
+		assert.checkMembers(callback, 'callback', {
+			id: 'string',
+			func: 'function',
+			scope: 'object',
+			defaultArgs: 'object'
+		});
+		
+	});
+	
 	
 	// --------------------------------------------
 	assert.section('Event Handling', function() {

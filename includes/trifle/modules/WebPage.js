@@ -16,6 +16,9 @@ this.trifle.modules = this.trifle.modules || {};
 // Wrap code to avoid global vars
 (function (trifle) {
 
+	// Private
+	var Callback = trifle.Callback;
+	
     // Define Module
     var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = trifle.extend({
 		
@@ -80,7 +83,7 @@ this.trifle.modules = this.trifle.modules || {};
 					}
 				};
 				// Open URL in .NET API
-				return this._open(url, method, data, (new trifle.Callback(complete)).id);
+				return this._open(url, method, data, Callback.id(complete));
 			},
 
             // Executes a JavaScript code string in the browser
@@ -139,7 +142,7 @@ this.trifle.modules = this.trifle.modules || {};
 					// Set current page (for WebPage events)
 					WebPage.current = this;
 					// Execute JS on IE host
-					return this._includeJs(url, (new trifle.Callback(complete)).id);
+					return this._includeJs(url, Callback.id(complete));
 				}
 			},
 

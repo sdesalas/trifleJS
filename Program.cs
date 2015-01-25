@@ -14,6 +14,7 @@ namespace TrifleJS
         public static API.Context Context { get; set; }
         public static string[] Args { get; set; }
         public static bool Verbose { get; set; }
+        public static bool Testing { get; set; }
         public static bool ParanoidMode { get; set; }
         public static bool InEventLoop { get; set; }
 
@@ -37,7 +38,7 @@ namespace TrifleJS
             Console.WriteLine("Usage: triflejs.exe [options] somescript.js [argument [argument [...]]]");
             Console.WriteLine();
             Console.WriteLine("Options: ");
-            Console.WriteLine("  --debug                     Prints additional warning and debug messages");
+            Console.WriteLine("  --debug=[true|false]        Prints additional warning and debug messages");
             //Console.WriteLine("  --ignore-ssl-errors=[true|false]  Ignores SSL errors (cert expired, invalid etc). Defaults to 'false'.");
             Console.WriteLine("  --render=[url]              Opens a url, renders into a file and quits");
             Console.WriteLine("  --emulate=[version]         Emulates earlier version of IE (IE7, IE8, IE9 ..)");
@@ -101,7 +102,7 @@ namespace TrifleJS
                         Help();
                         return;
                     case "--debug":
-                        Program.Verbose = true;
+                        Program.Verbose = arg.Replace("--debug=", "").ToLower() != "false";
                         break;
                     case "-v":
                     case "--version":
@@ -240,12 +241,13 @@ namespace TrifleJS
         public static void Exit(int exitCode)
         {
             Proxy.Backup.Restore();
-#if DEBUG
-            // Debugging? Wait for input
-            Console.WriteLine();
-            Console.WriteLine("Press any key to finish...");
-            Console.Read();
-#endif
+            if (Program.Verbose || Program.Testing)
+            {
+                // Debugging/Testing? Wait for input
+                Console.WriteLine();
+                Console.WriteLine("Press any key to finish...");
+                Console.Read();
+            }
             Environment.Exit(exitCode);
         }
 
@@ -304,7 +306,8 @@ namespace TrifleJS
             Console.WriteLine("TrifleJS -- Unit Tests");
             Console.WriteLine("============================================");
 
-            Program.Verbose = false; 
+            Program.Verbose = false;
+            Program.Testing = true;
 
             using (Program.Context = Initialise())
             {
@@ -406,7 +409,7 @@ namespace TrifleJS
             if (!File.Exists(filename))
             {
                 Console.Error.WriteLine(String.Format("File does not exist: {0}", filename));
-                return;
+                Exit(1);
             }
 
             //Initialize a context

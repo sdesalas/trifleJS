@@ -16,6 +16,9 @@ trifle.modules = trifle.modules || {};
 // Wrap code to avoid global vars
 (function (trifle) {
 
+	// Private
+	var Callback = trifle.Callback;
+
     // Define Module
     var WebServer = trifle.modules.WebServer = trifle.extend({
 		
@@ -66,7 +69,7 @@ trifle.modules = trifle.modules || {};
 					}
 				};
 				// Start listening on binding
-				return API._listen(binding, (new trifle.Callback(complete)).id);
+				return API._listen(binding, Callback.id(complete));
 			}
         }
     });

@@ -60,6 +60,11 @@ this.trifle = this.trifle || {};
             delete callbacks[id];
         }
     }
+    
+    // Generates a callback and returns the id
+    Callback.id = function(func, scope, defaultArgs) {
+		return (new Callback(func, scope, defaultArgs)).id;
+    };
 
 
 })(this.trifle);

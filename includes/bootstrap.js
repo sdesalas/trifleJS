@@ -34,9 +34,9 @@
         setTimeout: function(callback, ms) {
             console.xdebug('window.setTimeout(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return this.SetTimeout((new trifle.Callback(function() {
+                return this.SetTimeout(trifle.Callback.id(function() {
                     callback.call(window);
-                })).id, ms);
+                }), ms);
             }
         },
         clearTimeout: function(id) {
@@ -48,9 +48,9 @@
         setInterval: function(callback, ms) {
             console.xdebug('window.setInterval(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return this.SetInterval((new trifle.Callback(function() {
+                return this.SetInterval(trifle.Callback.id(function() {
                     callback.call(window);
-                })).id, ms);
+                }), ms);
             }
         },
         clearInterval: function(id) {

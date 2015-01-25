@@ -121,7 +121,8 @@ assert.suite('Module: ChildProcess', function() {
 		var finished = false;
 		var context = child_process.spawn('triflejs.exe', ['--help']);
 		var stdout1 = [], stdout2 = [], stdout3 = [];
-		var stderr1 = [], stdout2 = [], stdout3 = [];
+		var stderr1 = [], stderr2 = [], stderr3 = [];
+		var returnCode = null;
 		
 		assert(!!context, '.spawn() returns a context');
 		assert(finished === false, '.spawn() runs asynchronously');
@@ -134,28 +135,90 @@ assert.suite('Module: ChildProcess', function() {
 		// Try different subscription methods
 
 		// Default
-		child_process.on("stdout", function(data) {
-			stdout1.push(data);	
-		});
+		context.on("stdout", function(data) { stdout1.push(data); });
+		context.on("stderr", function(data) { stderr1.push(data); });
 		
-		// Via child
-		child_process.stdout.on("data", function(data) {
-			stdout2.push(data);
-		});
+		// Via child 'fakestream'
+		context.stdout.on("data", function(data) { stdout2.push(data); });
+		context.stderr.on("data", function(data) { stderr2.push(data); });
 		
 		// Via Setter
-		child_process.onStdOut = function(data) {
-			stdout3.push(data);
-		}
+		context.onStdOut = function(data) { stdout3.push(data); }
+		context.onStdErr = function(data) { stderr3.push(data); }
 		
-		child_process.on("exit", function() {
+		context.on("exit", function(code) {
+			finished = true;
+			returnCode = code;
 			assert.ready = true;
 		});
 	
 		assert.waitUntilReady();
 		
 		assert(finished === true, '.spawn() runs asynchronously');
+		assert(returnCode === 0, 'context#exit event has a return code of 0 as argument');
 
+		assert(stdout1.length > 10, 'context#stdout returns some data.');
+		assert(stdout1.length === stdout2.length && stdout2.length === stdout3.length, 'There are 3 valid ways to subscribe to stdout event data');
+		assert(stdout1.join('') === stdout2.join('') && stdout2.join('') === stdout3.join(''), 'All 3 stdout event subscription methods return same data');
+		assert(stdout1.join('') === context.output, 'context#stdout returns actual output');
+		assert(context.output.indexOf('Headless automation for Internet Explorer') > -1, 'context#stdout returns actual output');
+
+		assert(stderr1.length === 0, 'context#stderr returns no data.');
+		assert(stderr1.length === stderr2.length && stderr2.length === stderr3.length, 'There are 3 valid ways to subscribe to stderr event data');
+		assert(stderr1.join('') === stderr2.join('') && stderr2.join('') === stderr3.join(''), 'All 3 stderr event subscription methods return same data');
+		assert(stderr1.join('') === context.errorOutput, 'context#stderr returns actual error output');
+	
+	});
+	
+	
+	// --------------------------------------------
+	assert.section('Error handling', function() {
+	
+		var finished = false;
+		var context = child_process.spawn('triflejs.exe', ['--debug=false', 'unknown.js']);
+		var stdout1 = [], stdout2 = [], stdout3 = [];
+		var stderr1 = [], stderr2 = [], stderr3 = [];
+		var returnCode = null;
+		
+		assert(!!context, '.spawn() returns a context');
+		assert(finished === false, '.spawn() runs asynchronously');
+
+		// Try different subscription methods
+
+		// Default
+		context.on("stdout", function(data) { stdout1.push(data); });
+		context.on("stderr", function(data) { stderr1.push(data); });
+		
+		// Via child 'fakestream'
+		context.stdout.on("data", function(data) { stdout2.push(data); });
+		context.stderr.on("data", function(data) { stderr2.push(data); });
+		
+		// Via Setter
+		context.onStdOut = function(data) { stdout3.push(data); }
+		context.onStdErr = function(data) { stderr3.push(data); }
+		
+		context.on("exit", function(code) {
+			finished = true;
+			returnCode = code;
+			assert.ready = true;
+		});
+	
+		assert.waitUntilReady();
+		
+		assert(finished === true, '.spawn() runs asynchronously');
+		assert(returnCode === 1, 'context#exit event has a return code of 1 as argument');
+
+		assert(stdout1.length === 1, 'context#stdout returns one line of data.');
+		assert(stdout1.length === stdout2.length && stdout2.length === stdout3.length, 'There are 3 valid ways to subscribe to stdout event data');
+		assert(stdout1.join('') === stdout2.join('') && stdout2.join('') === stdout3.join(''), 'All 3 stdout event subscription methods return same data');
+		assert(stdout1.join('') === context.output, 'context#stdout returns actual output');
+
+		assert(stderr1.length > 0, 'context#stderr returns some data.');
+		assert(stderr1.length === stderr2.length && stderr2.length === stderr3.length, 'There are 3 valid ways to subscribe to stderr event data');
+		assert(stderr1.join('') === stderr2.join('') && stderr2.join('') === stderr3.join(''), 'All 3 stderr event subscription methods return same data');
+		assert(stderr1.join('') === context.errorOutput, 'context#stderr returns actual error output');
+		assert(context.errorOutput.indexOf('File does not exist') > -1, 'context#stderr returns actual error output');
+	
 	
 	});
 

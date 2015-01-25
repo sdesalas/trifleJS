@@ -16,16 +16,19 @@ namespace TrifleJS.API.Modules
         /// <param name="args"></param>
         /// <param name="opts"></param>
         /// <returns></returns>
-        public Context _spawn(string cmd, string[] args, Dictionary<string, object> opts) {
+        public Context _spawn(string cmd, string[] args, Dictionary<string, object> opts, string exitCallbackId, string stdOutCallbackId, string stdErrCallbackId)
+        {
             Context context = new Context();
             if (opts != null)
             {
                 context.setEncoding(opts.Get<string>("encoding"));
             }
+            context.exitCallbackId = exitCallbackId;
+            context.outputCallbackId = stdOutCallbackId;
+            context.errorCallbackId = stdErrCallbackId;
             context.start(cmd, args);
             return context;
         }
-
 
         /// <summary>
         /// Executes s file and runs a callback
@@ -35,12 +38,13 @@ namespace TrifleJS.API.Modules
         /// <param name="opts"></param>
         /// <param name="callbackId"></param>
         /// <returns></returns>
-        public Context _execFile(string cmd, string[] args, Dictionary<string, object> opts, string callbackId) { 
+        public Context _execFile(string cmd, string[] args, Dictionary<string, object> opts, string exitCallbackId)
+        { 
             Context context = new Context();
             if (opts != null) {
                 context.setEncoding(opts.Get<string>("encoding"));
             }
-            context.exitCallbackId = callbackId;
+            context.exitCallbackId = exitCallbackId;
             context.start(cmd, args);
             return context;
         }
@@ -232,7 +236,7 @@ namespace TrifleJS.API.Modules
                     // will be different and we wont be able to continue.
                     // SOLUTION: Queue up the callback ID (+ any arguments)
                     // and wait for main thread to pick it up.
-                    Callback.Queue(exitCallbackId, true, this.id);
+                    Callback.Queue(exitCallbackId, true, this.id, exitCode);
                 }
             }
 
@@ -245,7 +249,7 @@ namespace TrifleJS.API.Modules
             private void OutputDataReceived(object sender, DataReceivedEventArgs args)
             {
                 output = String.Format("{0}{1}", output, args.Data);
-                if (!String.IsNullOrEmpty(outputCallbackId))
+                if (!String.IsNullOrEmpty(outputCallbackId) && args.Data != null)
                 {
                     Callback.Queue(outputCallbackId, false, args.Data);
                 }
@@ -260,7 +264,7 @@ namespace TrifleJS.API.Modules
             private void ErrorDataReceived(object sender, DataReceivedEventArgs args)
             {
                 errorOutput = String.Format("{0}{1}", errorOutput, args.Data);
-                if (!String.IsNullOrEmpty(errorCallbackId))
+                if (!String.IsNullOrEmpty(errorCallbackId) && args.Data != null)
                 {
                     Callback.Queue(errorCallbackId, false, args.Data);
                 }
