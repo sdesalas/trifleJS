@@ -152,6 +152,9 @@
     <Content Include="examples\simpleserver.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="examples\staticserver.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="examples\test.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
