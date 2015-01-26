@@ -24,6 +24,9 @@ namespace TrifleJS
         public Browser()
             : base()
         {
+            // Suppress Javascript error popups
+            this.ScriptErrorsSuppressed = true;
+
             // Make sure we track which frames IE is focused on as a result
             // of javascript or mouse/keyboard events.
             this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
