@@ -60,7 +60,7 @@ Some items that are being deliberately left out:
 
 This code is still very much in beta. Check again for updates.
 
-- [Latest Stable `v0.4`](https://github.com/sdesalas/trifleJS/releases/download/v0.4/TrifleJS.zip)
+- [Stable `v0.4`](https://github.com/sdesalas/trifleJS/releases/download/v0.4/TrifleJS.zip)
 - [Latest Beta `v0.5`](https://github.com/sdesalas/trifleJS/raw/master/Build/Binary/TrifleJS.Latest.zip)
 
 If you are not sure which version to use then download the ‘Latest Stable’ version.
