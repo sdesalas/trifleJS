@@ -24,6 +24,9 @@ namespace TrifleJS
         public Browser()
             : base()
         {
+            // Suppress Javascript error popups
+            this.ScriptErrorsSuppressed = true;
+
             // Make sure we track which frames IE is focused on as a result
             // of javascript or mouse/keyboard events.
             this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
@@ -91,13 +94,9 @@ namespace TrifleJS
                 }
                 Utils.Debug("Setting Version to " + ieVersion);
                 API.Trifle.Emulation = ieVersion;
-#if DEBUG
-                Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
-                Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.vshost.exe", dWord, RegistryValueKind.DWord);
-#else 
-                Utils.TryWriteRegistryKey(IEEmulationPathx32, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
-                Utils.TryWriteRegistryKey(IEEmulationPathx64, "TrifleJS.exe", dWord, RegistryValueKind.DWord);
-#endif
+
+                Utils.TryWriteRegistryKey(IEEmulationPathx32, AppDomain.CurrentDomain.FriendlyName, dWord, RegistryValueKind.DWord);
+                Utils.TryWriteRegistryKey(IEEmulationPathx64, AppDomain.CurrentDomain.FriendlyName, dWord, RegistryValueKind.DWord);
             }
             catch {
                 Console.Error.WriteLine(String.Format("Unrecognized IE Version \"{0}\". Choose from \"IE7\", \"IE8\", \"IE9\", \"IE10\" or \"IE11\".", ieVersion));
