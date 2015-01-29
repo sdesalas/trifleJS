@@ -113,7 +113,7 @@ this.trifle.modules = this.trifle.modules || {};
 					// Set current page (for WebPage events)
 					WebPage.current = this;
 					// Execute JS on IE host
-					return this._evaluate(func.toString(), args);
+					return JSON.parse(this._evaluate(func.toString(), args));
 				}
 				return null;
 			},

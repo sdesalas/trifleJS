@@ -170,6 +170,15 @@ assert.suite('Module: WebPage', function() {
         
         assert(evaluateResult === 'Test Page Titlemessage 12345678 falseNaNnullundefined', 'page.evaluate can run scripts and return values from the page');
 		assert(page.windowName === 'test-window', 'page.windowName is set correctly');
+		
+		var evaluateResult = page.evaluate(function() {
+			return {string9924: "result3924", int9924: 3924, array9924: ['1', '2']};
+		});
+		
+        assert(typeof evaluateResult === 'object', 'page.evaluate can return objects');
+        assert(evaluateResult.string9924 === 'result3924', 'page.evaluate can return objects with strings');
+        assert(evaluateResult.int9924 === 3924, 'page.evaluate can return objects with numbers');
+        assert(evaluateResult.array9924.length === 2, 'page.evaluate can return objects with arrays');
         
 		page.evaluateJavaScript('var message = "hello from ie";');
 		
