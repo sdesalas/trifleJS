@@ -12,6 +12,8 @@
     <AssemblyName>TrifleJS</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <StartupObject>TrifleJS.Program</StartupObject>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -169,6 +171,7 @@
     <Content Include="examples\version.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="favicon.ico" />
     <Content Include="includes\trifle\modules\ChildProcess.js" />
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
