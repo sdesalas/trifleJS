@@ -218,7 +218,7 @@ namespace TrifleJS
         /// </summary>
         /// <param name="filename">path where the screenshot is saved</param>
         /// <param name="ratio">zoom ratio</param>
-        /// <param name="clipRect">Part of the imaeg captured - Only Height and Width are used right now</param>
+        /// <param name="clipRect">Part of the image captured</param>
         public void Render(string filename, double ratio, Rectangle clipRect)
         {
             using (var pic = this.Render(ratio, clipRect))

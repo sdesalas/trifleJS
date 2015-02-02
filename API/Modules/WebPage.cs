@@ -820,17 +820,19 @@ namespace TrifleJS.API.Modules
                         Int32.TryParse(clipRect["width"].ToString(), out width);
                     if (clipRect.ContainsKey("height") && clipRect["height"] != null) 
                         Int32.TryParse(clipRect["height"].ToString(), out height);
+
+                    if (top < 0) top = 0;
+                    if (left < 0) left = 0;
+
                     if (browser != null)
                     {
-                        if (top < 0) top = 0;
-                        if (left < 0) left = 0;
                         if (width == 0) width = browser.Document.Window.Size.Width;
                         if (height == 0) height = browser.Document.Window.Size.Height;
                     }
                     return new Rectangle(top, left, width, height);
                 }
-                catch(Exception e) {
-                    global::System.Console.WriteLine(e);
+                catch(Exception ex) {
+                    Utils.Debug(ex.Message);
                 }
                 return new Rectangle();
             }
