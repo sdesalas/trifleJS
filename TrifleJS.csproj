@@ -12,12 +12,8 @@
     <AssemblyName>TrifleJS</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
+    <StartupObject>TrifleJS.Program</StartupObject>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -177,6 +173,7 @@
     <Content Include="examples\version.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="favicon.ico" />
     <Content Include="includes\trifle\modules\ChildProcess.js" />
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
@@ -253,12 +250,6 @@
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <NativeReference Include="Microsoft.VC90.CRT, Version=9.0.30729.6161, PublicKeyToken=1fc8b3b9a1e18e3b, ProcessorArchitecture=x86, Type=win32">
-      <Name>Microsoft.VC90.CRT.manifest</Name>
-      <HintPath>Libs\Microsoft.VC90.CRT.manifest</HintPath>
-    </NativeReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="test\casper\" />

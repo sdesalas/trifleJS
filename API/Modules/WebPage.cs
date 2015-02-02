@@ -369,7 +369,7 @@ namespace TrifleJS.API.Modules
         /// <param name="function">javascript function to execute</param>
         /// <param name="args">arguments to pass the the function</param>
         /// <returns></returns>
-        public object _evaluate(string function, object[] args)
+        public string _evaluate(string function, object[] args)
         {
             if (CurrentFrame != null && CurrentFrame.Document != null)
             {
@@ -377,13 +377,13 @@ namespace TrifleJS.API.Modules
                 if (args == null) { input = new string[] { }; }
                 else { input = Context.Parse(args); }
                 string guid = "__" + (Guid.NewGuid()).ToString().Replace("-", "");
-                string script = String.Format("function {0}() {{ return ({1})({2}); }}", guid, function, String.Join(",", input));
+                string script = String.Format("function {0}() {{ return JSON.stringify(({1})({2})); }}", guid, function, String.Join(",", input));
                 _evaluateJavaScript(script);
                 object result = CurrentFrame.Document.InvokeScript(guid);
                 // Before returning, clear any IE events
                 // generated as a result of the script
                 Application.DoEvents();
-                return result;
+                return result as string;
             }
             return null;
         }

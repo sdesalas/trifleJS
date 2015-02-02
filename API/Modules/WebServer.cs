@@ -409,8 +409,17 @@ namespace TrifleJS.API.Modules
                         response.AddHeader(key, headers[key].ToString());
                     }
                 }
-                // Write to outgoing stream
-                byte[] buffer = Encoding.UTF8.GetBytes(text);
+                byte[] buffer = null;
+                if (text.Length % 4 == 0)
+                {
+                    try
+                    {
+                        // Support binary as Base64 strings
+                        buffer = Convert.FromBase64String(text);
+                    }
+                    catch { }
+                }
+                if (buffer == null) buffer = Encoding.UTF8.GetBytes(text.ToString());
                 response.OutputStream.Write(buffer, 0, buffer.Length);
                 response.OutputStream.Flush();
                 this.isHeaderSent = true;
