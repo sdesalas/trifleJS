@@ -44,7 +44,13 @@ namespace TrifleJS
                     }
                 }
             };
+
+            this.NewWindow += delegate(object sender, System.ComponentModel.CancelEventArgs e)
+            {
+                e.Cancel = true; ;
+            };
         }
+
 
         /// <summary>
         /// The frame IE is currently focused on
@@ -198,7 +204,7 @@ namespace TrifleJS
                 Utils.Debug("WebBrowser#DocumentCompleted");
                 this.Size = this.Document.Window.Size;
                 this.ScrollBarsEnabled = false;
-                Render(fileName, 1);
+                Render(fileName);
                 Console.WriteLine("Screenshot rendered to file: " + fileName);
             };
         }
@@ -213,6 +219,11 @@ namespace TrifleJS
             Render(filename, ratio, new Rectangle(0, 0, 0, 0));
         }
 
+        public void Render(string filename)
+        {
+            Render(filename, 1.0, new Rectangle(0, 0, 0, 0));
+        }
+
         /// <summary>
         /// Takes a screenshot and saves into a file at a specific zoom ratio
         /// </summary>
@@ -223,12 +234,30 @@ namespace TrifleJS
         {
             using (var pic = this.Render(ratio, clipRect))
             {
+                if (pic == null)
+                {
+                    Utils.Debug("Picture could not be rendered");
+                    return;
+                }
+
                 FileInfo file = new FileInfo(filename);
+                if (file.Exists && file.IsReadOnly)
+                {
+                    Utils.Debug("File is read only: {0}", filename);
+                    return;
+                }
+                if (Directory.Exists(filename))
+                {
+                    Utils.Debug("{0} is a directory, not a file", filename);
+                    return;
+                }
+
                 try
                 {
                     switch (file.Extension.Replace(".", "").ToUpper())
                     {
                         case "JPG":
+                        case "JPEG":
                             pic.Save(filename, ImageFormat.Jpeg);
                             break;
                         case "GIF":
@@ -239,9 +268,10 @@ namespace TrifleJS
                             break;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Utils.Debug(ex.Message);
+                    Utils.Debug(ex.StackTrace);
                 }
             }
         }
@@ -265,6 +295,17 @@ namespace TrifleJS
         /// <param name="clipRect">Part of the imaeg captured - Only Height and Width are used right now</param>
         public Bitmap Render(double ratio, Rectangle clipRect)
         {
+            if (this.Width <= 0)
+            {
+                Utils.Debug("ViewPort width is 0 or less");
+                return null;
+            }
+            if (this.Height <= 0)
+            {
+                Utils.Debug("ViewPort Height is 0 or less");
+                return null;
+            }
+
             // Resize to full page size before rendering
             Size oldSize = this.Size;
             this.Size = PageSize;
