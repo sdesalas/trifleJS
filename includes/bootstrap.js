@@ -34,7 +34,7 @@
         setTimeout: function(callback, ms) {
             console.xdebug('window.setTimeout(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return this.SetTimeout(trifle.Callback.id(function() {
+                return GLOBAL.window.SetTimeout(trifle.Callback.id(function() {
                     callback.call(window);
                 }), ms);
             }
@@ -42,13 +42,13 @@
         clearTimeout: function(id) {
             console.xdebug('window.clearTimeout(' + id + ')');
             if (typeof id === 'number') {
-                this.ClearTimeout(id);
+                GLOBAL.window.ClearTimeout(id);
             }
         },
         setInterval: function(callback, ms) {
             console.xdebug('window.setInterval(callback, ' + ms + ')');
             if (typeof callback === 'function' && typeof ms === 'number') {
-                return this.SetInterval(trifle.Callback.id(function() {
+                return GLOBAL.window.SetInterval(trifle.Callback.id(function() {
                     callback.call(window);
                 }), ms);
             }
@@ -56,7 +56,7 @@
         clearInterval: function(id) {
             console.xdebug('window.clearInterval(' + id + ')');
             if (typeof id === 'number') {
-                this.ClearInterval(id);
+                GLOBAL.window.ClearInterval(id);
             }
         },
         addEventListener: function(event, callback, useCapture) {
