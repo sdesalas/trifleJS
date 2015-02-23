@@ -30,7 +30,7 @@ assert.suite('Module: WebPage', function() {
 	//assert(typeof page.clearCookies === 'function', 'page.clearCookies() method available');
 	assert(typeof page.close === 'function', 'page.close() method available');
 	assert(typeof page.evaluate === 'function', 'page.evaluate() method available');
-	//assert(typeof page.evaluateAsync === 'function', 'page.evaluateAsync() method available');
+	assert(typeof page.evaluateAsync === 'function', 'page.evaluateAsync() method available');
 	assert(typeof page.evaluateJavaScript === 'function', 'page.evaluateJavaScript() method available');
 	//assert(typeof page.getPage === 'function', 'page.getPage() method available');
 	assert(typeof page.goBack === 'function', 'page.goBack() method available');
@@ -224,6 +224,22 @@ assert.suite('Module: WebPage', function() {
 		assert(evaluateResult === 'hello589871', 'page.content is set correctly');
 		assert(page.plainText === 'this is the new set content', 'page.content is set correctly');
 		assert(page.content === newContent, 'page.content is set correctly');
+	
+		// Try async
+		
+		page.evaluateAsync(function(name) {
+			window.name = name;
+		}, 200, 'async-window');
+		
+		assert(page.windowName === 'test-window', 'page.evaluateAsync() executes asynchronously');
+
+		setTimeout(function() {
+			assert.ready = true;
+		}, 300);
+		
+		assert.waitUntilReady();
+		
+		assert(page.windowName === 'async-window', 'page.evaluateAsync() executes correctly after a wait period');
 
 		// Clean up
 		fs.remove('injectJs.script.js');

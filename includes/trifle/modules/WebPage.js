@@ -101,21 +101,35 @@ this.trifle.modules = this.trifle.modules || {};
             // Executes a javascript function inside the browser
 			evaluate: function(func) {
 				console.xdebug("WebPage.prototype.evaluate(func)");
-				if (typeof func === 'function') {
-					var args = [];
-					for (var i = 1; i < arguments.length; i++) {
-						// Fix undefined (coming up as null)
-						if (arguments[i] === undefined) {
-							arguments[i] = "{{undefined}}";
-						}
-						args.push(arguments[i]);
-					}
-					// Set current page (for WebPage events)
-					WebPage.current = this;
-					// Execute JS on IE host
-					return JSON.parse(this._evaluate(func.toString(), args));
+				if (!(typeof func === 'function' || typeof func === 'string' || func instanceof String)) {
+					throw "Wrong use of WebPage.evaluate()";
 				}
-				return null;
+				var args = [];
+				for (var i = 1; i < arguments.length; i++) {
+					// Fix undefined (coming up as null)
+					if (arguments[i] === undefined) {
+						arguments[i] = "{{undefined}}";
+					}
+					args.push(arguments[i]);
+				}
+				// Set current page (for WebPage events)
+				WebPage.current = this;
+				// Execute JS on IE host
+				return JSON.parse(this._evaluate(func.toString(), args));
+			},
+			
+			// Evaluations a function in the context of the page without 
+			// blocking execution. Can be delayed by a specific timeout.
+			evaluateAsync: function(func, timeMs) {
+				console.xdebug("WebPage.prototype.evaluateAsync(func)");
+				if (!(typeof func === 'function' || typeof func === 'string' || func instanceof String)) {
+					throw "Wrong use of WebPage.evaluateAsync()";
+				}
+				var page = this, args = Array.prototype.slice.call(arguments, 2);
+				args.unshift(func);
+				window.setTimeout(function() {
+					page.evaluate.apply(page, args);
+				}, timeMs || 0);
 			},
 
             // Injects a local JavaScript file into the browser
