@@ -549,7 +549,6 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
-                Console.log(browser.DocumentText);
                 if (!String.IsNullOrEmpty(_onInitializedCallbackId))
                 {
                     // Set current frame
