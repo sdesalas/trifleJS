@@ -450,6 +450,8 @@ namespace TrifleJS.API.Modules
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
                 browser.Navigate(uri, method, data, customHeaders);
+                browser.Navigated -= Navigated;
+                browser.Navigated += Navigated;
                 browser.DocumentCompleted -= DocumentCompleted;
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
@@ -460,6 +462,22 @@ namespace TrifleJS.API.Modules
             {
                 Console.log("Error opening url: " + url);
             }
+        }
+
+        /// <summary>
+        /// This callback is invoked after the web page is
+        /// created but before a URL is loaded. The callback
+        /// may be used to change global objects.
+        /// </summary>
+        private string _onInitializedCallbackId = null;
+
+        /// <summary>
+        /// Sets the onInitialized callback to the corresponding callbackId
+        /// </summary>
+        /// <param name="callbackId"></param>
+        public void _onInitialized(string callbackId)
+        {
+            _onInitializedCallbackId = callbackId;
         }
 
         /// <summary>
@@ -518,6 +536,26 @@ namespace TrifleJS.API.Modules
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
+            }
+        }
+
+        /// <summary>
+        /// Event handler for actions needed after the webpage is created
+        /// and the document is loading.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void Navigated(object sender, WebBrowserNavigatedEventArgs args)
+        {
+            if (browser != null)
+            {
+                Console.log(browser.DocumentText);
+                if (!String.IsNullOrEmpty(_onInitializedCallbackId))
+                {
+                    // Set current frame
+                    switchToMainFrame();
+                    Callback.ExecuteOnce(_onInitializedCallbackId, null);
+                }
             }
         }
 
