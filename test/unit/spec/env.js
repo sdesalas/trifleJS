@@ -129,11 +129,8 @@ assert.suite('Global Environment', function() {
 			appCodeName: 'string',
 			appName: 'string',
 			appVersion: 'string',
-			browserLanguage: 'string',
 			cookieEnabled: 'boolean',
-			language: 'string',
 			platform: 'string',
-			product: 'string',
 			systemLanguage: 'string',
 			userAgent: 'string',
 			userLanguage: 'string'

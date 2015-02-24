@@ -63,8 +63,18 @@ namespace TrifleJS.API
         /// </summary>
         public object navigator {
             get {
-                string info = page._evaluate("function() {var nav = {}; for (var prop in window.navigator) nav[prop] = window.navigator[prop]; return nav;}", new object[] { }) as string;
-                return Utils.Deserialize(info);
+                    string info = page._evaluate(@"
+function() {
+    var val, output = {}; 
+    for (var prop in window.navigator) {
+        val = window.navigator[prop];
+        if (typeof val !== 'object') {
+            output[prop] = val;
+        }
+    }
+    return output;
+}", new object[] { }) as string;
+                    return Utils.Deserialize(info);
             }
         }
 
