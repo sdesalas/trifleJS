@@ -45,7 +45,7 @@ assert.suite('Module: WebServer', function() {
 	assert(isListening === true, 'server.listen() returns true when listening');
 	assert(server.port === '8080', 'server.port returns the correct port')
 
-	page.open('http://localhost:8080', function(status) {
+	page.open('http://localhost:8080/hello1', function(status) {
 		assert.ready = true;
 	});
 	
@@ -61,8 +61,7 @@ assert.suite('Module: WebServer', function() {
 	assert(isListening === true, 'server.listen() return true when listening on same port');
 	assert(server.port === '8080', 'server.port returns the correct port')
 	
-
-	page.open('http://localhost:8080', function(status) {
+	page.open('http://localhost:8080/hello2', function(status) {
 		assert.ready = true;
 	});
 	
