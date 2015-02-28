@@ -44,7 +44,13 @@ namespace TrifleJS
                     }
                 }
             };
+
+            this.NewWindow += delegate(object sender, System.ComponentModel.CancelEventArgs e)
+            {
+                e.Cancel = true; ;
+            };
         }
+
 
         /// <summary>
         /// The frame IE is currently focused on
@@ -198,7 +204,7 @@ namespace TrifleJS
                 Utils.Debug("WebBrowser#DocumentCompleted");
                 this.Size = this.Document.Window.Size;
                 this.ScrollBarsEnabled = false;
-                Render(fileName, 1);
+                Render(fileName);
                 Console.WriteLine("Screenshot rendered to file: " + fileName);
             };
         }
@@ -210,36 +216,75 @@ namespace TrifleJS
         /// <param name="ratio">zoom ratio</param>
         public void Render(string filename, double ratio)
         {
-            using (var pic = this.Render(ratio))
+            Render(filename, ratio, new Rectangle(0, 0, 0, 0));
+        }
+
+        public void Render(string filename)
+        {
+            Render(filename, 1.0, new Rectangle(0, 0, 0, 0));
+        }
+
+        /// <summary>
+        /// Takes a screenshot and saves into a file at a specific zoom ratio
+        /// </summary>
+        /// <param name="filename">path where the screenshot is saved</param>
+        /// <param name="ratio">zoom ratio</param>
+        /// <param name="clipRect">Part of the image captured</param>
+        public void Render(string filename, double ratio, Rectangle clipRect)
+        {
+            using (var pic = this.Render(ratio, clipRect))
             {
-                FileInfo file = new FileInfo(filename);
-                switch (file.Extension.Replace(".", "").ToUpper())
+                if (pic == null)
                 {
-                    case "JPG":
-                        pic.Save(filename, ImageFormat.Jpeg);
-                        break;
-                    case "GIF":
-                        pic.Save(filename, ImageFormat.Gif);
-                        break;
-                    default:
-                        pic.Save(filename, ImageFormat.Png);
-                        break;
+                    Utils.Debug("Picture could not be rendered");
+                    return;
+                }
+
+                FileInfo file = new FileInfo(filename);
+                if (file.Exists && file.IsReadOnly)
+                {
+                    Utils.Debug("File is read only: {0}", filename);
+                    return;
+                }
+                if (Directory.Exists(filename))
+                {
+                    Utils.Debug("{0} is a directory, not a file", filename);
+                    return;
+                }
+
+                try
+                {
+                    switch (file.Extension.Replace(".", "").ToUpper())
+                    {
+                        case "JPG":
+                        case "JPEG":
+                            pic.Save(filename, ImageFormat.Jpeg);
+                            break;
+                        case "GIF":
+                            pic.Save(filename, ImageFormat.Gif);
+                            break;
+                        default:
+                            pic.Save(filename, ImageFormat.Png);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Utils.Debug(ex.Message);
+                    Utils.Debug(ex.StackTrace);
                 }
             }
         }
 
+
         /// <summary>
-        /// Takes a screenshot and saves into a Bitmap
+        /// Takes a screenshot and saves into a Bitmap at a specific zoom ratio
         /// </summary>
+        /// <param name="ratio">zoom ratio</param>
         /// <returns></returns>
-        public Bitmap Render()
+        public Bitmap Render(double ratio = 1.0)
         {
-            // Resize to full page size before rendering
-            Size oldSize = this.Size;
-            this.Size = PageSize;
-            Bitmap result = Render(this.Width, this.Height);
-            this.Size = oldSize;
-            return result;
+            return Render(ratio, new Rectangle(0, 0, 0, 0));
         }
 
         /// <summary>
@@ -247,15 +292,53 @@ namespace TrifleJS
         /// </summary>
         /// <param name="ratio">zoom ratio</param>
         /// <returns></returns>
-        public Bitmap Render(double ratio)
+        /// <param name="clipRect">Part of the imaeg captured - Only Height and Width are used right now</param>
+        public Bitmap Render(double ratio, Rectangle clipRect)
         {
+            if (this.Width <= 0)
+            {
+                Utils.Debug("ViewPort width is 0 or less");
+                return null;
+            }
+            if (this.Height <= 0)
+            {
+                Utils.Debug("ViewPort Height is 0 or less");
+                return null;
+            }
+
             // Resize to full page size before rendering
             Size oldSize = this.Size;
             this.Size = PageSize;
             Bitmap result = Render(Convert.ToInt32(this.Width * ratio), Convert.ToInt32(this.Height * ratio));
+            Bitmap crop = null;
+
+            // Crop image
+            if (clipRect != null && clipRect.Width > 0 && clipRect.Height > 0)
+            {
+                // make sure we rquest a bitmap that fits inside the full size page
+                int width = Convert.ToInt32(Math.Min(clipRect.Width, this.Size.Width - clipRect.Left) * ratio);
+                int height = Convert.ToInt32(Math.Min(clipRect.Height, this.Size.Height - clipRect.Top) * ratio);
+                int top = Convert.ToInt32(clipRect.Top * ratio);
+                int left = Convert.ToInt32(clipRect.Left * ratio);
+
+                crop = new Bitmap(width, height);
+                Rectangle cropRect = new Rectangle(left, top, width, height);
+
+                using(Graphics g = Graphics.FromImage(crop))
+                {
+                   g.DrawImage(result, new Rectangle(0, 0, width, height), cropRect, GraphicsUnit.Pixel);
+                }
+            }
             this.Size = oldSize;
+            if (crop != null)
+            {
+                result.Dispose();
+                return crop;
+            }
+                
             return result;
         }
+
 
         /// <summary>
         /// Full-height page size after rendering HTML
@@ -267,7 +350,16 @@ namespace TrifleJS
                     // Add 50 pixels to the bottom of the screen
                     // to avoid scrolling bars.
                     Size size = this.Document.Body.ScrollRectangle.Size;
-                    return new Size(this.Size.Width, size.Height + 50);
+                    int height = size.Height;
+                    int width = this.Size.Width;
+
+                    if (this.Document.Body.ClientRectangle.Width < this.Document.Body.ScrollRectangle.Width)
+                        width += 50;
+
+                    if (this.Document.Body.ClientRectangle.Height < this.Document.Body.ScrollRectangle.Height)
+                        height += 50;
+
+                    return new Size(width, height);                                       
                 }
                 return this.Size;
             }

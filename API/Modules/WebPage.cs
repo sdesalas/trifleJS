@@ -715,7 +715,7 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
-                browser.Render(filename, zoomFactor);
+                browser.Render(filename, zoomFactor, this.ClipRect);
             }
         }
 
@@ -812,10 +812,18 @@ namespace TrifleJS.API.Modules
                 try
                 {
                     int top = 0, left = 0, width = 0, height = 0;
-                    if (clipRect.ContainsKey("top")) Int32.TryParse(clipRect["top"].ToString(), out top);
-                    if (clipRect.ContainsKey("left")) Int32.TryParse(clipRect["left"].ToString(), out left);
-                    if (clipRect.ContainsKey("width")) Int32.TryParse(clipRect["width"].ToString(), out width);
-                    if (clipRect.ContainsKey("height")) Int32.TryParse(clipRect["height"].ToString(), out height);
+                    if (clipRect.ContainsKey("top") && clipRect["top"] != null) 
+                        Int32.TryParse(clipRect["top"].ToString(), out top);
+                    if (clipRect.ContainsKey("left") && clipRect["left"] != null) 
+                        Int32.TryParse(clipRect["left"].ToString(), out left);
+                    if (clipRect.ContainsKey("width") && clipRect["width"] != null) 
+                        Int32.TryParse(clipRect["width"].ToString(), out width);
+                    if (clipRect.ContainsKey("height") && clipRect["height"] != null) 
+                        Int32.TryParse(clipRect["height"].ToString(), out height);
+
+                    if (top < 0) top = 0;
+                    if (left < 0) left = 0;
+
                     if (browser != null)
                     {
                         if (width == 0) width = browser.Document.Window.Size.Width;
@@ -823,7 +831,9 @@ namespace TrifleJS.API.Modules
                     }
                     return new Rectangle(top, left, width, height);
                 }
-                catch { }
+                catch(Exception ex) {
+                    Utils.Debug(ex.Message);
+                }
                 return new Rectangle();
             }
         }
