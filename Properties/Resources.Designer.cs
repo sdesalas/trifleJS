@@ -357,13 +357,13 @@ namespace TrifleJS.Properties {
         ///assert.suite(&apos;Module: ChildProcess&apos;, function() {
         ///
         ///	var child_process = require(&quot;child_process&quot;);
-        ///	var checker = {child_process: child_process};
+        ///	
         ///	// --------------------------------------------
         ///	assert.section(&apos;Instantiation&apos;);
         ///	// --------------------------------------------
         ///
         ///	assert(!!child_process, &apos;child_process can be instantiated using require()&apos;);
-        ///	assert(typeo [rest of string was truncated]&quot;;.
+        ///	assert(typeof child_process === &apos;object&apos;, &apos;child_process  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_child_process {
             get {
@@ -389,12 +389,11 @@ namespace TrifleJS.Properties {
         ///	// --------------------------------------------
         ///	assert.section(&apos;Global objects&apos;, function() {
         ///	
-        ///		this[&apos;GLOBAL&apos;] = this;
-        ///	
         ///		assert.checkMembers(this, &apos;GLOBAL&apos;, {
         ///			&apos;window&apos;: &apos;object&apos;,
         ///			&apos;navigator&apos;: &apos;object&apos;,
-        ///			&apos;location&apos;: &apos;object&apos; [rest of string was truncated]&quot;;.
+        ///			&apos;location&apos;: &apos;object&apos;,
+        ///			&apos;setTimeout&apos;: &apos;function [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_env {
             get {
@@ -485,6 +484,33 @@ namespace TrifleJS.Properties {
         internal static string test_unit_spec_require {
             get {
                 return ResourceManager.GetString("test_unit_spec_require", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* ssl.js
+        ///* 
+        ///* Runs a set of unit tests used to verify 
+        ///* SSL connectivity.
+        ///* 
+        ///*/
+        ///
+        ///
+        ///assert.suite(&apos;SSL connectivity&apos;, function() {
+        ///
+        ///    assert.section(&apos;Module: WebServer (SSL support)&apos;);
+        ///    
+        ///	var server = require(&apos;webserver&apos;).create();
+        ///	var page = require(&apos;webpage&apos;).create();
+        ///	
+        ///	
+        ///    
+        ///});.
+        /// </summary>
+        internal static string test_unit_spec_ssl {
+            get {
+                return ResourceManager.GetString("test_unit_spec_ssl", resourceCulture);
             }
         }
         
@@ -624,11 +650,13 @@ namespace TrifleJS.Properties {
         ///// Wrap code to avoid global vars
         ///(function(trifle) {
         ///
+        ///	// Private
+        ///	var Callback = trifle.Callback;
+        ///
         ///    // Define Module
         ///    var ChildProcess = trifle.modules.ChildProcess = trifle.extend({
         ///		
-        ///		// Derives functionality from ChildProcess.cs
-        ///		module: trifle.API.ChildProces [rest of string was truncated]&quot;;.
+        ///		// Derives functionality from  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_ChildProcess {
             get {
@@ -723,11 +751,13 @@ namespace TrifleJS.Properties {
         ///// Wrap code to avoid global vars
         ///(function (trifle) {
         ///
+        ///	// Private
+        ///	var Callback = trifle.Callback;
+        ///	
         ///    // Define Module
         ///    var WebPage = this.WebPage = window.WebPage = trifle.modules.WebPage = trifle.extend({
         ///		
-        ///		// Derives functionality from WebPage.cs
-        ///		module: trifle.API.Web [rest of string was truncated]&quot;;.
+        ///		// Derives funct [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_WebPage {
             get {
@@ -754,15 +784,14 @@ namespace TrifleJS.Properties {
         ///// Wrap code to avoid global vars
         ///(function (trifle) {
         ///
+        ///	// Private
+        ///	var Callback = trifle.Callback;
+        ///
         ///    // Define Module
         ///    var WebServer = trifle.modules.WebServer = trifle.extend({
         ///		
         ///		// Derives functionality from WebServer.cs
-        ///		module: trifle.API.WebServer,
-        ///		
-        ///		// Constructor
-        ///		init: function() {
-        ///			 [rest of string was truncated]&quot;;.
+        ///		module: trifle.API.WebServer, [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string trifle_modules_WebServer {
             get {

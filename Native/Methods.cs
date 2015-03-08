@@ -6,7 +6,7 @@ using System.Text;
 using System.IO;
 using IWshRuntimeLibrary;
 
-namespace TrifleJS.API.Native
+namespace TrifleJS.Native
 {
     // @see http://stackoverflow.com/questions/5006825/converting-webbrowser-document-to-a-bitmap
     internal static class Methods
@@ -61,6 +61,11 @@ namespace TrifleJS.API.Native
 
         #endregion
 
+        public static string GetAssemblyGuid() {
+            GuidAttribute appId = (GuidAttribute)(typeof(Program).Assembly).GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            return appId.Value;
+        }
+
         #region WindowsScriptingHost
 
         /// <summary>
@@ -91,8 +96,8 @@ namespace TrifleJS.API.Native
             {
                 IWshShell wsh = new WshShellClass();
                 IWshShortcut sc = (IWshShortcut)wsh.CreateShortcut(file);
-                sc.WorkingDirectory = Phantom.libraryPath;
-                sc.TargetPath = Path.Combine(Phantom.libraryPath, target);
+                sc.WorkingDirectory = API.Phantom.libraryPath;
+                sc.TargetPath = Path.Combine(API.Phantom.libraryPath, target);
                 sc.Arguments = arguments ?? "";
                 sc.Save();
             }

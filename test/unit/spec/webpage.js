@@ -628,6 +628,28 @@ assert.suite('Module: WebPage', function() {
 	// --------------------------------------------
 	assert.section('Events', function() {
 	
+		// Recreate environment for test
+		//page.close();
+		server.close();
+		var page = require("webpage").create();
+		
+	
+		// Start a listener to check events
+		server.listen(8083, function(request, response) { 
+			var bodyText = JSON.stringify({
+				success: true, 
+				url: request.url
+			});
+			response.write('<html><head><title>Test</title><script>alert("Alert3423991!")</script></head><body>' + bodyText + '</body></html>'); 
+			response.close(); 
+		});
+		
+		page.open('http://localhost:8083', function(status) {
+			assert.ready = true;
+		});
+
+		assert.waitUntilReady();
+		
 	/*
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
 		var date = new Date();

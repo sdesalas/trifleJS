@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using TrifleJS.Native;
 using mshtml;
 
 namespace TrifleJS.API.Modules
@@ -18,13 +19,13 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Internal IE WebBrowser (enhanced)
         /// </summary>
-        private EnhancedBrowser browser;
+        private SkipDialogBrowser browser;
 
         /// <summary>
         /// Creates a webpage module
         /// </summary>
         public WebPage() {
-            this.browser = new EnhancedBrowser();
+            this.browser = new SkipDialogBrowser();
             this.browser.Size = new Size(400, 300);
             this.browser.ScrollBarsEnabled = false;
             // Add WebBrowser external scripting support
@@ -34,7 +35,7 @@ namespace TrifleJS.API.Modules
             {
                 Application.DoEvents();
             }
-            this.browser.InitialiseOLE();
+            //this.browser.InitialiseOLE();
             this.browser.ObjectForScripting = new Callback.External(this);
             this.browser.ScriptErrorsSuppressed = true;
             // Initialize properties
@@ -454,11 +455,10 @@ namespace TrifleJS.API.Modules
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
                 AddCallback(callbackId, "success");
-
             }
             else
             {
-                Console.log("Error opening url: " + url);
+                throw new Exception("Error opening url: " + url);
             }
         }
 
@@ -690,7 +690,7 @@ namespace TrifleJS.API.Modules
             {
                 if (browser != null)
                 {
-                    API.Native.Methods.ResetBrowserSession(browser.Handle);
+                    Native.Methods.ResetBrowserSession(browser.Handle);
                     CookieJar.Current.Clear(uri);
                     if (value != null)
                     {

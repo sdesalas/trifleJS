@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace TrifleJS.API.Native
+namespace TrifleJS.Native
 {
     public class CacheHelper
     {
@@ -266,7 +266,7 @@ namespace TrifleJS.API.Native
             }
             catch
             {
-                Console.error("Failed to Clear IE History.");
+                API.Console.error("Failed to Clear IE History.");
             }
         }
     }

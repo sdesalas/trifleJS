@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using mshtml;
 
-namespace TrifleJS
+namespace TrifleJS.Native.Deprecated
 {
     /// <summary>
     /// This class enhances the WebBrowser control by automating certain OLE dialogs
@@ -118,7 +118,7 @@ namespace TrifleJS
         #region IOleDocumentSite methods
 
         public void ActivateMe(ref object pViewToActivate) { }
-        
+
         #endregion
 
         #region Events
@@ -439,7 +439,7 @@ namespace TrifleJS
 
 
     [ComImport, GuidAttribute("b722bcc7-4e68-101b-a2bc-00aa00404770"),
-    InterfaceType(ComInterfaceType.InterfaceIsIUnknown) ]
+    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IOleDocumentSite
     {
         void ActivateMe(ref object pViewToActivate);

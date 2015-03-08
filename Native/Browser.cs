@@ -6,9 +6,8 @@ using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
-using TrifleJS.API.Native;
 
-namespace TrifleJS
+namespace TrifleJS.Native
 {
     /// <summary>
     /// Browser class that represents an IE window

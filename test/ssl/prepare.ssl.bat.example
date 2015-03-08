@@ -1,0 +1,10 @@
+@echo off
+
+:: Step 1: Create a Self-Signed certificate
+..\..\Build\Tools\makecert.exe -r -a sha1 -n CN=localhost -sky exchange -pe -b 01/01/2010 -e 01/01/2050 -ss my -sr localmachine ..\..\test\ssl\triflejs.test.ssl.cer
+
+:: Step 2: Get Thumbprint
+CertInfo triflejs.test.ssl.cer
+
+:: Step 3: Register SSL certificate
+netsh http add sslcert 0.0.0.0:444 certhash=00112233AABBCCDDEEFF appid={00112233-4455-6677-8899-AABBCCDDEEFF}
