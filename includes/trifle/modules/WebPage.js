@@ -40,8 +40,6 @@ this.trifle.modules = this.trifle.modules || {};
 			Object.addEvent(this, 'onPrompt', true); // unique (uses return value)
 			// Run pending COM events
 			trifle.wait(1);
-			// Fire Initialized event
-			this.fireEvent('initialised');
 		},
 		
 		// Additional methods

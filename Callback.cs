@@ -137,20 +137,7 @@ namespace TrifleJS
             /// <param name="jsonArgs"></param>
             /// <returns></returns>
             public object fireEvent(string nickname, string jsonArgs) {
-                try
-                {
-                    // Execute in V8 engine and return result
-                    object result = Program.Context.Run(
-                        String.Format("WebPage.fireEvent('{0}', '{1}', {2});", nickname, page.uuid, jsonArgs),
-                        "WebPage.fireEvent('" + nickname + "')"
-                    );
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    API.Context.Handle(ex);
-                }
-                return null;
+                return page._fireEvent(nickname, jsonArgs);
             }
 
         }

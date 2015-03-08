@@ -638,22 +638,38 @@ assert.suite('Module: WebPage', function() {
 			success: true, 
 			url: request.url
 		});
-		response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
+		response.write('<html><head><title>Test</title><script>var myGlobal = "glob928824"; var toolsLoaded = typeof window.callPhantom;</script></head><body>' + bodyText + '</body></html>'); 
 		response.close(); 
 	});
 
 
 	// --------------------------------------------
-	assert.section('Events: CallPhantom', function() {
+	assert.section('Events: Initialize, CallPhantom', function() {
 
+		var initData1, initData2;
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
+		var initTime, loadTime, callbackTime; 
 		var date = new Date();
+		
+		page.onInitialized = function() {
+			initData1 = page.evaluate(function() {return myGlobal;});
+			initData2 = page.evaluate(function() {return toolsLoaded;});
+			initTime = new Date();
+			trifle.wait(1);
+		}
 		
 		page.open('http://localhost:8083', function(status) {
 			assert.ready = true;
+			loadTime = new Date();
 		});
 
 		assert.waitUntilReady();
+		
+		console.log(initData1, initData2, initTime, loadTime, typeof loadTime);
+		
+		assert(initData1 === 'glob928824', 'page.onInitialized has access to global vars');
+		assert(initData2 === 'function', 'page.onInitialized confirms that ie tools are loaded');
+		assert(initTime < loadTime, 'page.onInitialized fires before the page finishes loading');
 		
 		page.onCallback = function(data, data2, data3, data4, data5) {
 			pageData = data;

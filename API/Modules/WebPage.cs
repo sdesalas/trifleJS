@@ -26,10 +26,12 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public WebPage() {
             this.browser = new SkipDialogBrowser();
+            this.uuid = Utils.NewUid();
             this.browser.Size = new Size(400, 300);
             this.browser.ScrollBarsEnabled = false;
             // Add WebBrowser external scripting support
             this.browser.DocumentCompleted += DocumentCompleted;
+            this.browser.Navigated += Navigated;
             this.browser.Navigate("about:blank");
             while (loading)
             {
@@ -41,7 +43,6 @@ namespace TrifleJS.API.Modules
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
-            this.uuid = Utils.NewUid();
             this.clipRect = new Dictionary<string, object>() {
                 { "top", 0 },
                 { "left", 0 },
@@ -451,6 +452,8 @@ namespace TrifleJS.API.Modules
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
                 browser.Navigate(uri, method, data, customHeaders);
+                browser.Navigated -= Navigated;
+                browser.Navigated += Navigated;
                 browser.DocumentCompleted -= DocumentCompleted;
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
@@ -501,23 +504,38 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
+                // Set current frame & handle initialization
+                switchToMainFrame();
+                this._fireEvent("initialized");
                 // DocumentCompleted is fired before window.onload and body.onload
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                 browser.Document.Window.AttachEventHandler("onload", delegate
                 {
-                    // Set current frame
-                    switchToMainFrame();
-                    // Add IE Toolset
-                    AddToolset();
-                    // Track unhandled errors
-                    browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
-                    {
-                        Handle(e.Description, e.LineNumber, e.Url);
-                        e.Handled = true;
-                    };
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
+            }
+        }
+
+        /// <summary>
+        /// Event handler for actions needed after the webpage is created
+        /// and the document is loading.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void Navigated(object sender, WebBrowserNavigatedEventArgs args)
+        {
+            if (browser != null)
+            {
+                // Set current frame & add tools
+                switchToMainFrame();
+                AddToolset();
+                // Track unhandled errors
+                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
+                {
+                    Handle(e.Description, e.LineNumber, e.Url);
+                    e.Handled = true;
+                };
             }
         }
 
@@ -635,6 +653,46 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public bool loading {
             get { return (browser != null) ? browser.ReadyState != WebBrowserReadyState.Complete : false; }
+        }
+
+        #endregion
+
+        #region Event Handling
+
+        /// <summary>
+        /// Fires an event in the page object (V8 runtime)
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
+        public object _fireEvent(string nickname) { 
+            return this._fireEvent(nickname, null);
+        }
+
+        /// <summary>
+        /// Fires an event in the page object (V8 runtime) passing some arguments
+        /// </summary>
+        /// <param name="shortname"></param>
+        /// <param name="jsonArgs"></param>
+        /// <returns></returns>
+        public object _fireEvent(string nickname, string jsonArgs)
+        {
+            try
+            {
+                if (Program.Context != null)
+                {
+                    // Execute in V8 engine and return result
+                    object result = Program.Context.Run(
+                        String.Format("WebPage.fireEvent('{0}', '{1}', {2});", nickname, this.uuid, jsonArgs ?? "[]"),
+                        "WebPage.fireEvent('" + nickname + "')"
+                    );
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                API.Context.Handle(ex);
+            }
+            return null;
         }
 
         #endregion
