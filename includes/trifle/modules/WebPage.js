@@ -30,10 +30,6 @@ this.trifle.modules = this.trifle.modules || {};
 			console.xdebug("new WebPage()");
 			// Properties
 			this.objectName = "WebPage";
-			// Fire Initialized event
-			if (this.onInitialized) {
-				this.onInitialized.call(this);
-			}
 		},
 		
 		// Additional methods
@@ -82,6 +78,15 @@ this.trifle.modules = this.trifle.modules || {};
 						return !!callback ? callback.call(page, status) : null;
 					}
 				};
+
+				// Fire Initialized event
+				var _this = this;
+				this._onInitialized(Callback.id(function () {
+					if (_this.onInitialized) {
+						_this.onInitialized.call(_this);
+					}
+				}));
+
 				// Open URL in .NET API
 				return this._open(url, method, data, Callback.id(complete));
 			},
