@@ -101,18 +101,18 @@
 			var eventName = eventFullName.substr(2).toLowerCase();
 			obj.listeners = obj.listeners || {};
 			obj.listeners[eventName] = {callbacks: [], unique: unique}
-			obj.fireEvent = function() {
-				if (arguments.length && this.listeners) {
-					var name = Array.prototype.shift.call(arguments);
+			obj.fireEvent = function(name, args, scope) {
+				var result;
+				if (name && this.listeners) {
 					var listener = this.listeners[name];
+					var scope = scope || this;
 					if (listener && listener.callbacks) {
 						for(var i = 0; i < listener.callbacks.length; i++) {
-							listener.callbacks[i].apply(this, arguments);
+							result = listener.callbacks[i].apply(scope, args || []);
 						}
-						return true;
 					}
 				}
-				return false;
+				return result;
 			};
 			obj.on = function(name, func) {
 				if (name && func && obj.listeners) {

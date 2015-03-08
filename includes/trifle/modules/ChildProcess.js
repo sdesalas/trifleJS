@@ -47,10 +47,10 @@ trifle.modules = trifle.modules || {};
 					Object.addEvent(ctx.stdout, "onData");
 					Object.addEvent(ctx.stderr, "onData");
 					ctx.on('stdout', function(data) {
-						ctx.stdout.fireEvent('data', data);
+						ctx.stdout.fireEvent('data', [data]);
 					});
 					ctx.on('stderr', function(data) {
-						ctx.stderr.fireEvent('data', data);
+						ctx.stderr.fireEvent('data', [data]);
 					});
 				}
 				return ctx;
@@ -58,9 +58,9 @@ trifle.modules = trifle.modules || {};
 			spawn: function(cmd, args, opts) {
 				// Add event listeners, spawn and return context object
 				var context; 
-				var exit = function(id, code) {context.fireEvent('exit', code);};
-				var stdout = function(data) {context.fireEvent('stdout', data);};
-				var stderr = function(data) {context.fireEvent('stderr', data);};
+				var exit = function(id, code) {context.fireEvent('exit', [code]);};
+				var stdout = function(data) {context.fireEvent('stdout', [data]);};
+				var stderr = function(data) {context.fireEvent('stderr', [data]);};
 				context = this._spawn(cmd, args || [], opts, Callback.id(exit), Callback.id(stdout), Callback.id(stderr));
 				return this.decorate(context);
 			},

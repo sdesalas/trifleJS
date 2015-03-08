@@ -240,7 +240,7 @@ assert.suite('Global Environment', function() {
 		assert(observable.listeners.ready.callbacks.length === 1, 'object.listeners[event].callbacks contains 1 callback (unique event)');
 		assert(observable.listeners.ready.callbacks === observable.onReady, 'observable.onEvent contains an array with callbacks');
 		
-		observable.fireEvent("loading", "loading argument");
+		observable.fireEvent("loading", ["loading argument"]);
 		
 		assert(loading1 === "loading argument0", 'The 1st #loading event fired succesfully');
 		assert(loading2 === "loading argument1", 'The 1st #onLoading event fired successfully');
@@ -256,7 +256,7 @@ assert.suite('Global Environment', function() {
 		assert(ready_scope2 === undefined, '2nd #onReady event variable undefined before firing');
 		assert(readyCount === 0, '#ready event did not trigger when loading was fired');
 
-		observable.fireEvent("ready", "ready argument");
+		observable.fireEvent("ready", ["ready argument"]);
 
 		assert(loading1 === "loading argument0", 'The 1st #loading event data did not fire or change');
 		assert(loading2 === "loading argument1", 'The 1st #onLoading event did not fire or change');

@@ -95,22 +95,25 @@ assert.suite('Module: WebPage', function() {
 	});
 
 	// --------------------------------------------
-	assert.section('Events before loading');
-
-	var pageData, pageData2, pageData3;
+	assert.section('Events before loading', function() {
 	
-	page.onCallback = function(data, data2, data3) {
-		pageData = data;
-		pageData2 = data2;
-		pageData3 = data3;
-	}
+		var pageData, pageData2, pageData3;
+		
+		page.onCallback = function(data, data2, data3) {
+			pageData = data;
+			pageData2 = data2;
+			pageData3 = data3;
+		}
 
-	page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
+		page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
 
-	assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
-	assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
-	assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
+		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
+		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
+		assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
 
+
+	});
+	
 
 	// Start a web server listener to check that pages are loading
 	var pageContent, pagePlainText;
@@ -624,51 +627,27 @@ assert.suite('Module: WebPage', function() {
 	
 	});
 	
+	// Recreate environment for next tests
+	page.close();
+	server.close();		
+	page = require("webpage").create();
+	
+	// Start a listener to check events
+	server.listen(8083, function(request, response) { 
+		var bodyText = JSON.stringify({
+			success: true, 
+			url: request.url
+		});
+		response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
+		response.close(); 
+	});
+
 
 	// --------------------------------------------
-	assert.section('Events', function() {
-	
-		// Recreate environment for test
-		//page.close();
-		server.close();
-		var page = require("webpage").create();
-		
-	
-		// Start a listener to check events
-		server.listen(8083, function(request, response) { 
-			var bodyText = JSON.stringify({
-				success: true, 
-				url: request.url
-			});
-			response.write('<html><head><title>Test</title><script>alert("Alert3423991!")</script></head><body>' + bodyText + '</body></html>'); 
-			response.close(); 
-		});
-		
-		page.open('http://localhost:8083', function(status) {
-			assert.ready = true;
-		});
+	assert.section('Events: CallPhantom', function() {
 
-		assert.waitUntilReady();
-		
-	/*
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
 		var date = new Date();
-	
-		// Recreate environment for test
-		page.close();
-		server.close();
-
-		page = require('webpage').create();
-
-		// Start a listener to check events
-		server.listen(8083, function(request, response) { 
-			var bodyText = JSON.stringify({
-				success: true, 
-				url: request.url
-			});
-			response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
-			response.close(); 
-		});
 		
 		page.open('http://localhost:8083', function(status) {
 			assert.ready = true;
@@ -676,36 +655,70 @@ assert.suite('Module: WebPage', function() {
 
 		assert.waitUntilReady();
 		
-		page.onCallback = function(data, data2, data3, data4) {
+		page.onCallback = function(data, data2, data3, data4, data5) {
 			pageData = data;
 			pageData2 = data2;
 			pageData3 = data3;
 			pageData4 = data4;
+			pageData5 = data5;
 		}
 
 		page.evaluate(function(date) {
-			window.callPhantom('blah', 6, date, {a: 1});
+			window.callPhantom('blah', 6, date, {a: 1}, typeof date);
 		}, date);
 
 		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
 		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
 		//assert(pageData3 && pageData3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
 		assert(pageData4 && pageData4.a && pageData4.a === 1, 'page.onCallback can be used to transfer JSON objects');
-*/
 	
 	});
 	
 
+	// --------------------------------------------
+	assert.section('Events: Dialogs', function() {
+	
+		var alertMessage, confirmMessage, confirmResult, promptMessage, promptDefault, promptResult;
 
+	
+		page.onAlert = function(message) {
+			alertMessage = message;
+		};
+		
+		page.onConfirm = function(message) {
+			confirmMessage = message;
+			return false;
+		}
+		
+		page.onPrompt = function(message, defaultVal) {
+			promptMessage = message;
+			promptDefault = defaultVal;
+			return 'promptresult346934';
+		}
+		
+		page.evaluateJavaScript("window.alert('alertmsg147523')");
+		var confirmResult = page.evaluate(function() {return window.confirm('confirmmsg932342')});
+		var promptResult = page.evaluate(function() {return window.prompt('promptmsg853023','promptdefault935231')});
+		
+		assert(alertMessage === 'alertmsg147523', 'page.onAlert can be used to capture window.alert()');
+		assert(confirmMessage === 'confirmmsg932342', 'page.onConfirm can be used to capture widnow.confirm()');
+		assert(promptMessage === 'promptmsg853023', 'page.onPrompt can be used to capture window.prompt()');
+		
+		assert(confirmResult === false, 'page.onConfirm can return true/false to the IE context');
+		assert(promptDefault === 'promptdefault935231', 'page.onPrompt can use default values');
+		assert(promptResult === 'promptresult346934', 'page.onPrompt can return string messages to the IE context');
+		
+	
+	});
+	
 
 	// --------------------------------------------
 	assert.section('Closing page');	
 	
 	page.close();
-
-
-
-
+	
+	// Test what happens after closing
+	
 
 	// Tear down
 	server.close();

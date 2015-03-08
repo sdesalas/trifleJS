@@ -30,10 +30,18 @@ this.trifle.modules = this.trifle.modules || {};
 			console.xdebug("new WebPage()");
 			// Properties
 			this.objectName = "WebPage";
+			// Store reference
+			WebPage.all[this.uuid] = this;
+			// Add Events
+			Object.addEvent(this, 'onCallback');
+			Object.addEvent(this, 'onInitialized');
+			Object.addEvent(this, 'onAlert');
+			Object.addEvent(this, 'onConfirm', true); // unique (uses return value)
+			Object.addEvent(this, 'onPrompt', true); // unique (uses return value)
+			// Run pending COM events
+			trifle.wait(1);
 			// Fire Initialized event
-			if (this.onInitialized) {
-				this.onInitialized.call(this);
-			}
+			this.fireEvent('initialised');
 		},
 		
 		// Additional methods
@@ -191,34 +199,17 @@ this.trifle.modules = this.trifle.modules || {};
     // Currently running IE instance
     WebPage.current = null;
     
-    // Dialog windows: onAlert, onConfirm, onPrompt 
-    WebPage.onDialog = function() {
-		console.xdebug("WebPage.onDialog('" + arguments[0] + "')");
-		var page = WebPage.current;
-		var args = []; dialog = arguments[0];
-		for (var i = 1; i < arguments.length; i ++) {
-			args.push(arguments[i]);
-		}
-		switch (dialog) {
-			case "onAlert":
-			case "onConfirm":
-			case "onPrompt":
-				if (page && page[dialog] && page[dialog].apply) {
-					return page[dialog].apply(page, args);
-				}
-				break;
-		}
-		return null;
-    }
-
-    // Add static onCallback() method for event handling
-    WebPage.onCallback = function(args) {
-        console.xdebug("WebPage.onCallback(args)");
-        var page = WebPage.current;
-        if (page && page.onCallback && page.onCallback.apply) {
-            return page.onCallback.apply(page, args);
+    // HashMap of instantiated pages
+    WebPage.all = {};
+    
+    // Add static fireEvent() method for event handling
+    WebPage.fireEvent = function(nickname, uuid, args) {
+        console.xdebug("WebPage.fireEvent('" + nickname + "', uuid, args)");
+        var page = WebPage.all[uuid]; 
+        if (page && page.fireEvent) {
+            return page.fireEvent(nickname, args);
         }
-    }
+    };
 
     // Add static onError() method for event handling
     WebPage.onError = function(msg, line, url) {

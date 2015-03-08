@@ -93,18 +93,5 @@ namespace TrifleJS.Native
 
         #endregion
 
-        #region HResult
-
-        public sealed class HResult
-        {
-            internal const int INET_E_DEFAULT_ACTION = unchecked((int)0x800C0011);
-            internal const int E_NOINTERFACE = unchecked((int)0x80004002);
-            internal const int RPC_E_RETRY = unchecked((int)0x80010109);
-            internal const int S_FALSE = 1;
-            internal const int S_OK = unchecked((int)0x00000000);
-            internal const int E_NOTIMPL = unchecked((int)0x80004001);
-        }
-
-        #endregion
     }
 }
