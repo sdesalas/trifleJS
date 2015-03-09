@@ -644,12 +644,14 @@ assert.suite('Module: WebPage', function() {
 
 
 	// --------------------------------------------
-	assert.section('Events: Initialize, CallPhantom, Error', function() {
+	assert.section('Events: Initialize, CallPhantom, Error, LoadStarted/Finished', function() {
 
+		var loadStartData1;
+		var loadFinishData1, loadFinishData2;
 		var initData1, initData2, initData3;
 		var errorData1, errorData2;
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
-		var initTime, loadTime, callbackTime; 
+		var loadStartTime, loadFinishedTime, initTime, openTime, callbackTime; 
 		var date = new Date();
 		
 		page.onError = function(msg, trace) {
@@ -666,17 +668,39 @@ assert.suite('Module: WebPage', function() {
 			trifle.wait(1);
 		}
 		
+		page.onLoadStarted = function() {
+			loadStartData1 = arguments.length;
+			loadStartTime = new Date();
+			trifle.wait(1);
+		}
+		
+		page.onLoadFinished = function(status) {
+			loadFinishData1 = status;
+			loadFinishData2 = arguments.length;
+			loadFinishTime = new Date();
+			trifle.wait(1);
+		}
+		
 		page.open('http://localhost:8083', function(status) {
 			assert.ready = true;
-			loadTime = new Date();
+			openTime = new Date();
 		});
 
 		assert.waitUntilReady();
+				
+		assert(loadStartData1 === 0, 'page.onLoadStarted fires without arguments');
+		assert(loadStartTime < openTime, 'page.onLoadStarted fires before the page finishes loading');
+
+		assert(loadFinishData1 === 'success', 'page.onLoadFinished fires and returns status');
+		assert(loadFinishData2 === 1, 'page.onLoadFinished fires with 1 argument');
+		assert(loadStartTime < loadFinishTime, 'page.onLoadFinished fires after page.onLoadStarted');
+		assert(loadFinishTime < openTime, 'page.onLoadFinished fires before the page finishes loading');
 		
 		assert(initData1 === 'eventtest9837423401', 'page.onInitialized has access to DOM in global context');
 		assert(initData2 === 'function', 'page.onInitialized is fired after ie tools are loaded');
 		assert(initData3 === null, 'page.onInitialized fires before scripts on the page are executed');
-		assert(initTime < loadTime, 'page.onInitialized fires before the page finishes loading');
+		assert(initTime < openTime, 'page.onInitialized fires before the page finishes loading');
+		
 		assert(errorData1.indexOf('nonexistentVariable') > -1, 'page.onError fires when page contains javascript error');
 		assert(errorData2 instanceof Array, 'page.onError contains a stack trace');
 		assert(!!errorData2[0], 'page.onError stack trace contains at least one entry');
@@ -719,7 +743,6 @@ assert.suite('Module: WebPage', function() {
 	
 		var alertMessage, confirmMessage, confirmResult, promptMessage, promptDefault, promptResult;
 
-	
 		page.onAlert = function(message) {
 			alertMessage = message;
 		};
@@ -747,7 +770,6 @@ assert.suite('Module: WebPage', function() {
 		assert(promptDefault === 'promptdefault935231', 'page.onPrompt can use default values');
 		assert(promptResult === 'promptresult346934', 'page.onPrompt can return string messages to the IE context');
 		
-	
 	});
 	
 
