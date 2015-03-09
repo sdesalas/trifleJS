@@ -1,46 +1,7 @@
 ﻿
-/*
-// Initialize tools
-window.__tools = window.__tools || {};
-
-// Loads a JS file and executes a callback when ready
-window.__tools.includeJs = function(url, callbackId) {
-
-    window.external.xdebug(['window.__tools.includeJs(url, callbackId)', url, callbackId]);
-
-    // Generate DOM for new <script/> tagg
-    var head = document.getElementsByTagName("head")[0] || document.documentElement;
-    var script = document.createElement("script");
-    script.id = 'script' + callbackId;
-    script.src = url;
-
-    // Use insertBefore
-    head.insertBefore(script, head.firstChild);
-
-};
-
-// Checks if a script is ready
-window.__tools.isScriptReady = function(callbackId) {
-
-    window.external.xdebug(['window.__tools.isScriptReady(callbackId)', callbackId]);
-
-    var script = document.getElementById('script' + callbackId);
-    var head = document.getElementsByTagName("head")[0] || document.documentElement;
-    if (script && script.readyState) {
-        if (script.readyState === 'loaded' || script.readyState === 'complete') {
-            window.external.doCallback(callbackId);
-            if (head && script.parentNode) {
-                head.removeChild(script);
-            }
-            return true;
-        }
-    }
-    return false;
-}
-*/
-
 /**
-* WINDOW EXTENSTIONS & OVERRIDES
+* TRIFLEJS IE TOOLS
+* By: Steven de Salas
 */
 
 // Add OnCallback functionality
@@ -73,4 +34,18 @@ window.prompt = function(message, defaultValue) {
 	message = message + "";
 	return window.external.fireEvent('prompt', JSON.stringify([message, defaultValue || ""]));
 }
+
+// Capture javascript errors
+window.onerror = function(msg, url, line, column, e) {
+	var caller = arguments.callee ? arguments.callee.caller : '';
+	var trace = [{url: url, line: line, column: column, func: caller.toString()}];
+	while (!!caller.caller) {
+		trace.push({func: caller.caller.toString()});
+		caller = caller.caller;
+	} 
+	return window.external.fireEvent('error', JSON.stringify([msg, trace]));
+}
+
+
+
 

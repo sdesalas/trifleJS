@@ -25,10 +25,9 @@ namespace TrifleJS.API.Modules
         /// Creates a webpage module
         /// </summary>
         public WebPage() {
-            this.browser = new SkipDialogBrowser();
             this.uuid = Utils.NewUid();
+            this.browser = new SkipDialogBrowser();
             this.browser.Size = new Size(400, 300);
-            this.browser.ScrollBarsEnabled = false;
             // Add WebBrowser external scripting support
             this.browser.DocumentCompleted += DocumentCompleted;
             this.browser.Navigated += Navigated;
@@ -39,7 +38,6 @@ namespace TrifleJS.API.Modules
             }
             //this.browser.InitialiseOLE();
             this.browser.ObjectForScripting = new Callback.External(this);
-            this.browser.ScriptErrorsSuppressed = true;
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
@@ -313,32 +311,6 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// Handles an exception in the IE runtime
-        /// </summary>
-        /// <param name="ex"></param>
-        private void Handle(string description, int line, Uri uri)
-        {
-            bool isHandled = false;
-            // Check the page.onError() handler to see if we need to run it
-            try
-            {
-                string script = String.Format("WebPage.onError(\"{0}\", {1}, \"{2}\");", description, line, uri);
-                isHandled = Convert.ToBoolean(Program.Context.Run(script, "WebPage.onError()"));
-            }
-            catch (Exception ex2)
-            {
-                // Problems?
-                API.Context.Handle(ex2);
-                isHandled = true;
-            }
-            // Output to console if we havent handled it yet
-            if (!isHandled)
-            {
-                Console.error(String.Format("{0}:{1}({2}): {3}", "IE", uri.AbsoluteUri, line, description));
-            }
-        }
-
-        /// <summary>
         /// Evaluates (executes) javascript on the currently open window
         /// @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
         /// </summary>
@@ -502,11 +474,11 @@ namespace TrifleJS.API.Modules
         /// <param name="args"></param>
         public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args)
         {
-            if (browser != null)
+            if (Window != null)
             {
                 // DocumentCompleted is fired before window.onload and body.onload
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
-                browser.Document.Window.AttachEventHandler("onload", delegate
+                Window.AttachEventHandler("onload", delegate
                 {
                     // Execute callback at top of the stack
                     RemoveCallback();
@@ -528,12 +500,6 @@ namespace TrifleJS.API.Modules
                 switchToMainFrame();
                 AddToolset();
                 _fireEvent("initialized");
-                // Track unhandled errors
-                browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
-                {
-                    Handle(e.Description, e.LineNumber, e.Url);
-                    e.Handled = true;
-                };
             }
         }
 

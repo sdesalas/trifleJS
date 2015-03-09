@@ -647,9 +647,16 @@ assert.suite('Module: WebPage', function() {
 	assert.section('Events: Initialize, CallPhantom, Error', function() {
 
 		var initData1, initData2, initData3;
+		var errorData1, errorData2;
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
 		var initTime, loadTime, callbackTime; 
 		var date = new Date();
+		
+		page.onError = function(msg, trace) {
+			errorData1 = msg;
+			errorData2 = trace;
+			//console.warn(trace);
+		}
 		
 		page.onInitialized = function() {
 			initData1 = page.evaluate(function() {return document.title;});
@@ -670,6 +677,22 @@ assert.suite('Module: WebPage', function() {
 		assert(initData2 === 'function', 'page.onInitialized is fired after ie tools are loaded');
 		assert(initData3 === null, 'page.onInitialized fires before scripts on the page are executed');
 		assert(initTime < loadTime, 'page.onInitialized fires before the page finishes loading');
+		assert(errorData1.indexOf('nonexistentVariable') > -1, 'page.onError fires when page contains javascript error');
+		assert(errorData2 instanceof Array, 'page.onError contains a stack trace');
+		assert(!!errorData2[0], 'page.onError stack trace contains at least one entry');
+		
+		assert.checkMembers(errorData2[0], 'errorTrace', {
+			url: 'string',
+			line: 'number',
+			column: 'number',
+			func: 'string'
+		});
+		
+		page.evaluate(function() {
+			throw "throwerror348703245";
+		});
+		
+		assert(errorData1 === 'throwerror348703245', 'page.onError fires for injected javascript errors');
 		
 		page.onCallback = function(data, data2, data3, data4, data5) {
 			pageData = data;

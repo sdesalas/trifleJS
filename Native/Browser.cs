@@ -23,10 +23,9 @@ namespace TrifleJS.Native
         public Browser()
             : base()
         {
-#if !DEBUG
-            // Suppress Javascript error popups (release only)
+            // Initialize
             this.ScriptErrorsSuppressed = true;
-#endif
+            this.ScrollBarsEnabled = false;
             // Make sure we track which frames IE is focused on as a result
             // of javascript or mouse/keyboard events.
             this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)

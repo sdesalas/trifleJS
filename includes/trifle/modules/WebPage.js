@@ -38,6 +38,7 @@ this.trifle.modules = this.trifle.modules || {};
 			Object.addEvent(this, 'onAlert');
 			Object.addEvent(this, 'onConfirm', true); // unique (uses return value)
 			Object.addEvent(this, 'onPrompt', true); // unique (uses return value)
+			Object.addEvent(this, 'onError');
 			// Run pending COM events
 			trifle.wait(1);
 		},
@@ -208,17 +209,6 @@ this.trifle.modules = this.trifle.modules || {};
             return page.fireEvent(nickname, args);
         }
     };
-
-    // Add static onError() method for event handling
-    WebPage.onError = function(msg, line, url) {
-        console.xdebug("WebPage.onError(args)");
-        var page = WebPage.current;
-        if (page && page.onError && page.onError.call) {
-            page.onError.call(page, msg, [{ line: line, file: url}]);
-            return true;
-        }
-        return false;
-    }
 
 
 })(this.trifle);
