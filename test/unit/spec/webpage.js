@@ -638,22 +638,23 @@ assert.suite('Module: WebPage', function() {
 			success: true, 
 			url: request.url
 		});
-		response.write('<html><head><title>Test</title><script>var myGlobal = "glob928824"; var toolsLoaded = typeof window.callPhantom;</script></head><body>' + bodyText + '</body></html>'); 
+		response.write('<html><head><title>eventtest9837423401</title><script>var myLateGlobal = "glob928824";nonexistentVariable.shouldFail();</script></head><body>' + bodyText + '</body></html>'); 
 		response.close(); 
 	});
 
 
 	// --------------------------------------------
-	assert.section('Events: Initialize, CallPhantom', function() {
+	assert.section('Events: Initialize, CallPhantom, Error', function() {
 
-		var initData1, initData2;
+		var initData1, initData2, initData3;
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
 		var initTime, loadTime, callbackTime; 
 		var date = new Date();
 		
 		page.onInitialized = function() {
-			initData1 = page.evaluate(function() {return myGlobal;});
-			initData2 = page.evaluate(function() {return toolsLoaded;});
+			initData1 = page.evaluate(function() {return document.title;});
+			initData2 = page.evaluate(function() {return typeof window.callPhantom;});
+			initData3 = page.evaluate(function() {return myLateGlobal;});
 			initTime = new Date();
 			trifle.wait(1);
 		}
@@ -665,10 +666,9 @@ assert.suite('Module: WebPage', function() {
 
 		assert.waitUntilReady();
 		
-		console.log(initData1, initData2, initTime, loadTime, typeof loadTime);
-		
-		assert(initData1 === 'glob928824', 'page.onInitialized has access to global vars');
-		assert(initData2 === 'function', 'page.onInitialized confirms that ie tools are loaded');
+		assert(initData1 === 'eventtest9837423401', 'page.onInitialized has access to DOM in global context');
+		assert(initData2 === 'function', 'page.onInitialized is fired after ie tools are loaded');
+		assert(initData3 === null, 'page.onInitialized fires before scripts on the page are executed');
 		assert(initTime < loadTime, 'page.onInitialized fires before the page finishes loading');
 		
 		page.onCallback = function(data, data2, data3, data4, data5) {

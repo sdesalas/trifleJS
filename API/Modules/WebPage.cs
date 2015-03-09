@@ -504,9 +504,6 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
-                // Set current frame & handle initialization
-                switchToMainFrame();
-                this._fireEvent("initialized");
                 // DocumentCompleted is fired before window.onload and body.onload
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                 browser.Document.Window.AttachEventHandler("onload", delegate
@@ -527,9 +524,10 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
-                // Set current frame & add tools
+                // Initialize
                 switchToMainFrame();
                 AddToolset();
+                _fireEvent("initialized");
                 // Track unhandled errors
                 browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
                 {
