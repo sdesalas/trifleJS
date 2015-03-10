@@ -43,11 +43,14 @@ assert.suite('Object: phantom', function() {
 	//assert(typeof phantom.deleteCookie === 'function', 'phantom.deleteCookie is a function');
 	assert(typeof phantom.exit === 'function', 'phantom.exit is a function');
 	assert(typeof phantom.injectJs === 'function', 'phantom.injectJs is a function');
+	assert(phantom.onError instanceof Array, 'phantom.onError is an array');
+	assert(phantom.onError.length === 1 && typeof phantom.onError[0] === 'function', 'phantom.onError is an array with 1 function');
 
 	// --------------------------------------------
 	assert.section('Functionality');
 
 	phantom.libraryPath = "test";
+	if (!fs.isDirectory('test')) fs.makeDirectory('test');
 
 	assert(phantom.scriptName === '', 'phantom.scriptName is the currently executing script');
 	assert(phantom.libraryPath !== fs.workingDirectory, 'changing phantom.libraryPath does not alter fs.workingDirectory');
@@ -57,6 +60,41 @@ assert.suite('Object: phantom', function() {
 	
 	assert(injection === true, 'phantom.injectJs() returned true when pointing to file');
 	assert(___test190234 === true, 'phantom.injectJs() executes a script in current V8 context');
+	
+	// --------------------------------------------
+	assert.section('Global Error Handling', function() {
+	
+		var lastErr, lastTrace;
+		var defaultErrHandler = phantom.onError[0];
+		
+		phantom.onError = function(msg, trace) {
+			lastErr = msg;
+			lastTrace = trace;
+		}
+	
+		window.setTimeout(function () {assert.ready = true; unknownVar.method();}, 0);
+	
+		assert.waitUntilReady();
+		
+		assert(lastErr.indexOf('unknownVar is not defined') > -1, 'phantom.onError can capture javascript errors');
+		assert(lastTrace instanceof Array && lastTrace.length > 0, 'phantom.onError contains a javascript trace');
+	
+		assert.checkMembers(lastTrace[0], 'errorTrace', {
+			file: 'string',
+			line: 'number',
+			col: 'number',
+			func: 'string'
+		});
+		
+		phantom.onError = function(msg, trace) {
+			throw "error within the error handler!";
+		}
+		
+		assert.isError(function() {anotherException.isTriggered();}, 'phantom.onError generates errors without recursing on itself');
+		
+		phantom.onError = defaultErrHandler;
+	
+	});
 	
 	// --------------------------------------------
 	assert.section('Cookies');

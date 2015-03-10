@@ -365,6 +365,8 @@ assert.suite('Module: WebPage', function() {
 	// --------------------------------------------
 	assert.section('Windows and Frames', function() {
 	
+		if (!fs.isDirectory('test/frames')) fs.makeTree('test/frames');
+	
 		var wwwroot = 'test/frames', loadCount = 0, urls = [];
 		var maincontent, frame1content, frame2content, frame2_1content, frame2_2content;
 		var evaluateResult;
@@ -706,9 +708,9 @@ assert.suite('Module: WebPage', function() {
 		assert(!!errorData2[0], 'page.onError stack trace contains at least one entry');
 		
 		assert.checkMembers(errorData2[0], 'errorTrace', {
-			url: 'string',
+			file: 'string',
 			line: 'number',
-			column: 'number',
+			col: 'number',
 			func: 'string'
 		});
 		

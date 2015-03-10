@@ -36,9 +36,9 @@ window.prompt = function(message, defaultValue) {
 }
 
 // Capture javascript errors
-window.onerror = function(msg, url, line, column, e) {
+window.onerror = function(msg, url, line, col, e) {
 	var caller = arguments.callee ? arguments.callee.caller : '';
-	var trace = [{url: url, line: line, column: column, func: caller.toString()}];
+	var trace = [{file: url, line: line, col: col, func: caller.toString()}];
 	while (!!caller.caller) {
 		trace.push({func: caller.caller.toString()});
 		caller = caller.caller;
