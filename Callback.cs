@@ -40,6 +40,7 @@ namespace TrifleJS
             {
                 Callback callback = queue.Dequeue();
                 Callback.Execute(callback.Id, callback.Once, callback.Arguments);
+                //callback = null;
             }
         }
 

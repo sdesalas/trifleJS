@@ -30,7 +30,7 @@ namespace TrifleJS
 #endif
             // Make sure we track which frames IE is focused on as a result
             // of javascript or mouse/keyboard events.
-            this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
+            /*this.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
             {
                 if (this.Document != null && this.Document.Window != null)
                 {
@@ -39,15 +39,22 @@ namespace TrifleJS
                     {
                         window.GotFocus += delegate(object sender2, HtmlElementEventArgs e2)
                         {
+                            Console.WriteLine("New window focus");
                             FocusedFrame = sender2 as HtmlWindow;
                         };
                     }
                 }
-            };
+            };*/
 
             this.NewWindow += delegate(object sender, System.ComponentModel.CancelEventArgs e)
             {
+                Console.WriteLine("New window closed");
                 e.Cancel = true; ;
+
+                this.Document.Window.Focus();
+                FocusedFrame = this.Document.Window;
+
+                Console.WriteLine("New window closed - done");
             };
         }
 
@@ -232,8 +239,10 @@ namespace TrifleJS
         /// <param name="clipRect">Part of the image captured</param>
         public void Render(string filename, double ratio, Rectangle clipRect)
         {
+            Utils.Debug("Render");
             using (var pic = this.Render(ratio, clipRect))
             {
+                Utils.Debug("Render 1");
                 if (pic == null)
                 {
                     Utils.Debug("Picture could not be rendered");
@@ -264,6 +273,7 @@ namespace TrifleJS
                             pic.Save(filename, ImageFormat.Gif);
                             break;
                         default:
+                            Utils.Debug("Save png");
                             pic.Save(filename, ImageFormat.Png);
                             break;
                     }
@@ -295,6 +305,7 @@ namespace TrifleJS
         /// <param name="clipRect">Part of the imaeg captured - Only Height and Width are used right now</param>
         public Bitmap Render(double ratio, Rectangle clipRect)
         {
+            Utils.Debug("Render(,)");
             if (this.Width <= 0)
             {
                 Utils.Debug("ViewPort width is 0 or less");
@@ -306,39 +317,73 @@ namespace TrifleJS
                 return null;
             }
 
+            Utils.Debug("Render(,) ratio: " + ratio);
+            int _width = Convert.ToInt32(this.Width * ratio);
+            //int _height = Convert.ToInt32(this.Height * ratio);
+            int _height = Convert.ToInt32(this.Document.Body.ScrollRectangle.Height * ratio);
+
+            Utils.Debug("Render(,) width: " + _width);
+            Utils.Debug("Render(,) height: " + _height);
+
             // Resize to full page size before rendering
             Size oldSize = this.Size;
-            this.Size = PageSize;
-            Bitmap result = Render(Convert.ToInt32(this.Width * ratio), Convert.ToInt32(this.Height * ratio));
+            FullPage();
+            if (oldSize.Height > this.Height)
+                this.Height = oldSize.Height;
+            if (oldSize.Width > this.Width)
+                this.Width = oldSize.Width;
+            //this.Height = _height;
+            //Bitmap result = Render(_width, _height);
+            Bitmap result = Render(this.Width, this.Height);
+            Utils.Debug("Render(,) width 1: " + this.Width);
             Bitmap crop = null;
 
+            
+
             // Crop image
-            if (clipRect != null && clipRect.Width > 0 && clipRect.Height > 0)
+            if (clipRect != null && (clipRect.Width > 0 || clipRect.Height > 0))
             {
+                Utils.Debug("Render(,) clipRect.Width: " + clipRect.Width);
+                Utils.Debug("Render(,) clipRect.Height: " + clipRect.Height);
                 // make sure we rquest a bitmap that fits inside the full size page
                 int width = Convert.ToInt32(Math.Min(clipRect.Width, this.Size.Width - clipRect.Left) * ratio);
+                Utils.Debug("Render(,) width: " + width);
                 int height = Convert.ToInt32(Math.Min(clipRect.Height, this.Size.Height - clipRect.Top) * ratio);
+                if (height == 0)
+                    height = Convert.ToInt32(this.Size.Height * ratio);
+                Utils.Debug("Render(,) height: " + height);
                 int top = Convert.ToInt32(clipRect.Top * ratio);
                 int left = Convert.ToInt32(clipRect.Left * ratio);
 
                 crop = new Bitmap(width, height);
+                Utils.Debug("Render(,) crop done");
                 Rectangle cropRect = new Rectangle(left, top, width, height);
 
                 using(Graphics g = Graphics.FromImage(crop))
                 {
                    g.DrawImage(result, new Rectangle(0, 0, width, height), cropRect, GraphicsUnit.Pixel);
+                   Utils.Debug("Render(,) DrawImage done");
                 }
             }
-            this.Size = oldSize;
+            //this.Size = oldSize;
             if (crop != null)
             {
                 result.Dispose();
+                Utils.Debug("Render(,) Dispose done");
                 return crop;
             }
                 
             return result;
         }
 
+        private void FullPage()
+        {
+            if (this.Document != null && this.Document.Body != null && this.Document.Body.ScrollRectangle != null)
+            {
+                this.Width = this.Document.Body.ScrollRectangle.Width + 50;
+                this.Height = this.Document.Body.ScrollRectangle.Height + 50;
+            }
+        }
 
         /// <summary>
         /// Full-height page size after rendering HTML
@@ -350,14 +395,24 @@ namespace TrifleJS
                     // Add 50 pixels to the bottom of the screen
                     // to avoid scrolling bars.
                     Size size = this.Document.Body.ScrollRectangle.Size;
-                    int height = size.Height;
-                    int width = this.Size.Width;
+                    Utils.Debug("Scollable height: " + size.Height);
+                    Utils.Debug("Scollable height: " + this.Document.Body.ScrollRectangle.Height);
+                    //int height = this.Size.Height;
+                    //int width = this.Size.Width;
+                    int height = this.Document.Body.ScrollRectangle.Height;
+                    int width = this.Document.Body.ScrollRectangle.Width;
 
                     if (this.Document.Body.ClientRectangle.Width < this.Document.Body.ScrollRectangle.Width)
-                        width += 50;
+                    {
+                        height += 50;
+                        Utils.Debug("Added 50px to width: " + height);
+                    }
 
                     if (this.Document.Body.ClientRectangle.Height < this.Document.Body.ScrollRectangle.Height)
-                        height += 50;
+                    {
+                        width += 50;
+                        Utils.Debug("Added 50px to height: " + width);
+                    }
 
                     return new Size(width, height);                                       
                 }
@@ -370,8 +425,11 @@ namespace TrifleJS
         /// </summary>
         /// <returns></returns>
         public Bitmap Render(int width, int height) {
+            Utils.Debug("Render(width,height)"  + width + " " + height);
             Bitmap output = new Bitmap(width, height);
+            Utils.Debug("Render(width,height) 1");
             Methods.GetImage(this.ActiveXInstance, output, Color.White);
+            Utils.Debug("Render(width,height) 2");
             return output;
         }
 

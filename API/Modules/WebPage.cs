@@ -39,7 +39,7 @@ namespace TrifleJS.API.Modules
             this.browser.ScriptErrorsSuppressed = true;
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
-            this.zoomFactor = 1;
+            this.zoomFactor = 1.0;
             this.uuid = Utils.NewUid();
             this.clipRect = new Dictionary<string, object>() {
                 { "top", 0 },
@@ -385,6 +385,7 @@ namespace TrifleJS.API.Modules
                 Application.DoEvents();
                 return result as string;
             }
+
             return null;
         }
 
@@ -476,6 +477,7 @@ namespace TrifleJS.API.Modules
         private static void AddCallback(string id, params object[] args)
         {
             callbackStack.Push(new KeyValuePair<string, object[]>(id, args));
+            Console.debug("Callback stack length (add): " + callbackStack.Count);
         }
 
         /// <summary>
@@ -484,6 +486,8 @@ namespace TrifleJS.API.Modules
         /// <param name="id"></param>
         private static void RemoveCallback()
         {
+            Console.debug("Callback stack length (remove): " + callbackStack.Count);
+
             if (callbackStack.Count > 0)
             {
                 var callback = callbackStack.Pop();
@@ -505,6 +509,8 @@ namespace TrifleJS.API.Modules
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                 browser.Document.Window.AttachEventHandler("onload", delegate
                 {
+
+                    Console.debug("onload: " + browser.Document.Window.Url);
                     // Set current frame
                     switchToMainFrame();
                     // Add IE Toolset
@@ -512,11 +518,19 @@ namespace TrifleJS.API.Modules
                     // Track unhandled errors
                     browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
                     {
+                        Console.debug("browser.Document.Window.Error");
+                        Console.debug(e);
                         Handle(e.Description, e.LineNumber, e.Url);
                         e.Handled = true;
                     };
                     // Execute callback at top of the stack
+
                     RemoveCallback();
+                });
+
+                browser.Document.Window.AttachEventHandler("error", delegate
+                {
+                    Console.debug("Event: error");
                 });
             }
         }
@@ -608,6 +622,7 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
+                Console.debug("Stop!");
                 browser.Stop();
                 do
                 {
@@ -713,10 +728,17 @@ namespace TrifleJS.API.Modules
         /// <param name="filename">path where the screenshot is saved</param>
         public void _render(string filename)
         {
+            Utils.Debug("_render " + filename);
             if (browser != null)
             {
+                Utils.Debug("_render zoomFactor: " + zoomFactor);
+                Utils.Debug("_render width: " + this.ClipRect.Width);
+                Utils.Debug("_render height: " + this.ClipRect.Height);
+                Utils.Debug("_render top: " + this.ClipRect.Top);
+                Utils.Debug("_render left: " + this.ClipRect.Left);
                 browser.Render(filename, zoomFactor, this.ClipRect);
             }
+            Utils.Debug("_render finished");
         }
 
         /// <summary>
@@ -826,8 +848,10 @@ namespace TrifleJS.API.Modules
 
                     if (browser != null)
                     {
-                        if (width == 0) width = browser.Document.Window.Size.Width;
-                        if (height == 0) height = browser.Document.Window.Size.Height;
+                        //if (width == 0) width = browser.Document.Window.Size.Width;
+                        //if (height == 0) height = browser.Document.Window.Size.Height;
+                        /*if (width == 0) width = browser.Document.Body.ClientRectangle.Width;
+                        if (height == 0) height = browser.Document.Body.ScrollRectangle.Height;*/
                     }
                     return new Rectangle(top, left, width, height);
                 }

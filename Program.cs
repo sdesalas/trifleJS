@@ -241,13 +241,13 @@ namespace TrifleJS
         public static void Exit(int exitCode)
         {
             Proxy.Backup.Restore();
-            if (Program.Verbose || Program.Testing)
+            /*if (Program.Verbose || Program.Testing)
             {
                 // Debugging/Testing? Wait for input
                 Console.WriteLine();
                 Console.WriteLine("Press any key to finish...");
                 Console.Read();
-            }
+            }*/
             Environment.Exit(exitCode);
         }
 
