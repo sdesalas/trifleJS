@@ -640,7 +640,10 @@ assert.suite('Module: WebPage', function() {
 			success: true, 
 			url: request.url
 		});
-		response.write('<html><head><title>eventtest9837423401</title><script>var myLateGlobal = "glob928824";nonexistentVariable.shouldFail();</script></head><body>' + bodyText + '</body></html>'); 
+		response.write('<html><head><title>eventtest9837423401</title>' +
+						'<script>callPhantom("script"); window.onload=function() {callPhantom("onload");}</script>' +
+						'<script>var myLateGlobal = "glob928824"; nonexistentVariable.shouldFail();</script>' + 
+						'</head><body>' + bodyText + '</body></html>'); 
 		response.close(); 
 	});
 
@@ -648,66 +651,101 @@ assert.suite('Module: WebPage', function() {
 	// --------------------------------------------
 	assert.section('Events: Initialize, CallPhantom, Error, LoadStarted/Finished', function() {
 
-		var loadStartData1;
-		var loadFinishData1, loadFinishData2;
-		var initData1, initData2, initData3;
-		var errorData1, errorData2;
-		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
-		var loadStartTime, loadFinishedTime, initTime, openTime, callbackTime; 
-		var date = new Date();
+		var data = {onLoadStarted: {}, onLoadFinished: {}, onCallback: {}, onInitialized: {}, onError: {}};
+		var stopwatch = {};
 		
 		page.onError = function(msg, trace) {
-			errorData1 = msg;
-			errorData2 = trace;
-			//console.warn(trace);
+			data.onError.args = arguments.length;
+			data.onError.msg = msg;
+			data.onError.trace = trace;
+			stopwatch.onError = new Date();
+			//console.warn(msg, trace);
 		}
 		
 		page.onInitialized = function() {
-			initData1 = page.evaluate(function() {return document.title;});
-			initData2 = page.evaluate(function() {return typeof window.callPhantom;});
-			initData3 = page.evaluate(function() {return myLateGlobal;});
-			initTime = new Date();
+			data.onInitialized.args = arguments.length;
+			data.onInitialized.docTitle = page.evaluate(function() {return document.title;});
+			data.onInitialized.typeCheck = page.evaluate(function() {return typeof window.callPhantom;});
+			data.onInitialized.myLateGlobal = page.evaluate(function() {return myLateGlobal;});
+			stopwatch.onInitialized = new Date();
 			trifle.wait(1);
 		}
 		
 		page.onLoadStarted = function() {
-			loadStartData1 = arguments.length;
-			loadStartTime = new Date();
+			data.onLoadStarted.args = arguments.length;
+			stopwatch.onLoadStarted = new Date();
 			trifle.wait(1);
 		}
 		
 		page.onLoadFinished = function(status) {
-			loadFinishData1 = status;
-			loadFinishData2 = arguments.length;
-			loadFinishTime = new Date();
+			data.onLoadFinished.args = arguments.length;
+			data.onLoadFinished.status = status;
+			stopwatch.onLoadFinished = new Date();
 			trifle.wait(1);
 		}
 		
+		page.onCallback = function(prop) {
+			stopwatch.onCallback = stopwatch.onCallback || {};
+			stopwatch.onCallback[prop] = new Date();
+			trifle.wait(1);
+		}
+		
+		page.evaluate(function () {
+			callPhantom('beforeopen');
+		});
+		
 		page.open('http://localhost:8083', function(status) {
 			assert.ready = true;
-			openTime = new Date();
+			stopwatch.open = new Date();
+			trifle.wait(1);
 		});
 
 		assert.waitUntilReady();
-				
-		assert(loadStartData1 === 0, 'page.onLoadStarted fires without arguments');
-		assert(loadStartTime < openTime, 'page.onLoadStarted fires before the page finishes loading');
+		
+		console.log({data: data, stopwatch: stopwatch});
+		
+		assert(stopwatch.onLoadStarted instanceof Date, 'page.onLoadStarted is executed');
+		assert(data.onLoadStarted.args === 0, 'page.onLoadStarted fires without arguments');
 
-		assert(loadFinishData1 === 'success', 'page.onLoadFinished fires and returns status');
-		assert(loadFinishData2 === 1, 'page.onLoadFinished fires with 1 argument');
-		assert(loadStartTime < loadFinishTime, 'page.onLoadFinished fires after page.onLoadStarted');
-		assert(loadFinishTime < openTime, 'page.onLoadFinished fires before the page finishes loading');
+		assert(stopwatch.onLoadFinished instanceof Date, 'page.onLoadFinished is executed');
+		assert(data.onLoadFinished.status === 'success', 'page.onLoadFinished fires and returns status');
+		assert(data.onLoadFinished.args === 1, 'page.onLoadFinished fires with 1 argument');
 		
-		assert(initData1 === 'eventtest9837423401', 'page.onInitialized has access to DOM in global context');
-		assert(initData2 === 'function', 'page.onInitialized is fired after ie tools are loaded');
-		assert(initData3 === null, 'page.onInitialized fires before scripts on the page are executed');
-		assert(initTime < openTime, 'page.onInitialized fires before the page finishes loading');
+		assert(stopwatch.onInitialized instanceof Date, 'page.onInitialized is executed');
+		assert(data.onInitialized.args === 0, 'page.onInitialized fires without arguments');
+		assert(data.onInitialized.docTitle === 'eventtest9837423401', 'page.onInitialized has access to DOM in global context');
+		assert(data.onInitialized.typeCheck === 'function', 'page.onInitialized is fired after ie tools are loaded');
+		assert(data.onInitialized.myLateGlobal === null, 'page.onInitialized fires before scripts on the page are executed');
 		
-		assert(errorData1.indexOf('nonexistentVariable') > -1, 'page.onError fires when page contains javascript error');
-		assert(errorData2 instanceof Array, 'page.onError contains a stack trace');
-		assert(!!errorData2[0], 'page.onError stack trace contains at least one entry');
+		assert(!!stopwatch.onCallback, 'page.onCallback is executed');
+		assert(stopwatch.onCallback.beforeopen instanceof Date, 'callPhantom() is executed before page.open()');
+		assert(stopwatch.onCallback.script instanceof Date, 'callPhantom() is executed within script tag');
+		assert(stopwatch.onCallback.onload instanceof Date, 'callPhantom() is executed for window.onload() event');
+
+		// Event order should be
+		// 1. beforeopen
+		// 2. loadstarted
+		// 4. initialized
+		// 5. script
+		// 6. window.onload
+		// 7. loadfinished
+		// 8. open
 		
-		assert.checkMembers(errorData2[0], 'errorTrace', {
+		assert(stopwatch.onCallback.beforeopen < stopwatch.onLoadStarted, 'callPhantom() before page.open() runs before onLoadStarted');
+		assert(stopwatch.onLoadStarted < stopwatch.onInitialized, 'page.onLoadStarted fires before page.onInitialized');
+		assert(stopwatch.onInitialized < stopwatch.onCallback.script, 'page.onInitialized fires before callPhantom() used in script tag');
+		assert(stopwatch.onCallback.script < stopwatch.onCallback.onload, 'callPhantom() used in script tag runs before window.onload');
+		assert(stopwatch.onCallback.onload < stopwatch.onLoadFinished, 'callPhantom() used on window.onload fires before onLoadFinished');
+		assert(stopwatch.onLoadFinished < stopwatch.open, 'page.onLoadFinished fires before callback used in page.open()');
+
+		// Check errors
+		assert(stopwatch.onError instanceof Date, 'page.onError is executed');
+		assert(data.onError.args === 2, 'page.onError fires with 2 arguments');
+		assert(data.onError.msg.indexOf('nonexistentVariable') > -1, 'page.onError contains message about javascript error');
+		assert(data.onError.trace instanceof Array, 'page.onError contains a stack trace');
+		assert(!!data.onError.trace[0], 'page.onError stack trace contains at least one entry');
+		
+		assert.checkMembers(data.onError.trace[0], 'onError.trace', {
 			file: 'string',
 			line: 'number',
 			col: 'number',
@@ -718,24 +756,24 @@ assert.suite('Module: WebPage', function() {
 			throw "throwerror348703245";
 		});
 		
-		assert(errorData1 === 'throwerror348703245', 'page.onError fires for injected javascript errors');
+		assert(data.onError.msg === 'throwerror348703245', 'page.onError fires for injected javascript errors');
 		
-		page.onCallback = function(data, data2, data3, data4, data5) {
-			pageData = data;
-			pageData2 = data2;
-			pageData3 = data3;
-			pageData4 = data4;
-			pageData5 = data5;
+		page.onCallback = function(data1, data2, data3, data4, data5) {
+			data.onCallback.data1 = data1;
+			data.onCallback.data2 = data2;
+			data.onCallback.data3 = data3;
+			data.onCallback.data4 = data4;
+			data.onCallback.data5 = data5;
 		}
 
 		page.evaluate(function(date) {
 			window.callPhantom('blah', 6, date, {a: 1}, typeof date);
 		}, date);
 
-		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
-		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
-		//assert(pageData3 && pageData3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
-		assert(pageData4 && pageData4.a && pageData4.a === 1, 'page.onCallback can be used to transfer JSON objects');
+		assert(data.onCallback.data1 === 'blah', 'page.onCallback can be used to transfer strings');
+		assert(data.onCallback.data2 === 6, 'page.onCallback can be used to transfer numbers');
+		//assert(data.onCallback.data3 && data.onCallback.data3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
+		assert(data.onCallback.data4 && data.onCallback.data4.a && data.onCallback.data4.a === 1, 'page.onCallback can be used to transfer JSON objects');
 	
 	});
 	
