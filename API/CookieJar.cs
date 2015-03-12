@@ -3,6 +3,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using TrifleJS.Native;
 
 namespace TrifleJS.API
 {
@@ -71,7 +72,7 @@ namespace TrifleJS.API
         /// </summary>
         public void ClearAll() {
             content = new Dictionary<string, List<Cookie>>();
-            API.Native.Methods.ResetBrowserSession(IntPtr.Zero);
+            Native.Methods.ResetBrowserSession(IntPtr.Zero);
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace TrifleJS.API
             {
                 string url = cookie.GetUrl();
                 string cookieString = cookie.ToString();
-                API.Native.Methods.InternetSetCookie(cookie.GetUrl(), null, cookie.ToString());
+                Native.Methods.InternetSetCookie(cookie.GetUrl(), null, cookie.ToString());
                 success = true;
             }
             catch { }

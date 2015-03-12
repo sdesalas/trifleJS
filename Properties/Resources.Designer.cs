@@ -489,6 +489,33 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /*
+        ///* ssl.js
+        ///* 
+        ///* Runs a set of unit tests used to verify 
+        ///* SSL connectivity.
+        ///* 
+        ///*/
+        ///
+        ///
+        ///assert.suite(&apos;SSL connectivity&apos;, function() {
+        ///
+        ///    assert.section(&apos;Module: WebServer (SSL support)&apos;);
+        ///    
+        ///	var server = require(&apos;webserver&apos;).create();
+        ///	var page = require(&apos;webpage&apos;).create();
+        ///	
+        ///	
+        ///    
+        ///});.
+        /// </summary>
+        internal static string test_unit_spec_ssl {
+            get {
+                return ResourceManager.GetString("test_unit_spec_ssl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
         ///* webpage.js
         ///* 
         ///* Runs a set of unit tests used to verify the 

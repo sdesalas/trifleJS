@@ -2,9 +2,11 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using mshtml;
 
-namespace TrifleJS
+namespace TrifleJS.Native.Deprecated
 {
     /// <summary>
     /// This class enhances the WebBrowser control by automating certain OLE dialogs
@@ -18,6 +20,7 @@ namespace TrifleJS
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern bool InternetSetOption(IntPtr hInternet, int dwOption,
             IntPtr lpBuffer, int lpdwBufferLength);
+        internal static Guid IID_IProfferService = new Guid("cb728b20-f786-11ce-92ad-00aa00a74cd0");
         internal static Guid IID_IAuthenticate = new Guid("79eac9d0-baf9-11ce-8c82-00aa004ba90b");
         internal static Guid IID_IHttpSecurity = new Guid("79eac9d7-bafa-11ce-8c82-00aa004ba90b");
         internal static Guid IID_IWindowForBindingUI = new Guid("79eac9d5-bafa-11ce-8c82-00aa004ba90b");
@@ -34,7 +37,15 @@ namespace TrifleJS
         {
             object obj = this.ActiveXInstance;
             IOleObject oc = obj as IOleObject;
-            oc.SetClientSite(this as IOleClientSite);
+
+            IServiceProvider sp = obj as IServiceProvider;
+            IProfferService theProfferService = null;
+            IntPtr objectProffer = IntPtr.Zero;
+            uint cookie = 0;
+            sp.QueryService(ref IID_IProfferService, ref IID_IProfferService, out objectProffer);
+            theProfferService = Marshal.GetObjectForIUnknown(objectProffer) as IProfferService;
+            theProfferService.ProfferService(ref IID_IAuthenticate, this, out cookie);
+
             // Add Support for bypassing Proxy Authentication dialog
             AuthenticateProxy += delegate(object sender, EnhancedBrowser.AthenticateProxyEventArgs e)
             {
@@ -118,7 +129,7 @@ namespace TrifleJS
         #region IOleDocumentSite methods
 
         public void ActivateMe(ref object pViewToActivate) { }
-        
+
         #endregion
 
         #region Events
@@ -406,6 +417,20 @@ namespace TrifleJS
         int QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject);
     }
 
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+     Guid("CB728B20-F786-11CE-92AD-00AA00A74CD0")]
+    public interface IProfferService
+    {
+        [MethodImpl(MethodImplOptions.InternalCall,
+            MethodCodeType = MethodCodeType.Runtime)]
+        void ProfferService([In] ref Guid rguidService, [In,
+MarshalAs(UnmanagedType.Interface)] IServiceProvider psp, out uint pdwCookie);
+
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType =
+MethodCodeType.Runtime)]
+        void RevokeService([In] uint dwCookie);
+    }
+
     [ComImport, GuidAttribute("79EAC9D0-BAF9-11CE-8C82-00AA004BA90B"),
     InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown),
     ComVisible(false)]
@@ -439,7 +464,7 @@ namespace TrifleJS
 
 
     [ComImport, GuidAttribute("b722bcc7-4e68-101b-a2bc-00aa00404770"),
-    InterfaceType(ComInterfaceType.InterfaceIsIUnknown) ]
+    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IOleDocumentSite
     {
         void ActivateMe(ref object pViewToActivate);

@@ -57,6 +57,33 @@ namespace TrifleJS.API
         public static string libraryPath { get; set; }
 
         /// <summary>
+        /// Fires an event on the V8 context
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static object _fireEvent(string nickname, params object[] args) {
+            if (Program.Context != null) {
+                try
+                {
+                    return Program.Context.Run(String.Format("phantom.fireEvent('{0}',{1})", nickname, Utils.Serialize(args)), "phantom.fireEvent()");
+                }
+                catch (Exception ex) 
+                {
+                    if (nickname == "error")
+                    {
+                        ContextError err = new ContextError(ex);
+                        ContextError.TraceData data = err.trace[0];
+                        Console.error(String.Format("{0} ({1},{2}): {3}", data.file, data.line, data.col, err.message));
+                    }
+                    else
+                        Console.error(String.Format("Phantom.fireEvent('{0}'): {1}", nickname, ex.Message));
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Returns the current versions
         /// </summary>
         public static Dictionary<string, int> version

@@ -95,22 +95,25 @@ assert.suite('Module: WebPage', function() {
 	});
 
 	// --------------------------------------------
-	assert.section('Events before loading');
-
-	var pageData, pageData2, pageData3;
+	assert.section('Events before loading', function() {
 	
-	page.onCallback = function(data, data2, data3) {
-		pageData = data;
-		pageData2 = data2;
-		pageData3 = data3;
-	}
+		var pageData, pageData2, pageData3;
+		
+		page.onCallback = function(data, data2, data3) {
+			pageData = data;
+			pageData2 = data2;
+			pageData3 = data3;
+		}
 
-	page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
+		page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
 
-	assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
-	assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
-	assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
+		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
+		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
+		assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
 
+
+	});
+	
 
 	// Start a web server listener to check that pages are loading
 	var pageContent, pagePlainText;
@@ -361,6 +364,8 @@ assert.suite('Module: WebPage', function() {
 	
 	// --------------------------------------------
 	assert.section('Windows and Frames', function() {
+	
+		if (!fs.isDirectory('test/frames')) fs.makeTree('test/frames');
 	
 		var wwwroot = 'test/frames', loadCount = 0, urls = [];
 		var maincontent, frame1content, frame2content, frame2_1content, frame2_2content;
@@ -624,66 +629,159 @@ assert.suite('Module: WebPage', function() {
 	
 	});
 	
+	// Recreate environment for next tests
+	page.close();
+	server.close();		
+	page = require("webpage").create();
+	
+	// Start a listener to check events
+	server.listen(8083, function(request, response) { 
+		var bodyText = JSON.stringify({
+			success: true, 
+			url: request.url
+		});
+		response.write('<html><head><title>eventtest9837423401</title><script>var myLateGlobal = "glob928824";nonexistentVariable.shouldFail();</script></head><body>' + bodyText + '</body></html>'); 
+		response.close(); 
+	});
+
 
 	// --------------------------------------------
-	assert.section('Events', function() {
-	
-	/*
+	assert.section('Events: Initialize, CallPhantom, Error, LoadStarted/Finished', function() {
+
+		var loadStartData1;
+		var loadFinishData1, loadFinishData2;
+		var initData1, initData2, initData3;
+		var errorData1, errorData2;
 		var pageData = null, pageData2 = null, pageData3 = null, pageData4 = null;
+		var loadStartTime, loadFinishedTime, initTime, openTime, callbackTime; 
 		var date = new Date();
-	
-		// Recreate environment for test
-		page.close();
-		server.close();
-
-		page = require('webpage').create();
-
-		// Start a listener to check events
-		server.listen(8083, function(request, response) { 
-			var bodyText = JSON.stringify({
-				success: true, 
-				url: request.url
-			});
-			response.write('<html><head><title>Test</title></head><body>' + bodyText + '</body></html>'); 
-			response.close(); 
-		});
+		
+		page.onError = function(msg, trace) {
+			errorData1 = msg;
+			errorData2 = trace;
+			//console.warn(trace);
+		}
+		
+		page.onInitialized = function() {
+			initData1 = page.evaluate(function() {return document.title;});
+			initData2 = page.evaluate(function() {return typeof window.callPhantom;});
+			initData3 = page.evaluate(function() {return myLateGlobal;});
+			initTime = new Date();
+			trifle.wait(1);
+		}
+		
+		page.onLoadStarted = function() {
+			loadStartData1 = arguments.length;
+			loadStartTime = new Date();
+			trifle.wait(1);
+		}
+		
+		page.onLoadFinished = function(status) {
+			loadFinishData1 = status;
+			loadFinishData2 = arguments.length;
+			loadFinishTime = new Date();
+			trifle.wait(1);
+		}
 		
 		page.open('http://localhost:8083', function(status) {
 			assert.ready = true;
+			openTime = new Date();
 		});
 
 		assert.waitUntilReady();
+				
+		assert(loadStartData1 === 0, 'page.onLoadStarted fires without arguments');
+		assert(loadStartTime < openTime, 'page.onLoadStarted fires before the page finishes loading');
+
+		assert(loadFinishData1 === 'success', 'page.onLoadFinished fires and returns status');
+		assert(loadFinishData2 === 1, 'page.onLoadFinished fires with 1 argument');
+		assert(loadStartTime < loadFinishTime, 'page.onLoadFinished fires after page.onLoadStarted');
+		assert(loadFinishTime < openTime, 'page.onLoadFinished fires before the page finishes loading');
 		
-		page.onCallback = function(data, data2, data3, data4) {
+		assert(initData1 === 'eventtest9837423401', 'page.onInitialized has access to DOM in global context');
+		assert(initData2 === 'function', 'page.onInitialized is fired after ie tools are loaded');
+		assert(initData3 === null, 'page.onInitialized fires before scripts on the page are executed');
+		assert(initTime < openTime, 'page.onInitialized fires before the page finishes loading');
+		
+		assert(errorData1.indexOf('nonexistentVariable') > -1, 'page.onError fires when page contains javascript error');
+		assert(errorData2 instanceof Array, 'page.onError contains a stack trace');
+		assert(!!errorData2[0], 'page.onError stack trace contains at least one entry');
+		
+		assert.checkMembers(errorData2[0], 'errorTrace', {
+			file: 'string',
+			line: 'number',
+			col: 'number',
+			func: 'string'
+		});
+		
+		page.evaluate(function() {
+			throw "throwerror348703245";
+		});
+		
+		assert(errorData1 === 'throwerror348703245', 'page.onError fires for injected javascript errors');
+		
+		page.onCallback = function(data, data2, data3, data4, data5) {
 			pageData = data;
 			pageData2 = data2;
 			pageData3 = data3;
 			pageData4 = data4;
+			pageData5 = data5;
 		}
 
 		page.evaluate(function(date) {
-			window.callPhantom('blah', 6, date, {a: 1});
+			window.callPhantom('blah', 6, date, {a: 1}, typeof date);
 		}, date);
 
 		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
 		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
 		//assert(pageData3 && pageData3.getTime() === date.getTime(), 'page.onCallback can be used to transfer date objects');
 		assert(pageData4 && pageData4.a && pageData4.a === 1, 'page.onCallback can be used to transfer JSON objects');
-*/
 	
 	});
 	
 
+	// --------------------------------------------
+	assert.section('Events: Dialogs', function() {
+	
+		var alertMessage, confirmMessage, confirmResult, promptMessage, promptDefault, promptResult;
 
+		page.onAlert = function(message) {
+			alertMessage = message;
+		};
+		
+		page.onConfirm = function(message) {
+			confirmMessage = message;
+			return false;
+		}
+		
+		page.onPrompt = function(message, defaultVal) {
+			promptMessage = message;
+			promptDefault = defaultVal;
+			return 'promptresult346934';
+		}
+		
+		page.evaluateJavaScript("window.alert('alertmsg147523')");
+		var confirmResult = page.evaluate(function() {return window.confirm('confirmmsg932342')});
+		var promptResult = page.evaluate(function() {return window.prompt('promptmsg853023','promptdefault935231')});
+		
+		assert(alertMessage === 'alertmsg147523', 'page.onAlert can be used to capture window.alert()');
+		assert(confirmMessage === 'confirmmsg932342', 'page.onConfirm can be used to capture widnow.confirm()');
+		assert(promptMessage === 'promptmsg853023', 'page.onPrompt can be used to capture window.prompt()');
+		
+		assert(confirmResult === false, 'page.onConfirm can return true/false to the IE context');
+		assert(promptDefault === 'promptdefault935231', 'page.onPrompt can use default values');
+		assert(promptResult === 'promptresult346934', 'page.onPrompt can return string messages to the IE context');
+		
+	});
+	
 
 	// --------------------------------------------
 	assert.section('Closing page');	
 	
 	page.close();
-
-
-
-
+	
+	// Test what happens after closing
+	
 
 	// Tear down
 	server.close();

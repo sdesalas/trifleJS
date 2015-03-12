@@ -86,7 +86,51 @@
     GLOBAL.clearInterval = window.clearInterval;
     GLOBAL.addEventListener = window.addEventListener;
 
-   
+
+    // Console object
+    var console = GLOBAL.console = {
+        API: API.console,
+        clear: function() {
+            this.API.clear();
+        },
+        log: function() {
+            this._do('log', arguments);
+        },
+        error: function() {
+            this._do('error', arguments);
+        },
+        xdebug: function() {
+            this._do('xdebug', arguments);
+        },
+        debug: function() {
+            this._do('debug', arguments);
+        },
+        warn: function() {
+            this._do('warn', arguments);
+        },
+        _do: function(method, args) {
+            if (method) {
+                switch (args.length) {
+                    case 0:
+                        this.API[method]("");
+                        break;
+                    case 1:
+                        if (typeof args[0] === 'function') { args[0] = args[0].toString(); }
+                        this.API[method](args[0]);
+                        break;
+                    default:
+                        var params = [];
+                        for (var i = 0; i < args.length; i++) {
+                            if (typeof args[i] === 'function') { args[i] = args[i].toString(); }
+                            params[i] = args[i];
+                        }
+                        this.API[method](params);
+                        break;
+                }
+            }
+        }
+    };
+
 	// Internal event handling 
 	// @usage
 	// Object.addEvent(phantom, 'onError', true);
@@ -101,18 +145,18 @@
 			var eventName = eventFullName.substr(2).toLowerCase();
 			obj.listeners = obj.listeners || {};
 			obj.listeners[eventName] = {callbacks: [], unique: unique}
-			obj.fireEvent = function() {
-				if (arguments.length && this.listeners) {
-					var name = Array.prototype.shift.call(arguments);
+			obj.fireEvent = function(name, args, scope) {
+				var result;
+				if (name && this.listeners) {
 					var listener = this.listeners[name];
+					var scope = scope || this;
 					if (listener && listener.callbacks) {
 						for(var i = 0; i < listener.callbacks.length; i++) {
-							listener.callbacks[i].apply(this, arguments);
+							result = listener.callbacks[i].apply(scope, args || []);
 						}
-						return true;
 					}
 				}
-				return false;
+				return result;
 			};
 			obj.on = function(name, func) {
 				if (name && func && obj.listeners) {
@@ -161,8 +205,16 @@
     // Initialise phantom object
     var phantom = GLOBAL.phantom = API.phantom;
 
-	// Define phantom event handler
+	// Define phantom default error handler
 	Object.addEvent(phantom, 'onError', true);
+	phantom.onError = function(msg, trace) {
+		if (trace && trace[0]) {
+			var err = trace[0];
+			console.error(err.file + ' (' + err.line + ',' + err.col + '):' + msg);
+		} else {
+			console.error(msg);
+		}
+	};
 
     // TrifleJS object
     var trifle = GLOBAL.trifle = {
@@ -188,50 +240,6 @@
                     }
                 }
                 return API;
-            }
-        }
-    };
-
-    // Console object
-    var console = GLOBAL.console = {
-        API: API.console,
-        clear: function() {
-            this.API.clear();
-        },
-        log: function() {
-            this._do('log', arguments);
-        },
-        error: function() {
-            this._do('error', arguments);
-        },
-        xdebug: function() {
-            this._do('xdebug', arguments);
-        },
-        debug: function() {
-            this._do('debug', arguments);
-        },
-        warn: function() {
-            this._do('warn', arguments);
-        },
-        _do: function(method, args) {
-            if (method) {
-                switch (args.length) {
-                    case 0:
-                        this.API[method]("");
-                        break;
-                    case 1:
-                        if (typeof args[0] === 'function') { args[0] = args[0].toString(); }
-                        this.API[method](args[0]);
-                        break;
-                    default:
-                        var params = [];
-                        for (var i = 0; i < args.length; i++) {
-                            if (typeof args[i] === 'function') { args[i] = args[i].toString(); }
-                            params[i] = args[i];
-                        }
-                        this.API[method](params);
-                        break;
-                }
             }
         }
     };

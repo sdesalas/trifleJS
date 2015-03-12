@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Security;
 using TrifleJS.Properties;
+using TrifleJS.Native;
 
 namespace TrifleJS
 {
@@ -135,7 +136,7 @@ namespace TrifleJS
                         break;
                     case "--ignore-ssl-errors":
                         if (arg.Replace("--ignore-ssl-errors=", "").ToLower().Equals("true")) {
-                            // TODO
+                            API.Trifle.IgnoreSSLErrors = true;
                         }
                         break;
                     default:
@@ -148,7 +149,7 @@ namespace TrifleJS
             if (optClearCache)
             {
                 API.Console.xdebug("Clearing IE Cache History...");
-                API.Native.CacheHelper.ClearCache(false);
+                Native.CacheHelper.ClearCache(false);
             }
 
             // Default to Installed Version
@@ -220,7 +221,7 @@ namespace TrifleJS
             // TODO: There has to be a better way to do this.
             // 1. Why doesnt it work with older VC2008 redistributables?
             // 2. If we need exact VC2008 distro, why cant we bundle it up?
-            if (!API.Native.Methods.MsiProductInstalled(new string[] {
+            if (!Native.Methods.MsiProductInstalled(new string[] {
                 "{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}",
                 "{9A25302D-30C0-39D9-BD6F-21E6EC160475}",
                 "{1F1C2DFC-2D24-3E06-BCB8-725134ADF989}",
@@ -313,6 +314,19 @@ namespace TrifleJS
             {
                 try
                 {
+                    // Add self-signed SSL cert on port 8043 if needed 
+                    bool sslSupport = true;
+                    if (!Test.SSL.HttpApi.IsSslRegistered(8043)) {
+                        Console.WriteLine("Generate Self-Signed SSL Certificate for Testing (Y/N)?");
+                        if (Console.ReadLine().ToUpper() == "Y")
+                            Test.SSL.CertEnroll.GenerateAndRegister(8043);
+                        else
+                            sslSupport = false;
+                    }
+
+                    // Initialise globals
+                    Context.SetParameter("sslSupport", sslSupport);
+
                     // Load libs
                     Context.RunScript(Resources.test_unit_tools, "test/unit/tools.js");
 
@@ -325,6 +339,7 @@ namespace TrifleJS
                     Context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
                     Context.RunScript(Resources.test_unit_spec_phantom, "test/unit/spec/phantom.js");
                     Context.RunScript(Resources.test_unit_spec_webpage, "test/unit/spec/webpage.js");
+                    Context.RunScript(Resources.test_unit_spec_ssl, "test/unit/spec/ssl.js");
                     Context.RunScript(Resources.test_unit_spec_child_process, "test/unit/spec/child_process.js");
 
                     // Finish

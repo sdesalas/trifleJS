@@ -87,37 +87,11 @@ namespace TrifleJS.API
         /// <param name="ex"></param>
         public static void Handle(Exception ex)
         {
-            List<Dictionary<string, object>> traceData = new List<Dictionary<string, object>>();
-            JavascriptException jsEx = ex as JavascriptException;
-            string message = ex.Message;
-            if (jsEx != null)
-            {
-                // Remove refs to Host environment & output javascript error
-                message = jsEx.Message.Replace("TrifleJS.Host+", "");
-                traceData.Add(new Dictionary<string, object> { 
-                    {"file", jsEx.Source},
-                    {"line", jsEx.Line},
-                    {"col", jsEx.StartColumn},
-                    {"function", jsEx.TargetSite.Name}
-                });
-            }
-            else
-            {
-                StackTrace trace = new StackTrace(ex);
-                foreach (var frame in trace.GetFrames())
-                {
-                    traceData.Add(new Dictionary<string, object> { 
-                        {"file", frame.GetFileName()},
-                        {"line", frame.GetFileLineNumber()},
-                        {"col", frame.GetFileColumnNumber()},
-                        {"function", frame.GetMethod().Name}
-                    });
-                }
-            }
-            var err = traceData[0];
-            Console.error(String.Format("{0} ({1},{2}): {3}", err.Get("file"), err.Get("line"), err.Get("col"), message));
+            // Default error handler simply logs error to console.
+            // This can be replaced using phantom.onError = function(msg, trace) {}
+            ContextError err = new ContextError(ex);
+            Phantom._fireEvent("error", err.message, err.trace);
         }
-
 
         /// <summary>
         /// Parses input/output to make it JavaScript friendly
@@ -173,5 +147,54 @@ namespace TrifleJS.API
         }
 
     }
+
+    /// <summary>
+    /// Error info as used in page.onError and phantom.onError handlers
+    /// </summary>
+    public class ContextError
+    {
+        public ContextError(Exception ex)
+        {
+            message = ex.Message;
+            trace = new List<TraceData>();
+            JavascriptException jsEx = ex as JavascriptException;
+            if (jsEx != null)
+            {
+                // Remove refs to Host environment & output javascript error
+                message = jsEx.Message.Replace("TrifleJS.Host+", "");
+                trace.Add(new TraceData
+                {
+                    file = jsEx.Source,
+                    line = jsEx.Line,
+                    col = jsEx.StartColumn,
+                    func = jsEx.TargetSite.Name
+                });
+            }
+            else
+            {
+                foreach (var frame in new StackTrace(ex).GetFrames())
+                {
+                    trace.Add(new TraceData
+                    {
+                        file = frame.GetFileName(),
+                        line = frame.GetFileLineNumber(),
+                        col = frame.GetFileColumnNumber(),
+                        func = frame.GetMethod().Name
+                    });
+                }
+            }
+        }
+        public string message;
+        public List<TraceData> trace;
+        public class TraceData
+        {
+            public string file;
+            public string func;
+            public int line;
+            public int col;
+        }
+    }
+
+
 
 }

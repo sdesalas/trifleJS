@@ -65,23 +65,27 @@
     <Compile Include="API\CookieJar.cs" />
     <Compile Include="API\Modules\ChildProcess.cs" />
     <Compile Include="API\Modules\WebServer.cs" />
-    <Compile Include="API\Native\CacheHelper.cs" />
+    <Compile Include="Native\CacheHelper.cs" />
     <Compile Include="API\Trifle.cs" />
-    <Compile Include="EnhancedBrowser.cs">
+    <Compile Include="Native\Deprecated\EnhancedBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Browser.cs">
+    <Compile Include="Native\Browser.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Native\IgnoreSSLErrorBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Native\COM.cs" />
     <Compile Include="Callback.cs" />
     <Compile Include="API\Console.cs" />
     <Compile Include="API\Modules\FileSystem.cs" />
     <Compile Include="API\Context.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="IgnoreCertErrorBrowser.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Native\Methods.cs" />
+    <Compile Include="Native\SkipDialogBrowser.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="API\Native\Methods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="API\Modules\System.cs" />
@@ -91,6 +95,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Proxy.cs" />
+    <Compile Include="test\ssl\CertEnroll.cs" />
+    <Compile Include="test\ssl\HttpApi.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="API\Phantom.cs" />
     <Compile Include="API\Modules\WebPage.cs" />
@@ -227,6 +233,7 @@
     <Content Include="test\unit\spec\fs.js" />
     <Content Include="test\unit\spec\phantom.js" />
     <Content Include="test\unit\spec\require.js" />
+    <Content Include="test\unit\spec\ssl.js" />
     <Content Include="test\unit\spec\webpage.js" />
     <Content Include="test\phantom\tools.js" />
     <Content Include="test\unit\spec\webserver.js">
@@ -242,6 +249,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="CERTENROLLLib">
+      <Guid>{728AB348-217D-11DA-B2A4-000E7BBB2B09}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
     <COMReference Include="IWshRuntimeLibrary">
       <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -253,6 +268,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="test\casper\" />
+    <Folder Include="test\proxy\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

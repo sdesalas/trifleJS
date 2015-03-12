@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using TrifleJS.Native;
 using mshtml;
 
 namespace TrifleJS.API.Modules
@@ -18,29 +19,28 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Internal IE WebBrowser (enhanced)
         /// </summary>
-        private EnhancedBrowser browser;
+        private SkipDialogBrowser browser;
 
         /// <summary>
         /// Creates a webpage module
         /// </summary>
         public WebPage() {
-            this.browser = new EnhancedBrowser();
+            this.uuid = Utils.NewUid();
+            this.browser = new SkipDialogBrowser();
             this.browser.Size = new Size(400, 300);
-            this.browser.ScrollBarsEnabled = false;
             // Add WebBrowser external scripting support
             this.browser.DocumentCompleted += DocumentCompleted;
+            this.browser.Navigated += Navigated;
             this.browser.Navigate("about:blank");
             while (loading)
             {
                 Application.DoEvents();
             }
-            this.browser.InitialiseOLE();
+            //this.browser.InitialiseOLE();
             this.browser.ObjectForScripting = new Callback.External(this);
-            this.browser.ScriptErrorsSuppressed = true;
             // Initialize properties
             this.customHeaders = new Dictionary<string, object>();
-            this.zoomFactor = 1.0;
-            this.uuid = Utils.NewUid();
+
             this.clipRect = new Dictionary<string, object>() {
                 { "top", 0 },
                 { "left", 0 },
@@ -311,32 +311,6 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
-        /// Handles an exception in the IE runtime
-        /// </summary>
-        /// <param name="ex"></param>
-        private void Handle(string description, int line, Uri uri)
-        {
-            bool isHandled = false;
-            // Check the page.onError() handler to see if we need to run it
-            try
-            {
-                string script = String.Format("WebPage.onError(\"{0}\", {1}, \"{2}\");", description, line, uri);
-                isHandled = Convert.ToBoolean(Program.Context.Run(script, "WebPage.onError()"));
-            }
-            catch (Exception ex2)
-            {
-                // Problems?
-                API.Context.Handle(ex2);
-                isHandled = true;
-            }
-            // Output to console if we havent handled it yet
-            if (!isHandled)
-            {
-                Console.error(String.Format("{0}:{1}({2}): {3}", "IE", uri.AbsoluteUri, line, description));
-            }
-        }
-
-        /// <summary>
         /// Evaluates (executes) javascript on the currently open window
         /// @see http://stackoverflow.com/questions/153748/how-to-inject-javascript-in-webbrowser-control
         /// </summary>
@@ -451,15 +425,16 @@ namespace TrifleJS.API.Modules
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
                 browser.Navigate(uri, method, data, customHeaders);
+                browser.Navigated -= Navigated;
+                browser.Navigated += Navigated;
                 browser.DocumentCompleted -= DocumentCompleted;
                 browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
                 AddCallback(callbackId, "success");
-
             }
             else
             {
-                Console.log("Error opening url: " + url);
+                throw new Exception("Error opening url: " + url);
             }
         }
 
@@ -477,7 +452,6 @@ namespace TrifleJS.API.Modules
         private static void AddCallback(string id, params object[] args)
         {
             callbackStack.Push(new KeyValuePair<string, object[]>(id, args));
-            Console.debug("Callback stack length (add): " + callbackStack.Count);
         }
 
         /// <summary>
@@ -486,8 +460,6 @@ namespace TrifleJS.API.Modules
         /// <param name="id"></param>
         private static void RemoveCallback()
         {
-            Console.debug("Callback stack length (remove): " + callbackStack.Count);
-
             if (callbackStack.Count > 0)
             {
                 var callback = callbackStack.Pop();
@@ -503,26 +475,12 @@ namespace TrifleJS.API.Modules
         /// <param name="args"></param>
         public void DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs args)
         {
-            if (browser != null)
+            if (browser != null && Window != null)
             {
                 // DocumentCompleted is fired before window.onload and body.onload
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
-                browser.Document.Window.AttachEventHandler("onload", delegate
+                Window.AttachEventHandler("onload", delegate
                 {
-
-                    Console.debug("onload: " + browser.Document.Window.Url);
-                    // Set current frame
-                    switchToMainFrame();
-                    // Add IE Toolset
-                    AddToolset();
-                    // Track unhandled errors
-                    browser.Document.Window.Error += delegate(object obj, HtmlElementErrorEventArgs e)
-                    {
-                        Console.debug("browser.Document.Window.Error");
-                        Console.debug(e);
-                        Handle(e.Description, e.LineNumber, e.Url);
-                        e.Handled = true;
-                    };
                     // Execute callback at top of the stack
 
                     RemoveCallback();
@@ -532,6 +490,23 @@ namespace TrifleJS.API.Modules
                 {
                     Console.debug("Event: error");
                 });
+            }
+        }
+
+        /// <summary>
+        /// Event handler for actions needed after the webpage is created
+        /// and the document is loading.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void Navigated(object sender, WebBrowserNavigatedEventArgs args)
+        {
+            if (browser != null)
+            {
+                // Initialize
+                switchToMainFrame();
+                AddToolset();
+                _fireEvent("initialized");
             }
         }
 
@@ -654,6 +629,46 @@ namespace TrifleJS.API.Modules
 
         #endregion
 
+        #region Event Handling
+
+        /// <summary>
+        /// Fires an event in the page object (V8 runtime)
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
+        public object _fireEvent(string nickname) { 
+            return this._fireEvent(nickname, null);
+        }
+
+        /// <summary>
+        /// Fires an event in the page object (V8 runtime) passing some arguments
+        /// </summary>
+        /// <param name="shortname"></param>
+        /// <param name="jsonArgs"></param>
+        /// <returns></returns>
+        public object _fireEvent(string nickname, string jsonArgs)
+        {
+            try
+            {
+                if (Program.Context != null)
+                {
+                    // Execute in V8 engine and return result
+                    object result = Program.Context.Run(
+                        String.Format("WebPage.fireEvent('{0}', '{1}', {2});", nickname, this.uuid, jsonArgs ?? "[]"),
+                        "WebPage.fireEvent('" + nickname + "')"
+                    );
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                API.Context.Handle(ex);
+            }
+            return null;
+        }
+
+        #endregion
+
         #region Cookies
 
         /// <summary>
@@ -705,7 +720,7 @@ namespace TrifleJS.API.Modules
             {
                 if (browser != null)
                 {
-                    API.Native.Methods.ResetBrowserSession(browser.Handle);
+                    Native.Methods.ResetBrowserSession(browser.Handle);
                     CookieJar.Current.Clear(uri);
                     if (value != null)
                     {
@@ -731,6 +746,7 @@ namespace TrifleJS.API.Modules
             Utils.Debug("_render " + filename);
             if (browser != null)
             {
+//                browser.Render(filename, zoomFactor);
                 Utils.Debug("_render zoomFactor: " + zoomFactor);
                 Utils.Debug("_render width: " + this.ClipRect.Width);
                 Utils.Debug("_render height: " + this.ClipRect.Height);

@@ -42,6 +42,17 @@ namespace TrifleJS.API
             }
         }
 
+        /// <summary>
+        /// Used to ignore SSL errors
+        /// </summary>
+        public static bool IgnoreSSLErrors
+        {
+            set
+            {
+                Native.IgnoreSSLBrowser.IgnoreSSLErrors = value;
+            }
+        }
+
         // These are a set of C# mid-tier classes that can be instantiated
         // inside the javascript engine as CommonJS Modules.
 

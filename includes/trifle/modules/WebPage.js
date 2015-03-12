@@ -30,10 +30,19 @@ this.trifle.modules = this.trifle.modules || {};
 			console.xdebug("new WebPage()");
 			// Properties
 			this.objectName = "WebPage";
-			// Fire Initialized event
-			if (this.onInitialized) {
-				this.onInitialized.call(this);
-			}
+			// Store reference
+			WebPage.all[this.uuid] = this;
+			// Add Events
+			Object.addEvent(this, 'onCallback');
+			Object.addEvent(this, 'onInitialized');
+			Object.addEvent(this, 'onAlert');
+			Object.addEvent(this, 'onConfirm', true); // unique (uses return value)
+			Object.addEvent(this, 'onPrompt', true); // unique (uses return value)
+			Object.addEvent(this, 'onError');
+			Object.addEvent(this, 'onLoadStarted');
+			Object.addEvent(this, 'onLoadFinished');
+			// Run pending COM events
+			trifle.wait(1);
 		},
 		
 		// Additional methods
@@ -67,21 +76,17 @@ this.trifle.modules = this.trifle.modules || {};
 				else if (typeof a[1] === "function") {
 					callback = a[1];
 				}
-				// Fire LoadStarted event
-				if (this.onLoadStarted) {
-					page.onLoadStarted.call(this);
-				}
 				// Instantiate Callback
 				var complete = function(status) {
-					// Fire LoadFinished event
-					if (page.onLoadFinished) {
-						page.onLoadFinished.call(page, status);
-					}
+					// Fire onLoadFinished event
+					page.fireEvent('loadfinished', [status]);
 					// Execute callback
 					if (callback && callback.call) {
 						return !!callback ? callback.call(page, status) : null;
 					}
 				};
+				// Fire LoadStarted event
+				page.fireEvent('loadstarted');
 				// Open URL in .NET API
 				return this._open(url, method, data, Callback.id(complete));
 			},
@@ -90,8 +95,6 @@ this.trifle.modules = this.trifle.modules || {};
 			evaluateJavaScript: function(code) {
 				console.xdebug("WebPage.prototype.evaluateJavaScript(code)");
 				if (code && typeof code === "string") {
-					// Set current page (for WebPage events)
-					WebPage.current = this;
 					// Execute JS on IE host
 					return this._evaluateJavaScript(code);
 				}
@@ -112,8 +115,6 @@ this.trifle.modules = this.trifle.modules || {};
 					}
 					args.push(arguments[i]);
 				}
-				// Set current page (for WebPage events)
-				WebPage.current = this;
 				// Execute JS on IE host
 				return JSON.parse(this._evaluate(func.toString(), args));
 			},
@@ -136,8 +137,6 @@ this.trifle.modules = this.trifle.modules || {};
 			injectJs: function(filename) {
 				console.xdebug("WebPage.prototype.injectJs(filename)");
 				if (typeof filename === 'string') {
-					// Set current page (for WebPage events)
-					WebPage.current = this;
 					// Execute JS on IE host
 					return this._injectJs(filename);
 				}
@@ -153,8 +152,6 @@ this.trifle.modules = this.trifle.modules || {};
 							callback.call(page);
 						}
 					};
-					// Set current page (for WebPage events)
-					WebPage.current = this;
 					// Execute JS on IE host
 					return this._includeJs(url, Callback.id(complete));
 				}
@@ -187,49 +184,18 @@ this.trifle.modules = this.trifle.modules || {};
     });
 
     // STATIC PROPERTIES
-
-    // Currently running IE instance
-    WebPage.current = null;
     
-    // Dialog windows: onAlert, onConfirm, onPrompt 
-    WebPage.onDialog = function() {
-		console.xdebug("WebPage.onDialog('" + arguments[0] + "')");
-		var page = WebPage.current;
-		var args = []; dialog = arguments[0];
-		for (var i = 1; i < arguments.length; i ++) {
-			args.push(arguments[i]);
-		}
-		switch (dialog) {
-			case "onAlert":
-			case "onConfirm":
-			case "onPrompt":
-				if (page && page[dialog] && page[dialog].apply) {
-					return page[dialog].apply(page, args);
-				}
-				break;
-		}
-		return null;
-    }
-
-    // Add static onCallback() method for event handling
-    WebPage.onCallback = function(args) {
-        console.xdebug("WebPage.onCallback(args)");
-        var page = WebPage.current;
-        if (page && page.onCallback && page.onCallback.apply) {
-            return page.onCallback.apply(page, args);
+    // HashMap of instantiated pages
+    WebPage.all = {};
+    
+    // Add static fireEvent() method for event handling
+    WebPage.fireEvent = function(nickname, uuid, args) {
+        console.xdebug("WebPage.fireEvent('" + nickname + "', uuid, args)");
+        var page = WebPage.all[uuid]; 
+        if (page && page.fireEvent) {
+            return page.fireEvent(nickname, args);
         }
-    }
-
-    // Add static onError() method for event handling
-    WebPage.onError = function(msg, line, url) {
-        console.xdebug("WebPage.onError(args)");
-        var page = WebPage.current;
-        if (page && page.onError && page.onError.call) {
-            page.onError.call(page, msg, [{ line: line, file: url}]);
-            return true;
-        }
-        return false;
-    }
+    };
 
 
 })(this.trifle);

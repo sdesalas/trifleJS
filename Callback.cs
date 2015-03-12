@@ -132,44 +132,15 @@ namespace TrifleJS
             }
 
             /// <summary>
-            /// Handles javascript prompt() functionality.
+            /// Fires an event in the page object (V8 runtime) passing some arguments
             /// </summary>
-            /// <param name="message"></param>
-            public object dialog(string dialog, string message, string defaultValue) {
-                try
-                {
-                    // Execute in V8 engine and return result
-                    object result = Program.Context.Run(
-                            String.Format("WebPage.onDialog({0}, {1}, {2})", Context.ParseOne(dialog), Context.ParseOne(message), Context.ParseOne(defaultValue)),
-                            "WebPage.onDialog()"
-                        );
-                    return result;
-                } catch (Exception ex) {
-                    API.Context.Handle(ex);
-                }
-                return null;
+            /// <param name="shortname"></param>
+            /// <param name="jsonArgs"></param>
+            /// <returns></returns>
+            public object fireEvent(string nickname, string jsonArgs) {
+                return page._fireEvent(nickname, jsonArgs);
             }
 
-            /// <summary>
-            /// Passes control over to page.onCallback() function (if initialized).
-            /// </summary>
-            /// <param name="jsonArray"></param>
-            /// <returns></returns>
-            public object callPhantom(string jsonArray) {
-                try
-                {
-                    // Execute in V8 engine and return result
-                    object result = Program.Context.Run(
-                        String.Format("WebPage.onCallback({0});", jsonArray),
-                        "WebPage.onCallback()"
-                    );
-                    return result;
-                }
-                catch (Exception ex) {
-                    API.Context.Handle(ex);
-                }
-                return null;
-            }
         }
     }
 }
