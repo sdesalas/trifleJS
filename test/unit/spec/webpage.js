@@ -702,8 +702,6 @@ assert.suite('Module: WebPage', function() {
 
 		assert.waitUntilReady();
 		
-		console.log({data: data, stopwatch: stopwatch});
-		
 		assert(stopwatch.onLoadStarted instanceof Date, 'page.onLoadStarted is executed');
 		assert(data.onLoadStarted.args === 0, 'page.onLoadStarted fires without arguments');
 
