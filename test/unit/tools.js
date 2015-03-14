@@ -61,7 +61,7 @@ assert.reset = function() {
 
 assert.suite = function(name, callback) {
 	this.reset();
-	console.log();
+	console.log('');
 	console.log('-------------------------------');
 	console.log('  ' + name)
 	console.log('-------------------------------');
@@ -75,9 +75,9 @@ assert.suite = function(name, callback) {
 }
 
 assert.section = function(name, callback) {
-	console.log();
+	console.log('');
 	console.log(' ' + this.suitename + ' - ' + name);
-	console.log();
+	console.log('');
 	this.sectionname = name;
 	if (typeof callback === 'function') {
 		callback();

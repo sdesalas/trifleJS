@@ -109,10 +109,11 @@
             this._do('warn', arguments);
         },
         _do: function(method, args) {
-            if (method) {
+            if (method && args) {
                 switch (args.length) {
                     case 0:
-                        this.API[method]("");
+                        // Do nothing
+                        // @ref phantomjs> console.log();
                         break;
                     case 1:
                         if (typeof args[0] === 'function') { args[0] = args[0].toString(); }
