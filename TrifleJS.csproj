@@ -222,6 +222,11 @@
     <Content Include="test\phantom\run-tests.js" />
     <Content Include="test\phantom\spec\webpage.js" />
     <Content Include="test\phantom\spec\webserver.js" />
+    <None Include="test\phantom\unit\spec\phantom.js" />
+    <None Include="test\phantom\unit\spec\webpage.js" />
+    <None Include="test\phantom\unit\spec\webserver.js" />
+    <None Include="test\phantom\unit\tools.js" />
+    <None Include="test\phantom\unit\run-jasmine.js" />
     <Content Include="test\unit\finish.js" />
     <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
@@ -232,6 +237,7 @@
     <Content Include="test\unit\spec\phantom.js" />
     <Content Include="test\unit\spec\require.js" />
     <Content Include="test\unit\spec\ssl.js" />
+    <Content Include="test\unit\spec\system.js" />
     <Content Include="test\unit\spec\webpage.js" />
     <Content Include="test\phantom\tools.js" />
     <Content Include="test\unit\spec\webserver.js">

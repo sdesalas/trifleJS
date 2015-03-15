@@ -84,6 +84,20 @@ assert.section = function(name, callback) {
 	}
 }
 
+assert.waitFor = function(callback, defaultTimeout) {
+	if (defaultTimeout) {
+		var start = (new Date()).getTime();
+		do {
+			trifle.wait(10);
+			console.log((new Date()).getTime());
+		} while (!callback() && (new Date()).getTime() < (start + defaultTimeout));
+	} else {
+		do {
+			trifle.wait(10);
+		} while (!callback());
+	}
+}
+
 assert.waitUntilReady = function() {
 	while(assert.ready !== true) {
 		trifle.wait(10);

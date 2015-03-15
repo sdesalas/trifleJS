@@ -143,7 +143,7 @@ namespace TrifleJS.API
         /// Returns the arguments passed when executing triflejs.exe in the console
         /// </summary>
         public static string[] args {
-            get { return Program.Args; }
+            get { return Program.Args.ToArray(); }
         }
 
         /// <summary>

@@ -194,7 +194,11 @@
 					},
 					get: function() {
 						if (this.listeners && this.listeners[eventName]) {
-							return this.listeners[eventName].callbacks || [];
+							var callbacks = this.listeners[eventName].callbacks;
+							// Return last bound event
+							if (callbacks && callbacks.length) {
+								return callbacks[callbacks.length-1];
+							}
 						}
 					}
 				});

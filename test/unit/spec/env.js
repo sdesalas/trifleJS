@@ -35,7 +35,6 @@ assert.suite('Global Environment', function() {
 	assert.section('Console object', function() {
 	
 		assert.checkMembers(console, 'console', {
-			'clear': 'function',
 			'log': 'function',
 			'warn': 'function',
 			'error': 'function',
@@ -78,7 +77,7 @@ assert.suite('Global Environment', function() {
 		var difference = (new Date()).getTime() - timestamp;
 				
 		assert(value === 1, 'window.setTimeout() executes in the background');
-		assert(difference > 198 && difference < 300, 'window.setTimeout(ms) honors the waiting perioda');
+		assert(difference > 198 && difference < 300, 'window.setTimeout(ms) honors the waiting period');
 		
 		var timeoutId = window.setTimeout(function() {
 			value = 2;
@@ -131,9 +130,7 @@ assert.suite('Global Environment', function() {
 			appVersion: 'string',
 			cookieEnabled: 'boolean',
 			platform: 'string',
-			systemLanguage: 'string',
-			userAgent: 'string',
-			userLanguage: 'string'
+			userAgent: 'string'
 		});
 		
 	});
@@ -159,12 +156,16 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('trifle object', function() {
 	
+		if (!trifle || !trifle.version) {
+			console.warn('No trifle object, skipping tests!');
+			return;
+		}
+	
 		assert.checkMembers(trifle, 'trifle', {
 			version: 'object',
 			emulation: 'string',
 			wait: 'function',
-			extend: 'function',
-			Callback: 'function'
+			extend: 'function'
 		});
 		
 	});
@@ -173,6 +174,13 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('trifle.Callback class', function() {
 	
+		if (!trifle.Callback) {
+			console.warn('No Callback Support, skipping tests!');
+			return;
+		}
+		
+		assert(typeof trifle.Callback === 'function', 'trifle.Callback() constructor is available');
+
 		assert.checkMembers(trifle.Callback, 'trifle.Callback', {
 			newUid: 'function',
 			execute: 'function',
@@ -197,31 +205,46 @@ assert.suite('Global Environment', function() {
 	// --------------------------------------------
 	assert.section('Event Handling', function() {
 	
+		if (!Object.addEvent) {
+			console.warn('No Event Handling Support, skipping tests!');
+			return;
+		}
+	
 		var observable = new Object();
 		var loading1, loading2, loading1_1, loading2_1, loading_scope1, loading_scope2;
 		var ready1, ready2, ready1_1, ready2_1, ready_scope1, ready_scope2, ready_scope2_2;
 		var loadingCount = 0, readyCount = 0;
+		var callbacks = {
+			loading1: function(value) { loading1 = value + loadingCount; loading_scope1 = this; loadingCount++; },
+			loading2: function(value) { loading2 = value + loadingCount; loading_scope2 = this; loadingCount++; },
+			loading3: function(value) { loading1_1 = value + loadingCount; loadingCount++; },
+			loading4: function(value) { loading2_2 = value + loadingCount; loadingCount++; },
+			ready1: function(value) { ready1 = value + readyCount; ready_scope1 = this; readyCount++; },
+			ready2: function(value) { ready2 = value + readyCount; ready_scope2 = this; readyCount++; },
+			ready3: function(value) { ready1_1 = value + readyCount; readyCount++; },
+			ready4: function(value) { ready2_2 = value + readyCount;  ready_scope2_2 = this; readyCount++; }
+		};
 		
 		Object.addEvent(observable, "onLoading");
 		Object.addEvent(observable, "onReady", true);
 		
+		observable.on("loading", callbacks.loading1);	
+		observable.onLoading = callbacks.loading2;
+		observable.on("loading", callbacks.loading3);
+		observable.onLoading = callbacks.loading4;
+		
+		observable.on("ready", callbacks.ready1);	
+		observable.onReady = callbacks.ready2;
+		observable.on("ready", callbacks.ready3);
+		observable.onReady = callbacks.ready4;
+
 		assert.checkMembers(observable, 'observable', {
 			listeners: 'object',
 			fireEvent: 'function',
 			on: 'function',
-			onLoading: 'object',
-			onReady: 'object'
+			onLoading: 'function',
+			onReady: 'function'
 		});
-		
-		observable.on("loading", function(value) { loading1 = value + loadingCount; loading_scope1 = this; loadingCount++; });	
-		observable.onLoading = function(value) { loading2 = value + loadingCount; loading_scope2 = this; loadingCount++; }
-		observable.on("loading", function(value) { loading1_1 = value + loadingCount; loadingCount++; });
-		observable.onLoading = function(value) { loading2_2 = value + loadingCount; loadingCount++; }
-		
-		observable.on("ready", function(value) { ready1 = value + readyCount; ready_scope1 = this; readyCount++; });	
-		observable.onReady = function(value) { ready2 = value + readyCount; ready_scope2 = this; readyCount++; }
-		observable.on("ready", function(value) { ready1_1 = value + readyCount; readyCount++; });
-		observable.onReady = function(value) { ready2_2 = value + readyCount;  ready_scope2_2 = this; readyCount++; }
 
 		assert(loading1 === undefined, 'Variables are undefined before firing event');
 		assert(loading2 === undefined, 'Variables are undefined before firing event');
@@ -234,11 +257,13 @@ assert.suite('Global Environment', function() {
 		assert(typeof observable.listeners.loading === 'object', 'object.listeners[event] contains the event information');
 		assert(observable.listeners.loading.callbacks instanceof Array, 'object.listeners[event].callbacks contains the current callbacks');
 		assert(observable.listeners.loading.callbacks.length === 4, 'object.listeners[event].callbacks contains 4 callbacks');
-		assert(observable.listeners.loading.callbacks === observable.onLoading, 'observable.onEvent contains an array with callbacks');
+		assert(observable.listeners.loading.callbacks[3] === observable.onLoading, 'observable.onEvent contains the latest callback');
+		assert(observable.onLoading === callbacks.loading4, 'observable.onEvent contains the latest callback');
 		assert(typeof observable.listeners.ready === 'object', 'object.listeners[event] contains the event information');
 		assert(observable.listeners.ready.callbacks instanceof Array, 'object.listeners[event].callbacks contains the current callbacks');
 		assert(observable.listeners.ready.callbacks.length === 1, 'object.listeners[event].callbacks contains 1 callback (unique event)');
-		assert(observable.listeners.ready.callbacks === observable.onReady, 'observable.onEvent contains an array with callbacks');
+		assert(observable.listeners.ready.callbacks[0] === observable.onReady, 'observable.onEvent contains the latest callback');
+		assert(observable.onReady === callbacks.ready4, 'observable.onEvent contains the latest callback');
 		
 		observable.fireEvent("loading", ["loading argument"]);
 		

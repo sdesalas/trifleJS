@@ -167,7 +167,7 @@ namespace TrifleJS.API
                     file = jsEx.Source,
                     line = jsEx.Line,
                     col = jsEx.StartColumn,
-                    func = jsEx.TargetSite.Name
+                    function = jsEx.TargetSite.Name
                 });
             }
             else
@@ -179,7 +179,7 @@ namespace TrifleJS.API
                         file = frame.GetFileName(),
                         line = frame.GetFileLineNumber(),
                         col = frame.GetFileColumnNumber(),
-                        func = frame.GetMethod().Name
+                        function = frame.GetMethod().Name
                     });
                 }
             }
@@ -189,9 +189,9 @@ namespace TrifleJS.API
         public class TraceData
         {
             public string file;
-            public string func;
             public int line;
             public int col;
+            public string function;
         }
     }
 

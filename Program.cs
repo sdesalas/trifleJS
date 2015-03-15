@@ -13,7 +13,7 @@ namespace TrifleJS
     class Program
     {
         public static API.Context Context { get; set; }
-        public static string[] Args { get; set; }
+        public static List<string> Args { get; set; }
         public static bool Verbose { get; set; }
         public static bool Testing { get; set; }
         public static bool ParanoidMode { get; set; }
@@ -66,7 +66,7 @@ namespace TrifleJS
         static void Main(string[] args)
         {
             // Commence
-            Program.Args = args;
+            Program.Args = new List<string>();
 #if DEBUG
             Program.Verbose = true;
             Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
@@ -171,6 +171,7 @@ namespace TrifleJS
             // Command Loop - Execution
             foreach (string arg in commandLoop)
             {
+                Program.Args = new List<string> { arg };
                 string[] parts = arg.Split('=');
                 switch (parts[0]) 
                 { 
@@ -270,15 +271,15 @@ namespace TrifleJS
                     // Load libs
                     Context.RunScript(Resources.test_lib_jasmine, "test/lib/jasmine.js");
                     Context.RunScript(Resources.test_lib_jasmine_console, "test/lib/jasmine-console.js");
-                    Context.RunScript(Resources.test_phantom_tools, "test/phantom/tools.js");
+                    Context.RunScript(Resources.test_phantom_unit_tools, "test/phantom/unit/tools.js");
 
                     // Load Spec
-                    Context.RunScript(Resources.test_phantom_spec_phantom, "test/phantom/phantom.js");
-                    Context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webserver.js");
-                    Context.RunScript(Resources.test_phantom_spec_webserver, "test/phantom/webpage.js");
+                    Context.RunScript(Resources.test_phantom_unit_spec_phantom, "test/phantom/unit/spec/phantom.js");
+                    Context.RunScript(Resources.test_phantom_unit_spec_webserver, "test/phantom/unit/spec/webserver.js");
+                    Context.RunScript(Resources.test_phantom_unit_spec_webserver, "test/phantom/unit/spec/webpage.js");
 
                     // Execute
-                    Context.RunScript(Resources.test_run_jasmine, "test/phantom/run-jasmine.js");
+                    Context.RunScript(Resources.test_phantom_unit_runjasmine, "test/phantom/unit/run-jasmine.js");
 
                     // Keep running until told to stop
                     // This is to make sure asynchronous code gets executed
@@ -312,6 +313,8 @@ namespace TrifleJS
 
             using (Program.Context = Initialise())
             {
+                API.Phantom.scriptName = "-u";
+
                 try
                 {
                     // Add self-signed SSL cert on port 8043 if needed 
@@ -335,6 +338,7 @@ namespace TrifleJS
                     // to be executed on any machine where the application is running.
                     Context.RunScript(Resources.test_unit_spec_env, "test/unit/spec/env.js");
                     Context.RunScript(Resources.test_unit_spec_require, "test/unit/spec/require.js");
+                    Context.RunScript(Resources.test_unit_spec_system, "test/unit/spec/system.js");
                     Context.RunScript(Resources.test_unit_spec_fs, "test/unit/spec/fs.js");
                     Context.RunScript(Resources.test_unit_spec_webserver, "test/unit/spec/webserver.js");
                     Context.RunScript(Resources.test_unit_spec_phantom, "test/unit/spec/phantom.js");

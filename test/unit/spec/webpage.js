@@ -744,10 +744,9 @@ assert.suite('Module: WebPage', function() {
 		assert(!!data.onError.trace[0], 'page.onError stack trace contains at least one entry');
 		
 		assert.checkMembers(data.onError.trace[0], 'onError.trace', {
-			file: 'string',
-			line: 'number',
-			col: 'number',
-			func: 'string'
+			'file': 'string',
+			'line': 'number',
+			'function': 'string'
 		});
 		
 		page.evaluate(function() {

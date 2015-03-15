@@ -11,6 +11,7 @@ assert.suite('Object: phantom', function() {
 
 	// SETUP
 	var fs = require('fs');
+	var system = require('system');
 	var server = require('webserver').create();
 	var page = require('webpage').create();
 	
@@ -43,8 +44,7 @@ assert.suite('Object: phantom', function() {
 	//assert(typeof phantom.deleteCookie === 'function', 'phantom.deleteCookie is a function');
 	assert(typeof phantom.exit === 'function', 'phantom.exit is a function');
 	assert(typeof phantom.injectJs === 'function', 'phantom.injectJs is a function');
-	assert(phantom.onError instanceof Array, 'phantom.onError is an array');
-	assert(phantom.onError.length === 1 && typeof phantom.onError[0] === 'function', 'phantom.onError is an array with 1 function');
+	assert(typeof phantom.onError === 'function', 'phantom.onError is a function');
 
 	// --------------------------------------------
 	assert.section('Functionality');
@@ -52,7 +52,7 @@ assert.suite('Object: phantom', function() {
 	phantom.libraryPath = "test";
 	if (!fs.isDirectory('test')) fs.makeDirectory('test');
 
-	assert(phantom.scriptName === '', 'phantom.scriptName is the currently executing script');
+	assert(phantom.scriptName === system.args[0], 'phantom.scriptName is the currently executing script');
 	assert(phantom.libraryPath !== fs.workingDirectory, 'changing phantom.libraryPath does not alter fs.workingDirectory');
 	assert(phantom.version.major === 1, 'phantom.version.major is 1');
 	
@@ -76,14 +76,13 @@ assert.suite('Object: phantom', function() {
 	
 		assert.waitUntilReady();
 		
-		assert(lastErr.indexOf('unknownVar is not defined') > -1, 'phantom.onError can capture javascript errors');
+		assert(lastErr.indexOf('unknownVar') > -1, 'phantom.onError can capture javascript errors');
 		assert(lastTrace instanceof Array && lastTrace.length > 0, 'phantom.onError contains a javascript trace');
 	
 		assert.checkMembers(lastTrace[0], 'errorTrace', {
-			file: 'string',
-			line: 'number',
-			col: 'number',
-			func: 'string'
+			'file': 'string',
+			'line': 'number',
+			'function': 'string'
 		});
 		
 		phantom.onError = function(msg, trace) {

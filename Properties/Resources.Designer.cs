@@ -129,20 +129,26 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ////*
-        ///// Initialize tools
-        ///window.__tools = window.__tools || {};
+        ////**
+        ///* TRIFLEJS IE TOOLS
+        ///* By: Steven de Salas
+        ///*/
         ///
-        ///// Loads a JS file and executes a callback when ready
-        ///window.__tools.includeJs = function(url, callbackId) {
+        ///// Add OnCallback functionality
+        ///window.callPhantom = function() {
+        ///    window.external.xdebug(&apos;window.callPhantom(args)&apos;);
+        ///    var args = [];
+        ///    for (var i = 0; i &lt; arguments.length; i++) {
+        ///        args.push(arguments[i]);
+        ///    }
+        ///    return window.external.fireEvent(&apos;callback&apos;, JSON.stringify(args));
+        ///}
         ///
-        ///    window.external.xdebug([&apos;window.__tools.includeJs(url, callbackId)&apos;, url, callbackId]);
-        ///
-        ///    // Generate DOM for new &lt;script/&gt; tagg
-        ///    var head = document.getElementsByTagName(&quot;head&quot;)[0] || document.documentElement;
-        ///    var script = document.createElement(&quot;script&quot;);
-        ///    script.id = &apos;script&apos; + callbackId;
-        ///    script.sr [rest of string was truncated]&quot;;.
+        ///// Override javascript alert
+        ///window.alert = function(message) {
+        ///	window.external.xdebug(&apos;window.alert()&apos;);
+        ///	message = message + &quot;&quot;;
+        ///	retu [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ie_tools {
             get {
@@ -205,6 +211,32 @@ namespace TrifleJS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///// Launch tests
+        ///var jasmineEnv = jasmine.getEnv();
+        ///
+        ///// Add a ConsoleReporter to 
+        ///// 1) print with colors on the console 
+        ///// 2) exit when finished
+        ///jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
+        ///    // Apply color
+        ///    var ansi = {
+        ///        green: &apos;\033[32m&apos;,
+        ///        red: &apos;\033[31m&apos;,
+        ///        yellow: &apos;\033[33m&apos;,
+        ///        none: &apos;\033[0m&apos;,
+        ///        newline: &apos;\n&apos;
+        ///    };
+        ///    msg = msg.replace(ansi.newline, &apos;&apos;).replace(ansi.none, &apos;&apos;);
+        ///    var printInColor = function(color, message) [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string test_phantom_unit_runjasmine {
+            get {
+                return ResourceManager.GetString("test_phantom_unit_runjasmine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to describe(&quot;phantom global object&quot;, function() {
         ///    it(&quot;should exist&quot;, function() {
         ///        expect(typeof phantom).toEqual(&apos;object&apos;);
@@ -221,9 +253,9 @@ namespace TrifleJS.Properties {
         ///    it(&quot;should have libraryPath property&quot;, function() {
         ///        expect(phantom.hasOwnProperty(&apos;libraryPath&apos;)).toBeTruthy( [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_spec_phantom {
+        internal static string test_phantom_unit_spec_phantom {
             get {
-                return ResourceManager.GetString("test_phantom_spec_phantom", resourceCulture);
+                return ResourceManager.GetString("test_phantom_unit_spec_phantom", resourceCulture);
             }
         }
         
@@ -241,9 +273,9 @@ namespace TrifleJS.Properties {
         ///    });
         ///     [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_spec_webpage {
+        internal static string test_phantom_unit_spec_webpage {
             get {
-                return ResourceManager.GetString("test_phantom_spec_webpage", resourceCulture);
+                return ResourceManager.GetString("test_phantom_unit_spec_webpage", resourceCulture);
             }
         }
         
@@ -265,9 +297,9 @@ namespace TrifleJS.Properties {
         ///	console.log(&apos;checking request...&apos;);
         ///    expect(typeof reques [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_spec_webserver {
+        internal static string test_phantom_unit_spec_webserver {
             get {
-                return ResourceManager.GetString("test_phantom_spec_webserver", resourceCulture);
+                return ResourceManager.GetString("test_phantom_unit_spec_webserver", resourceCulture);
             }
         }
         
@@ -292,35 +324,9 @@ namespace TrifleJS.Properties {
         ///    it(&quot;should have &apos;&quot; + name + &quot;&apos; as a string&quot;, function() {
         ///        e [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_tools {
+        internal static string test_phantom_unit_tools {
             get {
-                return ResourceManager.GetString("test_phantom_tools", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 
-        ///// Launch tests
-        ///var jasmineEnv = jasmine.getEnv();
-        ///
-        ///// Add a ConsoleReporter to 
-        ///// 1) print with colors on the console 
-        ///// 2) exit when finished
-        ///jasmineEnv.addReporter(new jasmine.ConsoleReporter(function(msg) {
-        ///    // Apply color
-        ///    var ansi = {
-        ///        green: &apos;\033[32m&apos;,
-        ///        red: &apos;\033[31m&apos;,
-        ///        yellow: &apos;\033[33m&apos;,
-        ///        none: &apos;\033[0m&apos;,
-        ///        newline: &apos;\n&apos;
-        ///    };
-        ///    msg = msg.replace(ansi.newline, &apos;&apos;).replace(ansi.none, &apos;&apos;);
-        ///    var printInColor = function(color, message) [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string test_run_jasmine {
-            get {
-                return ResourceManager.GetString("test_run_jasmine", resourceCulture);
+                return ResourceManager.GetString("test_phantom_unit_tools", resourceCulture);
             }
         }
         
@@ -499,18 +505,59 @@ namespace TrifleJS.Properties {
         ///
         ///assert.suite(&apos;SSL connectivity&apos;, function() {
         ///
-        ///    assert.section(&apos;Module: WebServer (SSL support)&apos;);
-        ///    
+        ///	if (sslSupport !== true) {
+        ///		console.warn(&apos;No SSL Support, skipping tests!&apos;);
+        ///		return;
+        ///	}
+        ///	
+        ///	// Instantiate SSL server
+        ///	var serverCount = 0;
         ///	var server = require(&apos;webserver&apos;).create();
-        ///	var page = require(&apos;webpage&apos;).create();
-        ///	
-        ///	
+        ///	server.listen(&apos;https://localhost:8043&apos;, function(request, response) { 
+        ///		serverCount++; 
+        ///		response.write(&quot;Hello SSL!&quot;); 
+        ///		response.close(); 
+        ///	});
         ///    
-        ///});.
+        ///	// -------- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_ssl {
             get {
                 return ResourceManager.GetString("test_unit_spec_ssl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        ///* require.js
+        ///* 
+        ///* Runs a set of unit tests used to verify 
+        ///* system functionality (platform, arguments etc)
+        ///* 
+        ///*/
+        ///
+        ///assert.suite(&apos;Object: system&apos;, function() {
+        ///
+        ///	// SETUP
+        ///	var system = require(&apos;system&apos;);
+        ///	
+        ///	// --------------------------------------------
+        ///	assert.section(&apos;Properties &amp; methods&apos;);
+        ///	
+        ///	assert.checkMembers(system, &apos;system&apos;, {
+        ///		pid: &apos;object&apos;,
+        ///		platform: &apos;string&apos;,
+        ///		os: &apos;object&apos;,
+        ///		env: &apos;object&apos;,
+        ///		args: &apos;object&apos;
+        ///	});
+        ///	
+        ///	assert.checkMembers(system.os, &apos;system.os&apos;, {
+        ///		a [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string test_unit_spec_system {
+            get {
+                return ResourceManager.GetString("test_unit_spec_system", resourceCulture);
             }
         }
         

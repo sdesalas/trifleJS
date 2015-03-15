@@ -28,14 +28,14 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public string[] args
         {
-            get { return Program.Args; }
+            get { return Program.Args.ToArray(); }
         }
 
         /// <summary>
         /// Returns the Thread ID for the currently executing OS process.
         /// </summary>
-        public string pid {
-            get { return AppDomain.GetCurrentThreadId().ToString(); }
+        public int pid {
+            get { return AppDomain.GetCurrentThreadId(); }
         }
 
         /// <summary>
@@ -43,7 +43,11 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public IDictionary env {
             get {
-                return Environment.GetEnvironmentVariables();
+                Dictionary<string, string> envVars = new Dictionary<string, string>();
+                foreach(DictionaryEntry entry in Environment.GetEnvironmentVariables()) {
+                    envVars[(string)entry.Key] = entry.Value as string;
+                }
+                return envVars;
             }
         }
 
@@ -147,6 +151,8 @@ namespace TrifleJS.API.Modules
                                 return "7";
                             case 2:
                                 return "8";
+                            case 3:
+                                return "8.1";
                             default:
                                 break;
                         }
