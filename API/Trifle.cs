@@ -49,7 +49,7 @@ namespace TrifleJS.API
         {
             set
             {
-                Native.IgnoreSSLBrowser.IgnoreSSLErrors = value;
+                Native.Browser.IgnoreSSLErrors = value;
             }
         }
 
@@ -63,11 +63,11 @@ namespace TrifleJS.API
 
         public Modules.FileSystem FileSystem()
         {
-            if (!Program.ParanoidMode)
+            if (!Program.SecureMode)
             {
                 return new Modules.FileSystem();
             }
-            throw new Exception("--paranoid-mode: FileSystem module has been disabled.");
+            throw new Exception("--secure-mode: FileSystem module has been disabled.");
         }
 
         public Modules.System System()
@@ -82,11 +82,11 @@ namespace TrifleJS.API
 
         public Modules.ChildProcess ChildProcess()
         {
-            if (!Program.ParanoidMode)
+            if (!Program.SecureMode)
             {
                 return new Modules.ChildProcess();
             }
-            throw new Exception("--paranoid-mode: ChildProcess module has been disabled.");
+            throw new Exception("--secure-mode: ChildProcess module has been disabled.");
         }
     }
 }

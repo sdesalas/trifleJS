@@ -20,6 +20,9 @@ namespace TrifleJS.Native
         private const string IEEmulationPathx32 = IERootKeyx32 + IEEmulationPath;
         private const string IEEmulationPathx64 = IERootKeyx64 + IEEmulationPath;
 
+        internal static bool IgnorePopups = false;
+        internal static bool IgnoreSSLErrors = false;
+
         public Browser()
             : base()
         {
@@ -42,6 +45,15 @@ namespace TrifleJS.Native
                     }
                 }
             };
+
+            // Ignore popups if requested
+            if (Browser.IgnorePopups)
+            {
+                this.NewWindow += delegate(object sender, System.ComponentModel.CancelEventArgs e)
+                {
+                    e.Cancel = true; ;
+                };
+            }
         }
 
         /// <summary>

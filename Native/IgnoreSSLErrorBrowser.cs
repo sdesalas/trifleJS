@@ -12,7 +12,6 @@ namespace TrifleJS.Native
     /// </summary>
     public class IgnoreSSLBrowser : Browser
     {
-        internal static bool IgnoreSSLErrors = false;
         internal static Guid IID_IHttpSecurity = new Guid("79eac9d7-bafa-11ce-8c82-00aa004ba90b");
         internal static Guid IID_IWindowForBindingUI = new Guid("79eac9d5-bafa-11ce-8c82-00aa004ba90b");
 

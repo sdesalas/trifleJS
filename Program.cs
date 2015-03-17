@@ -16,7 +16,7 @@ namespace TrifleJS
         public static List<string> Args { get; set; }
         public static bool Verbose { get; set; }
         public static bool Testing { get; set; }
-        public static bool ParanoidMode { get; set; }
+        public static bool SecureMode { get; set; }
         public static bool InEventLoop { get; set; }
 
         /// <summary>
@@ -45,8 +45,9 @@ namespace TrifleJS
             Console.WriteLine("  --emulate=[version]         Emulates earlier version of IE (IE7, IE8, IE9 ..)");
             Console.WriteLine("  --output-encoding=[enc]     Encoding for terminal output (default utf8)");
             Console.WriteLine("  --script-encoding=[enc]     Encoding for starting script (default utf8)");
-            Console.WriteLine("  --clear-cache               Clears IE cache history before starting.");
-            Console.WriteLine("  --paranoid-mode             Disables ChildProcess and FileSystem modules");
+            Console.WriteLine("  --clear-cache               Clears IE cache history before starting");
+            Console.WriteLine("  --secure-mode               Disables ChildProcess and FileSystem modules");
+            Console.WriteLine("  --ignore-popups             Ignores window popups (default false)");
             Console.WriteLine("  --proxy=[address:port]      Specifies proxy server to use");
             Console.WriteLine("  --proxy-auth=[user:passw]   Authentication information for the proxy");
             Console.WriteLine();
@@ -122,8 +123,8 @@ namespace TrifleJS
                     case "--clear-cache":
                         optClearCache = true;
                         break;
-                    case "--paranoid-mode":
-                        Program.ParanoidMode = true;
+                    case "--secure-mode":
+                        Program.SecureMode = true;
                         break;
                     case "--proxy":
                         Proxy.server = arg.Replace("--proxy=", "");
@@ -134,9 +135,12 @@ namespace TrifleJS
                     case "--proxy-type":
                         Proxy.type = arg.Replace("--proxy-type=", "");
                         break;
+                    case "--ignore-popups":
+                        Browser.IgnorePopups = true;
+                        break;
                     case "--ignore-ssl-errors":
                         if (arg.Replace("--ignore-ssl-errors=", "").ToLower().Equals("true")) {
-                            API.Trifle.IgnoreSSLErrors = true;
+                            Browser.IgnoreSSLErrors = true;
                         }
                         break;
                     default:
