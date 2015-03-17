@@ -48,9 +48,9 @@ phantom.injectJs('../../unit/tools.js');
 //phantom.injectJs('../../unit/spec/env.js');
 //phantom.injectJs('../../unit/spec/require.js');
 //phantom.injectJs('../../unit/spec/phantom.js');
-phantom.injectJs('../../unit/spec/fs.js');
+//phantom.injectJs('../../unit/spec/fs.js');
 //phantom.injectJs('../../unit/spec/webserver.js');
-//phantom.injectJs('../../unit/spec/webpage.js');
+phantom.injectJs('../../unit/spec/webpage.js');
 
 // Finish off & Report
 phantom.injectJs('../../unit/finish.js');

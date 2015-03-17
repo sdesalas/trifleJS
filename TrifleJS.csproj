@@ -215,22 +215,15 @@
     </Content>
     <Content Include="test\feature\window.setTimeout.js">
     </Content>
+    <Content Include="test\integration\casper\TODO.txt" />
+    <Content Include="test\integration\phantom\examples\universe.js" />
+    <Content Include="test\integration\phantom\examples\variable.js" />
+    <Content Include="test\integration\phantom\run.js" />
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
     <Content Include="test\lib\jasmine.js" />
-    <Content Include="test\phantom\benchmark\examples\universe.js" />
-    <Content Include="test\phantom\benchmark\examples\variable.js" />
-    <Content Include="test\phantom\benchmark\run.js" />
-    <None Include="test\phantom\benchmark\run.bat" />
-    <None Include="test\phantom\unit\spec\phantom.js" />
-    <None Include="test\phantom\unit\spec\webpage.js" />
-    <None Include="test\phantom\unit\spec\webserver.js" />
-    <None Include="test\phantom\unit\tools.js" />
-    <None Include="test\phantom\unit\run-jasmine.js" />
-    <Content Include="test\phantom\unit\run-tests.js" />
-    <Content Include="test\phantom\unit\scripts\frametest-harness.js" />
-    <Content Include="test\phantom\unit\scripts\frametest.js" />
     <Content Include="test\unit\finish.js" />
+    <None Include="test\integration\phantom\run.bat" />
     <None Include="test\unit\phantom\run-jasmine.js" />
     <None Include="test\unit\phantom\tools.js" />
     <None Include="test\unit\phantom\spec\phantom.js" />
@@ -278,8 +271,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="test\casper\" />
-    <Folder Include="test\phantom\spec\" />
     <Folder Include="test\proxy\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
