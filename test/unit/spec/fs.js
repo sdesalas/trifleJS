@@ -146,24 +146,32 @@ assert.suite('Module: FileSystem', function() {
 	assert(fs.exists(fs.list(fsdir)[0]), 'fs.list() returns files that exist in the filesystem');
 	
 	// --------------------------------------------
-	assert.section('Symlink Functions');
+	assert.section('Symlink Functions', function() {
 	// --------------------------------------------
-	
-	var linkfile = fsdir + "/sample_link.lnk";
-	
-	fs.makeLink(linkfile, textfile);
-	
-	assert(fs.exists(linkfile) === true, 'fs.makeLink() creates a symbolic link')
-	assert(fs.isLink(textfile) === false, 'fs.isLink() returns false for text files');
-	assert(fs.isLink(linkfile) === true, 'fs.isLink() returns true for links');
-	assert(fs.readLink(linkfile) === fs.absolute(textfile), 'fs.readLink() reads a symbolic link')
 
-	var lastModified = fs.lastModified(linkfile);
+		if (!fs.makeLink) {
+			console.warn('Symlink creation not available. Skipping tests.');
+			return;
+		}
+	
+		var linkfile = fsdir + "/sample_link.lnk";
+		
+		fs.makeLink(linkfile, textfile);
+		
+		assert(fs.exists(linkfile) === true, 'fs.makeLink() creates a symbolic link')
+		assert(fs.isLink(textfile) === false, 'fs.isLink() returns false for text files');
+		assert(fs.isLink(linkfile) === true, 'fs.isLink() returns true for links');
+		assert(fs.readLink(linkfile) === fs.absolute(textfile), 'fs.readLink() reads a symbolic link')
 
-	trifle.wait(10);
+		var lastModified = fs.lastModified(linkfile);
 
-	fs.touch(linkfile);
-	assert(fs.lastModified(linkfile) > lastModified, 'fs.touch() updates the last modified timestamp');
+		trifle.wait(10);
+
+		fs.touch(linkfile);
+		assert(fs.lastModified(linkfile) > lastModified, 'fs.touch() updates the last modified timestamp');
+
+		
+	});
 
 	// --------------------------------------------
 	assert.section('Tree Functions');

@@ -182,6 +182,7 @@
     <Content Include="includes\trifle\modules\WebServer.js" />
     <Content Include="test\feature\opts.ignore-ssl.js" />
     <Content Include="test\feature\page.clipRect.js" />
+    <Content Include="test\feature\page.eventLifecycle.js" />
     <Content Include="test\feature\page.onAlert.js" />
     <Content Include="includes\trifle\Callback.js" />
     <Content Include="includes\trifle\ie\json2.js" />
@@ -214,19 +215,21 @@
     </Content>
     <Content Include="test\feature\window.setTimeout.js">
     </Content>
-    <Content Include="test\phantom\run-jasmine.js" />
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
     <Content Include="test\lib\jasmine.js" />
-    <Content Include="test\phantom\spec\phantom.js" />
-    <Content Include="test\phantom\run-tests.js" />
-    <Content Include="test\phantom\spec\webpage.js" />
-    <Content Include="test\phantom\spec\webserver.js" />
+    <Content Include="test\phantom\benchmark\examples\universe.js" />
+    <Content Include="test\phantom\benchmark\examples\variable.js" />
+    <Content Include="test\phantom\benchmark\run.js" />
+    <None Include="test\phantom\benchmark\run.bat" />
     <None Include="test\phantom\unit\spec\phantom.js" />
     <None Include="test\phantom\unit\spec\webpage.js" />
     <None Include="test\phantom\unit\spec\webserver.js" />
     <None Include="test\phantom\unit\tools.js" />
     <None Include="test\phantom\unit\run-jasmine.js" />
+    <Content Include="test\phantom\unit\run-tests.js" />
+    <Content Include="test\phantom\unit\scripts\frametest-harness.js" />
+    <Content Include="test\phantom\unit\scripts\frametest.js" />
     <Content Include="test\unit\finish.js" />
     <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
@@ -239,7 +242,6 @@
     <Content Include="test\unit\spec\ssl.js" />
     <Content Include="test\unit\spec\system.js" />
     <Content Include="test\unit\spec\webpage.js" />
-    <Content Include="test\phantom\tools.js" />
     <Content Include="test\unit\spec\webserver.js">
       <SubType>Form</SubType>
     </Content>
@@ -272,6 +274,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="test\casper\" />
+    <Folder Include="test\phantom\spec\" />
     <Folder Include="test\proxy\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
