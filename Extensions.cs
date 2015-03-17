@@ -63,7 +63,7 @@ namespace TrifleJS
         /// <returns></returns>
         public static List<HtmlWindow> GetAllFrames(this HtmlWindow window) {
             List<HtmlWindow> ancestors = new List<HtmlWindow> {window};
-            bool added;
+            bool added; int count = 0;
             do
             {
                 // Keep recursing until we no longer 
@@ -77,10 +77,11 @@ namespace TrifleJS
                         {
                             ancestors.Add(frame);
                             added = true;
+                            count++;
                         }
                     }
                 }
-            } while (added);
+            } while (added && count < 100); // Limit to 100 frames
             return ancestors;
         }
 
