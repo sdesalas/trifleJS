@@ -231,6 +231,11 @@
     <Content Include="test\phantom\unit\scripts\frametest-harness.js" />
     <Content Include="test\phantom\unit\scripts\frametest.js" />
     <Content Include="test\unit\finish.js" />
+    <None Include="test\unit\phantom\run-jasmine.js" />
+    <None Include="test\unit\phantom\tools.js" />
+    <None Include="test\unit\phantom\spec\phantom.js" />
+    <None Include="test\unit\phantom\spec\webpage.js" />
+    <None Include="test\unit\phantom\spec\webserver.js" />
     <Content Include="test\unit\ref\sample.html" />
     <Content Include="test\unit\ref\sample_module.js" />
     <Content Include="test\unit\ref\script.js" />

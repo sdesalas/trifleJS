@@ -1,0 +1,1 @@
+Add CasperJS integration tests

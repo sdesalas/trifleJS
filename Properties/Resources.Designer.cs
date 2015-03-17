@@ -212,6 +212,26 @@ namespace TrifleJS.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
+        ///console.log();
+        ///console.log(&apos;-------------------------------&apos;);
+        ///console.log(&apos;  TESTING COMPLETED&apos;);
+        ///console.log(&apos;-------------------------------&apos;);
+        ///console.log(&apos;Total Tests: &apos; + assert.count);
+        ///
+        ///if (assert.fail.count) { console.API.color(&apos;red&apos;, &apos;Total Failed: &apos; + assert.fail.count); }
+        ///else { console.API.color(&apos;green&apos;, &apos;Total Passed: &apos; + assert.pass.count); }
+        ///
+        ///console.log();
+        ///.
+        /// </summary>
+        internal static string test_unit_finish {
+            get {
+                return ResourceManager.GetString("test_unit_finish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
         ///// Launch tests
         ///var jasmineEnv = jasmine.getEnv();
         ///
@@ -230,9 +250,9 @@ namespace TrifleJS.Properties {
         ///    msg = msg.replace(ansi.newline, &apos;&apos;).replace(ansi.none, &apos;&apos;);
         ///    var printInColor = function(color, message) [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_unit_runjasmine {
+        internal static string test_unit_phantom_runjasmine {
             get {
-                return ResourceManager.GetString("test_phantom_unit_runjasmine", resourceCulture);
+                return ResourceManager.GetString("test_unit_phantom_runjasmine", resourceCulture);
             }
         }
         
@@ -253,9 +273,9 @@ namespace TrifleJS.Properties {
         ///    it(&quot;should have libraryPath property&quot;, function() {
         ///        expect(phantom.hasOwnProperty(&apos;libraryPath&apos;)).toBeTruthy( [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_unit_spec_phantom {
+        internal static string test_unit_phantom_spec_phantom {
             get {
-                return ResourceManager.GetString("test_phantom_unit_spec_phantom", resourceCulture);
+                return ResourceManager.GetString("test_unit_phantom_spec_phantom", resourceCulture);
             }
         }
         
@@ -273,9 +293,9 @@ namespace TrifleJS.Properties {
         ///    });
         ///     [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_unit_spec_webpage {
+        internal static string test_unit_phantom_spec_webpage {
             get {
-                return ResourceManager.GetString("test_phantom_unit_spec_webpage", resourceCulture);
+                return ResourceManager.GetString("test_unit_phantom_spec_webpage", resourceCulture);
             }
         }
         
@@ -297,9 +317,9 @@ namespace TrifleJS.Properties {
         ///	console.log(&apos;checking request...&apos;);
         ///    expect(typeof reques [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_unit_spec_webserver {
+        internal static string test_unit_phantom_spec_webserver {
             get {
-                return ResourceManager.GetString("test_phantom_unit_spec_webserver", resourceCulture);
+                return ResourceManager.GetString("test_unit_phantom_spec_webserver", resourceCulture);
             }
         }
         
@@ -324,29 +344,9 @@ namespace TrifleJS.Properties {
         ///    it(&quot;should have &apos;&quot; + name + &quot;&apos; as a string&quot;, function() {
         ///        e [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string test_phantom_unit_tools {
+        internal static string test_unit_phantom_tools {
             get {
-                return ResourceManager.GetString("test_phantom_unit_tools", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 
-        ///console.log();
-        ///console.log(&apos;-------------------------------&apos;);
-        ///console.log(&apos;  TESTING COMPLETED&apos;);
-        ///console.log(&apos;-------------------------------&apos;);
-        ///console.log(&apos;Total Tests: &apos; + assert.count);
-        ///
-        ///if (assert.fail.count) { console.API.color(&apos;red&apos;, &apos;Total Failed: &apos; + assert.fail.count); }
-        ///else { console.API.color(&apos;green&apos;, &apos;Total Passed: &apos; + assert.pass.count); }
-        ///
-        ///console.log();
-        ///.
-        /// </summary>
-        internal static string test_unit_finish {
-            get {
-                return ResourceManager.GetString("test_unit_finish", resourceCulture);
+                return ResourceManager.GetString("test_unit_phantom_tools", resourceCulture);
             }
         }
         
@@ -451,6 +451,7 @@ namespace TrifleJS.Properties {
         ///
         ///	// SETUP
         ///	var fs = require(&apos;fs&apos;);
+        ///	var system = require(&apos;system&apos;);
         ///	var server = require(&apos;webserver&apos;).create();
         ///	var page = require(&apos;webpage&apos;).create();
         ///	
@@ -458,7 +459,7 @@ namespace TrifleJS.Properties {
         ///	assert.section(&apos;Object availability&apos;);
         ///
         ///	assert(this.hasOwnProperty(&apos;phantom&apos;), &apos;this.phantom exists&apos;);
-        ///	assert(typeof this.phantom === &apos;object&apos;, &apos;this [rest of string was truncated]&quot;;.
+        ///	assert(typeo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string test_unit_spec_phantom {
             get {
@@ -545,7 +546,7 @@ namespace TrifleJS.Properties {
         ///	assert.section(&apos;Properties &amp; methods&apos;);
         ///	
         ///	assert.checkMembers(system, &apos;system&apos;, {
-        ///		pid: &apos;object&apos;,
+        ///		pid: &apos;number&apos;,
         ///		platform: &apos;string&apos;,
         ///		os: &apos;object&apos;,
         ///		env: &apos;object&apos;,

@@ -181,22 +181,22 @@
   <data name="test_unit_spec_ssl" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\unit\spec\ssl.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="test_phantom_unit_runjasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\test\phantom\unit\run-jasmine.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="test_phantom_unit_spec_phantom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\test\phantom\unit\spec\phantom.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="test_phantom_unit_spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\test\phantom\unit\spec\webpage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="test_phantom_unit_spec_webserver" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\test\phantom\unit\spec\webserver.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="test_phantom_unit_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\test\phantom\unit\tools.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="test_unit_spec_system" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\test\unit\spec\system.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_unit_phantom_runjasmine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\phantom\run-jasmine.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_unit_phantom_spec_phantom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\phantom\spec\phantom.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_unit_phantom_spec_webpage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\phantom\spec\webpage.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_unit_phantom_spec_webserver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\phantom\spec\webserver.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="test_unit_phantom_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\test\unit\phantom\tools.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
