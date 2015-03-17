@@ -39,6 +39,7 @@ namespace TrifleJS.API.Modules
             //this.browser.InitialiseOLE();
             this.browser.ObjectForScripting = new Callback.External(this);
             // Initialize properties
+            this.libraryPath = Phantom.libraryPath;
             this.customHeaders = new Dictionary<string, object>();
             this.zoomFactor = 1;
             this.clipRect = new Dictionary<string, object>() {
@@ -301,14 +302,10 @@ namespace TrifleJS.API.Modules
         #region Scripting
 
         /// <summary>
-        /// Adds resources needed after loading page
+        /// Stores the path used by WebPage#injectJs function to resolve script. 
+        /// Initially set to location of script invoked by PhantomJS.
         /// </summary>
-        private void AddToolset()
-        {
-            // Add toolset
-            _evaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
-            _evaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
-        }
+        public string libraryPath { get; set; }
 
         /// <summary>
         /// Evaluates (executes) javascript on the currently open window
@@ -399,8 +396,18 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="filename">path of the javascript file to inject</param>
         public void _injectJs(string filename) {
-            if (File.Exists(filename)) {
+            if (File.Exists(filename))
+            {
                 _evaluateJavaScript(File.ReadAllText(filename));
+            }
+            else
+            {
+                // Not there? Try page.libraryPath instead.
+                string alternatePath = Path.Combine(libraryPath, filename);
+                if (File.Exists(alternatePath))
+                {
+                    _evaluateJavaScript(File.ReadAllText(alternatePath));
+                }
             }
         }
 
@@ -496,9 +503,11 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
-                // Initialize
                 switchToMainFrame();
-                AddToolset();
+                // Add IE tools
+                _evaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
+                _evaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
+                // Fire event
                 _fireEvent("initialized");
             }
         }

@@ -156,6 +156,7 @@ assert.suite('Module: WebPage', function() {
 	assert(page.framesName instanceof Array && page.framesName.length === 0, 'page.framesName is an array with no items');
 	assert(page.plainText == pagePlainText, 'page.pagePlainText has BODY TEXT in it sent by the server');
 	assert(page.content == pageContent, 'page.content has HTML in it sent by the server');
+	assert(page.libraryPath === phantom.libraryPath, 'page.libraryPath is set to phantom.libraryPath')
 
 	// --------------------------------------------
 	assert.section('Scripting after loading', function() {
@@ -190,6 +191,8 @@ assert.suite('Module: WebPage', function() {
 	
 		assert(evaluateResult === 'hello from ie', 'page.evaluateJavaScript executes a javascript string on page context');
 		
+		// Try page.includeJs()
+		
 		server.listen(8891, function(request, response) {
 			response.write('window.injectedData = "test content1234";');
 			response.close();
@@ -208,7 +211,9 @@ assert.suite('Module: WebPage', function() {
 
 		assert(evaluateResult === 'test content1234', 'page.includeJs can add remote javascript files to a page using a url');
 
-		fs.write('injectJs.script.js', 'window.___test8206134 = "hello world 229132";');
+		// Try page.injectJs() using CWD
+
+		fs.write('injectJs.script.js', 'window.___test8206134 = "round 1";');
 
 		page.injectJs('injectJs.script.js');
 		
@@ -216,7 +221,32 @@ assert.suite('Module: WebPage', function() {
 			return window.___test8206134 || '';
 		});
 
-		assert(evaluateResult === 'hello world 229132', 'page.injectJs can be used to inject local scripts into page context');
+		assert(evaluateResult === 'round 1', 'page.injectJs can be used to inject CWD scripts into page context');
+
+		// Try page.libraryPath
+		
+		page.libraryPath = fs.absolute('test');
+		
+		fs.write('test/injectJs.script.js', 'window.___test8206134 = "round 2";');
+		fs.write('test/injectJs2.script.js', 'window.___test8206134 = "round 3";');
+		
+		page.injectJs('injectJs2.script.js');
+		
+		evaluateResult = page.evaluate(function() {
+			return window.___test8206134 || '';
+		});
+
+		assert(evaluateResult === 'round 3', 'page.libraryPath is used to resolve scripts via page.injectJs()');
+
+		page.injectJs('injectJs.script.js');
+		
+		evaluateResult = page.evaluate(function() {
+			return window.___test8206134 || '';
+		});
+
+		assert(evaluateResult === 'round 1', 'page.libraryPath is *not* used if script already exists in CWD');
+
+		// Try scripting via page.content
 
 		var newContent = "<html><head></head><script>var message = 'hello589871';</script><body>this is the new set content</body></html>";
 		page.content = newContent;
