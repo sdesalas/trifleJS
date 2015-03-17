@@ -105,12 +105,13 @@ assert.suite('Module: WebPage', function() {
 			pageData3 = data3;
 		}
 
-		page.evaluateJavaScript("window.callPhantom('blah', 6, {a: 1});");
+		page.evaluate(function() {
+			window.callPhantom('blah', 6, {a: 1});
+		});
 
 		assert(pageData === 'blah', 'page.onCallback can be used to transfer strings');
 		assert(pageData2 === 6, 'page.onCallback can be used to transfer numbers');
 		assert(pageData3 && pageData3.a && pageData3.a === 1, 'page.onCallback can be used to transfer JSON objects');
-
 
 	});
 	
@@ -291,77 +292,79 @@ assert.suite('Module: WebPage', function() {
 	});
 
 	// --------------------------------------------
-	assert.section('Navigating through history');
+	assert.section('Navigating through history', function() {
 	
-	var url, inPageUrl;
+		var url, inPageUrl;
 
-	try {
-		url = page.url;
-		inPageUrl = JSON.parse(page.plainText).url
-	} catch (e) {}
-	
-	assert(url === 'http://localhost:8898/3', 'We are at page 3 before using history');
-	assert(inPageUrl === '/3', 'Page 3 is being displayed before using history');
-	
-	assert(page.canGoBack === true, 'page.canGoBack is true');	
-	assert(page.canGoForward === false, 'page.canGoForward is false');
+		try {
+			url = page.url;
+			inPageUrl = JSON.parse(page.plainText).url
+		} catch (e) {}
+		
+		assert(url === 'http://localhost:8898/3', 'We are at page 3 before using history');
+		assert(inPageUrl === '/3', 'Page 3 is being displayed before using history');
+		
+		assert(page.canGoBack === true, 'page.canGoBack is true');	
+		assert(page.canGoForward === false, 'page.canGoForward is false');
 
-	page.reload();
+		page.reload();
 
-	assert(loadCount === 4, 'page.reload(url) loads the page again from the server.');
+		assert(loadCount === 4, 'page.reload(url) loads the page again from the server.');
 
-	try {
-		url = page.url;
-		inPageUrl = JSON.parse(page.plainText).url
-	} catch (e) {}
-	
-	assert(url === 'http://localhost:8898/3', 'page.reload() loads page 3 again');
-	assert(inPageUrl === '/3', 'page.reload() displays page 3 again');
+		try {
+			url = page.url;
+			inPageUrl = JSON.parse(page.plainText).url
+		} catch (e) {}
+		
+		assert(url === 'http://localhost:8898/3', 'page.reload() loads page 3 again');
+		assert(inPageUrl === '/3', 'page.reload() displays page 3 again');
 
-	page.goBack();
-	page.goBack();
-	
-	try {
-		url = page.url;
-		inPageUrl = JSON.parse(page.plainText).url
-	} catch (e) {}
-	
-	assert(url === 'http://localhost:8898/1', 'page.goBack() loads page 1');
-	assert(inPageUrl === '/1', 'page.goBack() displays page 1');
-	assert(loadCount === 4, 'page.goBack(url) uses cache instead of loading from the server.');
-	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
-	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');
+		page.goBack();
+		page.goBack();
+		
+		try {
+			url = page.url;
+			inPageUrl = JSON.parse(page.plainText).url
+		} catch (e) {}
+		
+		assert(url === 'http://localhost:8898/1', 'page.goBack() loads page 1');
+		assert(inPageUrl === '/1', 'page.goBack() displays page 1');
+		assert(loadCount === 4, 'page.goBack(url) uses cache instead of loading from the server.');
+		assert(page.canGoBack === false, 'page.canGoBack is false after navigating back');	
+		assert(page.canGoForward === true, 'page.canGoForward is true after navigating back');
 
-	page.goForward();
-	
-	try {
-		url = page.url;
-		inPageUrl = JSON.parse(page.plainText).url
-	} catch (e) {}
-	
-	assert(url === 'http://localhost:8898/3', 'page.goForward() loads page 3 again');
-	assert(inPageUrl === '/3', 'page.goForward() displays page 3 again');
-	assert(loadCount === 4, 'page.goForward(url) uses cache instead of loading from the server.');	
-	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward');	
-	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward');
+		page.goForward();
+		
+		try {
+			url = page.url;
+			inPageUrl = JSON.parse(page.plainText).url
+		} catch (e) {}
+		
+		assert(url === 'http://localhost:8898/3', 'page.goForward() loads page 3 again');
+		assert(inPageUrl === '/3', 'page.goForward() displays page 3 again');
+		assert(loadCount === 4, 'page.goForward(url) uses cache instead of loading from the server.');	
+		assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward');	
+		assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward');
 
-	page.go(-1);
-	
-	assert(loadCount === 4, 'page.go(-n) uses cache instead of loading from the server.');	
-	assert(page.canGoBack === false, 'page.canGoBack is false after navigating back using go(-1)');	
-	assert(page.canGoForward === true, 'page.canGoForward is true after navigating back using go(-1)');
+		page.go(-1);
+		
+		assert(loadCount === 4, 'page.go(-n) uses cache instead of loading from the server.');	
+		assert(page.canGoBack === false, 'page.canGoBack is false after navigating back using go(-1)');	
+		assert(page.canGoForward === true, 'page.canGoForward is true after navigating back using go(-1)');
 
-	page.go(1);
-	
-	assert(loadCount === 4, 'page.go(+n) uses cache instead of loading from the server.');	
-	assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward using go(1)');	
-	assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward using go(1)');
+		page.go(1);
+		
+		assert(loadCount === 4, 'page.go(+n) uses cache instead of loading from the server.');	
+		assert(page.canGoBack === true, 'page.canGoBack is true after navigating forward using go(1)');	
+		assert(page.canGoForward === false, 'page.canGoForward is false after navigating forward using go(1)');
 
 
-	// Clear all listeners and connections.
-	server.close();
-	
-	
+		// Clear all listeners and connections.
+		server.close();
+		
+	});
+
+
 	// --------------------------------------------
 	assert.section('Windows and Frames', function() {
 	
