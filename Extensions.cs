@@ -117,27 +117,30 @@ namespace TrifleJS
         public static List<HtmlElement> GetElementFromSelector(this HtmlDocument document, string selector)
         {
             List<HtmlElement> output = new List<HtmlElement>();
-            selector = selector.Trim();
-            if (selector.StartsWith("#"))
+            if (selector != null)
             {
-                HtmlElement result = document.GetElementById(selector.Remove(1));
-                if (result != null) output.Add(result);
-            }
-            else
-            {
-                if (selector.StartsWith("."))
+                selector = selector.Trim();
+                if (selector.StartsWith("#"))
                 {
-                    foreach (HtmlElement element in document.All)
-                    {
-
-                        if (element.GetAttribute("className") == selector.Remove(1))
-                            output.Add(element);
-                    }
+                    HtmlElement result = document.GetElementById(selector.Remove(0, 1));
+                    if (result != null) output.Add(result);
                 }
                 else
                 {
-                    foreach (HtmlElement element in document.GetElementsByTagName(selector))
-                        output.Add(element);
+                    if (selector.StartsWith("."))
+                    {
+                        foreach (HtmlElement element in document.All)
+                        {
+
+                            if (element.GetAttribute("className") == selector.Remove(1))
+                                output.Add(element);
+                        }
+                    }
+                    else
+                    {
+                        foreach (HtmlElement element in document.GetElementsByTagName(selector))
+                            output.Add(element);
+                    }
                 }
             }
             return output;

@@ -168,6 +168,12 @@ this.trifle.modules = this.trifle.modules || {};
 					return this._includeJs(url, Callback.id(complete));
 				}
 			},
+					
+			// Sends mouse/keyboard event to the browser
+			sendEvent: function(type) {
+				console.xdebug("WebPage.prototype.sendEvent(type)");
+				return this._sendEvent(type, Array.prototype.slice.call(arguments, 1));
+			},
 
             /**
              * Renders screen to a file

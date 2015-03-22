@@ -757,7 +757,7 @@ namespace TrifleJS.API.Modules
         /// </summary>
         /// <param name="type"></param>
         /// <param name="data"></param>
-        public void sendEvent(string type, params object[] args) {
+        public void _sendEvent(string type, params object[] args) {
             HtmlElement element = null;
             object modifier = null;;
             if (browser != null && browser.Document != null)
@@ -823,8 +823,8 @@ namespace TrifleJS.API.Modules
                                 // Loop through individual key events
                                 foreach (char c in keys)
                                 {
-                                    sendEvent("keydown", new object[] { c, modifier });
-                                    sendEvent("keyup", new object[] { c, modifier });
+                                    _sendEvent("keydown", new object[] { c, modifier });
+                                    _sendEvent("keyup", new object[] { c, modifier });
                                 }
                             }
                             else
@@ -835,8 +835,8 @@ namespace TrifleJS.API.Modules
                                     string key = FindKey(args[0]);
                                     if (!String.IsNullOrEmpty(key))
                                     {
-                                        sendEvent("keydown", new object[] { key, modifier });
-                                        sendEvent("keyup", new object[] { key, modifier });
+                                        _sendEvent("keydown", new object[] { key, modifier });
+                                        _sendEvent("keyup", new object[] { key, modifier });
                                     }
                                 }
                                 catch { }
