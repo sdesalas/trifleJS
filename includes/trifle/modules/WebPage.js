@@ -41,7 +41,23 @@ this.trifle.modules = this.trifle.modules || {};
 			Object.addEvent(this, 'onError');
 			Object.addEvent(this, 'onLoadStarted');
 			Object.addEvent(this, 'onLoadFinished');
-			// Run pending COM events
+			Object.addEvent(this, 'onNavigationRequested');
+			// Add event route between 'internalpagecreated' and 'pagecreated'
+			// this allows us to use objects from V8 context  
+			// (regardless of where trigger comes from) when firing 'pagecreated'.
+			Object.addEvent(this, 'onInternalPageCreated');
+			Object.addEvent(this, 'onPageCreated');
+			this.on('internalpagecreated', function() {
+				return this.fireEvent('pagecreated');
+			});
+			// Add event route between 'internalclosing' and 'closing'
+			// using same logic as above.
+			Object.addEvent(this, 'onInternalClosing');
+			Object.addEvent(this, 'onClosing');
+			this.on('internalclosing', function() {
+				return this.fireEvent('closing', [this]);
+			});
+			// Clear the COM event pipeline
 			trifle.wait(1);
 		},
 		
@@ -85,8 +101,6 @@ this.trifle.modules = this.trifle.modules || {};
 						return !!callback ? callback.call(page, status) : null;
 					}
 				};
-				// Fire LoadStarted event
-				page.fireEvent('loadstarted');
 				// Open URL in .NET API
 				return this._open(url, method, data, Callback.id(complete));
 			},
@@ -177,6 +191,14 @@ this.trifle.modules = this.trifle.modules || {};
 			renderBase64: function(format) {
 				console.xdebug("WebPage.prototype.renderBase64(format)");
 				return this._renderBase64(format || "PNG");
+			},
+			
+			/**
+			 * Closes current window and disposes of resources
+			 */
+			close: function() {
+				this.fireEvent('internalclosing');
+				this._close();
 			}
 				
 		}

@@ -10,6 +10,19 @@ namespace TrifleJS.Native
     {
         #region OnShowMessage
 
+        public enum ResultId
+        {
+            Ok = 1,
+            Cancel = 2,
+            Abort = 3,
+            Retry = 4,
+            Ignore = 5,
+            Yes = 6,
+            No = 7,
+            TryAgain = 10,
+            Continue = 11
+        }
+
         public class ShowMessageEventArgs : EventArgs
         {
             public ShowMessageEventArgs(string text, string caption, uint type, string helpFile, uint helpContext)
@@ -19,10 +32,12 @@ namespace TrifleJS.Native
                 Type = type;
                 HelpFile = helpFile;
                 HelpContext = helpContext;
+                Handled = true; // Default to Handled
+                Result = ResultId.Ok; // Default to OK (IDOK = 1) @see https://msdn.microsoft.com/en-us/library/ms645505(v=vs.85).aspx
             }
 
             public bool Handled { get; set; }
-            public int Result { get; set; }
+            public ResultId Result { get; set; }
             public uint Type { get; private set; }
             public uint HelpContext { get; private set; }
             public string Text { get; private set; }
@@ -77,7 +92,7 @@ namespace TrifleJS.Native
                 var e = new ShowMessageEventArgs(lpstrText, lpstrCaption, dwType, lpstrHelpFile, dwHelpContext);
                 this.host.OnShowMessage(e);
 
-                lpResult = (e.Handled) ? e.Result : 0;
+                lpResult = (e.Handled) ? (int)e.Result : 0;
 
                 return HResult.S_OK;
             }

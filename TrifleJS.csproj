@@ -218,6 +218,8 @@
     <Content Include="test\integration\casper\TODO.txt" />
     <Content Include="test\integration\phantom\examples\universe.js" />
     <Content Include="test\integration\phantom\examples\variable.js" />
+    <Content Include="test\integration\phantom\feature\page.events.js" />
+    <Content Include="test\integration\phantom\feature\page.rendering.js" />
     <Content Include="test\integration\phantom\run.js" />
     <Content Include="test\lib\chai.js" />
     <Content Include="test\lib\jasmine-console.js" />
@@ -268,6 +270,14 @@
       <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="SHDocVw">
+      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>

@@ -51,7 +51,7 @@ namespace TrifleJS.Native
             {
                 this.NewWindow += delegate(object sender, System.ComponentModel.CancelEventArgs e)
                 {
-                    e.Cancel = true; ;
+                    e.Cancel = true;
                 };
             }
         }
@@ -60,6 +60,20 @@ namespace TrifleJS.Native
         /// The frame IE is currently focused on
         /// </summary>
         public HtmlWindow FocusedFrame { get; set; }
+
+        /// <summary>
+        /// Get ActiveX SHDocVw browser to access
+        /// additional events (DWebBrowserEvents2).
+        /// @see https://msdn.microsoft.com/en-us/library/aa752085(v=vs.85).aspx
+        /// @see https://msdn.microsoft.com/en-us/library/aa768283(v=vs.85).aspx
+        /// </summary>
+        public SHDocVw.WebBrowser ActiveXBrowser
+        {
+            get
+            {
+                return this.ActiveXInstance as SHDocVw.WebBrowser;
+            }
+        }
 
         /// <summary>
         /// Emulate a version of IE using the relevant registry keys

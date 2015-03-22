@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -7,6 +8,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using TrifleJS.Native;
+using SHDocVw;
 using mshtml;
 
 namespace TrifleJS.API.Modules
@@ -28,15 +30,18 @@ namespace TrifleJS.API.Modules
             this.uuid = Utils.NewUid();
             this.browser = new SkipDialogBrowser();
             this.browser.Size = new Size(400, 300);
-            // Add WebBrowser external scripting support
-            this.browser.DocumentCompleted += DocumentCompleted;
+            // Add events
+            this.browser.ActiveXBrowser.BeforeNavigate2 += BeforeNavigate2;
             this.browser.Navigated += Navigated;
+            this.browser.DocumentCompleted += DocumentCompleted;
+            this.browser.NewWindow += NewWindow;
             this.browser.Navigate("about:blank");
             while (loading)
             {
                 Application.DoEvents();
             }
             //this.browser.InitialiseOLE();
+            // Add WebBrowser external scripting support
             this.browser.ObjectForScripting = new Callback.External(this);
             // Initialize properties
             this.libraryPath = Phantom.libraryPath;
@@ -428,13 +433,11 @@ namespace TrifleJS.API.Modules
             Uri uri = Browser.TryParse(url);
             if (uri != null && browser != null)
             {
+                // Set navigation type
+                this.navigationType = "Other";
                 // Navigate to URL and set handler for completion
                 // Remove any DocumentCompleted listeners from last round
                 browser.Navigate(uri, method, data, customHeaders);
-                browser.Navigated -= Navigated;
-                browser.Navigated += Navigated;
-                browser.DocumentCompleted -= DocumentCompleted;
-                browser.DocumentCompleted += DocumentCompleted;
                 // Add callback to execution stack
                 AddCallback(callbackId, "success");
             }
@@ -490,6 +493,8 @@ namespace TrifleJS.API.Modules
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
+                // Reset navigation type
+                this.navigationType = "Unknown";
             }
         }
 
@@ -509,6 +514,65 @@ namespace TrifleJS.API.Modules
                 _evaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
                 // Fire event
                 _fireEvent("initialized");
+            }
+        }
+
+        /// <summary>
+        /// Event Handler for BeforeNavigate2 (equivalent of WebBrowser#Navigating but with more info)
+        /// @see https://msdn.microsoft.com/en-us/library/aa768326(v=vs.85).aspx
+        /// </summary>
+        public void BeforeNavigate2(object pDisp, ref object URL, ref object Flags, ref object TargetFrameName, ref object PostData, ref object Headers, ref bool Cancel)
+        {
+            
+            if (browser != null)
+            {
+                IWebBrowser2 cie = (IWebBrowser2)pDisp;
+                //Console.warn(cie.LocationURL + " navigates to " + URL + " target=" + TargetFrameName + " ...");
+                string url = URL.ToString();
+                string type = this.navigationType;
+                try {
+                    // TODO: Add unit tests for tracking navigation sources
+                    switch ((int)Flags) { 
+                        case 256:
+                            type = "Other";
+                            break;
+                        case 320:
+                            if (type != "Reload")
+                                type = "BackOrForward";
+                            break;
+                        default:
+                            if (PostData != null)
+                                type = "FormSubmitted";
+                            break;
+                    }
+                } catch {}
+                bool willNavigate = browser.AllowNavigation;
+                bool main = (pDisp == browser.ActiveXBrowser);
+                string jsonArgs = Context.ParseOne(new object[] { url, type, willNavigate, main });
+                // Fire onNavigationRequested
+                // @see https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage/e17c0dd8a89831251efc9d79b887fae7d0f73f2c#onnavigationrequested
+                _fireEvent("navigationrequested", jsonArgs);
+                // Clear event queue
+                // TODO: Find out why frames test code (spec/webpage.js:400) 
+                // is breaking when adding line below.
+                // Trifle.Wait(1);
+                // Fire onLoadStarted
+                _fireEvent("loadstarted");
+            }
+        }
+
+        /// <summary>
+        /// Event handler for popup windows
+        /// TODO: Use NewWindow3 to capture the child browser object
+        /// @see https://msdn.microsoft.com/en-us/library/aa768337(v=vs.85).aspx
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void NewWindow(object sender, CancelEventArgs args) {
+            if (browser != null) {
+                object result = _fireEvent("internalpagecreated");
+                // Cancel popup if event returns false
+                if (result != null && !Convert.ToBoolean(result)) args.Cancel = true;
             }
         }
 
@@ -534,6 +598,8 @@ namespace TrifleJS.API.Modules
         public void goBack() {
             if (browser.CanGoBack)
             {
+                // Set navigation type
+                this.navigationType = "BackOrForward";
                 browser.GoBack();
                 do
                 {
@@ -550,6 +616,8 @@ namespace TrifleJS.API.Modules
         {
             if (browser.CanGoForward)
             {
+                // Set navigation type
+                this.navigationType = "BackOrForward";
                 browser.GoForward();
                 do
                 {
@@ -567,6 +635,8 @@ namespace TrifleJS.API.Modules
         {
             if (index != 0 && browser.History != null)
             {
+                // Set navigation type
+                this.navigationType = "BackOrForward";
                 browser.History.Go(index);
                 do
                 {
@@ -583,6 +653,8 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
+                // Set navigation type
+                this.navigationType = "Reload";
                 browser.Refresh(WebBrowserRefreshOption.Completely);
                 do
                 {
@@ -611,7 +683,7 @@ namespace TrifleJS.API.Modules
         /// <summary>
         /// Closes the page and releases memory
         /// </summary>
-        public void close()
+        public void _close()
         {
             callbackStack.Clear();
             if (browser != null)
@@ -627,6 +699,12 @@ namespace TrifleJS.API.Modules
         public bool loading {
             get { return (browser != null) ? browser.ReadyState != WebBrowserReadyState.Complete : false; }
         }
+
+        /// <summary>
+        /// Type of navigation, as used in event "onNavigationRequested".
+        /// (Undefined, LinkClicked, FormSubmitted, BackOrForward, Reload, FormResubmitted, Other)
+        /// </summary>
+        public string navigationType { get; set; }
 
         #endregion
 
@@ -781,6 +859,32 @@ namespace TrifleJS.API.Modules
         }
 
         /// <summary>
+        /// Scroll position of the page. Used for rendering with clipRect
+        /// </summary>
+        public Dictionary<string, object> scrollPosition {
+            get
+            {
+                int top = 0; int left = 0;
+                if (this.Window != null && this.Window.Position != null) {
+                    left = this.Window.Position.X;
+                    top = this.Window.Position.Y;
+                }
+                return new Dictionary<string, object>  {
+                    {"top", top},
+                    {"left", left}
+                };
+            }
+            set {
+                int top = 0; int left = 0;
+                if (value.ContainsKey("top")) top = value.Get<int>("top");
+                if (value.ContainsKey("left")) left = value.Get<int>("left");
+                // Scroll and render
+                this.Window.ScrollTo(left, top);
+                Program.DoEvents();
+            }
+        }
+
+        /// <summary>
         /// Get/Set Viewport size for layout process
         /// </summary>
         public Dictionary<string, object> viewportSize {
@@ -795,23 +899,9 @@ namespace TrifleJS.API.Modules
                 {
                     int width = browser.Size.Width;
                     int height = browser.Size.Height;
-                    // Loop through input values and check width + height
-                    foreach (string key in value.Keys)
-                    {
-                        try
-                        {
-                            switch (key)
-                            {
-                                case "width":
-                                    width = Convert.ToInt32(value[key]);
-                                    break;
-                                case "height":
-                                    height = Convert.ToInt32(value[key]);
-                                    break;
-                            }
-                        }
-                        catch { }
-                    }
+                    // Check width + height
+                    if (value.ContainsKey("width")) width = value.Get<int>("width");
+                    if (value.ContainsKey("height")) height = value.Get<int>("height");
                     // Check if anythings changed
                     if (width != browser.Size.Width || height != browser.Size.Height)
                     {
