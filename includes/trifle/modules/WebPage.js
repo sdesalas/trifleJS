@@ -94,8 +94,6 @@ this.trifle.modules = this.trifle.modules || {};
 				}
 				// Instantiate Callback
 				var complete = function(status) {
-					// Fire onLoadFinished event
-					page.fireEvent('loadfinished', [status]);
 					// Execute callback
 					if (callback && callback.call) {
 						return !!callback ? callback.call(page, status) : null;

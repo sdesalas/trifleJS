@@ -490,6 +490,8 @@ namespace TrifleJS.API.Modules
                 // @see http://stackoverflow.com/questions/18368778/getting-html-body-content-in-winforms-webbrowser-after-body-onload-event-execute/18370524#18370524
                 Window.AttachEventHandler("onload", delegate
                 {
+                    // Fire onLoadFinished event
+                    _fireEvent("loadfinished", new object[] { "success" });
                     // Execute callback at top of the stack
                     RemoveCallback();
                 });
@@ -533,6 +535,9 @@ namespace TrifleJS.API.Modules
                 try {
                     // TODO: Add unit tests for tracking navigation sources
                     switch ((int)Flags) { 
+                        case 64:
+                            type = "LinkClicked";
+                            break;
                         case 256:
                             type = "Other";
                             break;
@@ -548,10 +553,9 @@ namespace TrifleJS.API.Modules
                 } catch {}
                 bool willNavigate = browser.AllowNavigation;
                 bool main = (pDisp == browser.ActiveXBrowser);
-                string jsonArgs = Context.ParseOne(new object[] { url, type, willNavigate, main });
                 // Fire onNavigationRequested
                 // @see https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage/e17c0dd8a89831251efc9d79b887fae7d0f73f2c#onnavigationrequested
-                _fireEvent("navigationrequested", jsonArgs);
+                _fireEvent("navigationrequested", url, type, willNavigate, main);
                 // Clear event queue
                 // TODO: Find out why frames test code (spec/webpage.js:400) 
                 // is breaking when adding line below.
@@ -711,12 +715,14 @@ namespace TrifleJS.API.Modules
         #region Event Handling
 
         /// <summary>
-        /// Fires an event in the page object (V8 runtime)
+        /// Fires an event in the page object (V8 runtime) with some optional arguments
         /// </summary>
-        /// <param name="nickname"></param>
+        /// <param name="shortname"></param>
+        /// <param name="jsonArgs"></param>
         /// <returns></returns>
-        public object _fireEvent(string nickname) { 
-            return this._fireEvent(nickname, null);
+        public object _fireEvent(string nickname, params object[] args)
+        {
+            return _fireEvent(nickname, Utils.Serialize(args ?? new object[] { }));
         }
 
         /// <summary>
