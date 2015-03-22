@@ -769,8 +769,11 @@ namespace TrifleJS.API.Modules
                             switch (args.Length)
                             {
                                 case 1:
-                                    // Invoke mouse event by DOM Element ID
-                                    element = browser.Document.GetElementById(args[0] as string);
+                                    // Invoke mouse event by CSS selector (first match)
+                                    foreach (HtmlElement result in browser.Document.GetElementFromSelector(args[0] as string)) {
+                                        element = result;
+                                        break;
+                                    }
                                     break;
                                 case 2:
                                     // Invoke mouse event using X/Y coordinates

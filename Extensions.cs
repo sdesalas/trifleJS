@@ -107,5 +107,41 @@ namespace TrifleJS
             return null;
         }
 
+        /// <summary>
+        /// Gets a list of DOM elements using a CSS query selector.
+        /// Only accepts simple selectors. (ie '.myclass' or '#myid' or 'mytag')
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public static List<HtmlElement> GetElementFromSelector(this HtmlDocument document, string selector)
+        {
+            List<HtmlElement> output = new List<HtmlElement>();
+            selector = selector.Trim();
+            if (selector.StartsWith("#"))
+            {
+                HtmlElement result = document.GetElementById(selector.Remove(1));
+                if (result != null) output.Add(result);
+            }
+            else
+            {
+                if (selector.StartsWith("."))
+                {
+                    foreach (HtmlElement element in document.All)
+                    {
+
+                        if (element.GetAttribute("className") == selector.Remove(1))
+                            output.Add(element);
+                    }
+                }
+                else
+                {
+                    foreach (HtmlElement element in document.GetElementsByTagName(selector))
+                        output.Add(element);
+                }
+            }
+            return output;
+        }
+
     }
 }
