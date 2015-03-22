@@ -746,6 +746,108 @@ namespace TrifleJS.API.Modules
             return null;
         }
 
+        /// <summary>
+        /// Sends a keyboard or mouse event to the browser.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="data"></param>
+        public void sendEvent(string type, params object[] args) {
+            HtmlElement element = null;
+            object modifier = null;;
+            if (browser != null && browser.Document != null)
+            {
+                switch (type)
+                {
+                    // Mouse events
+                    case "click":
+                    case "mousedown":
+                    case "mouseup":
+                    case "mousemove":
+                    case "mousedoubleclick":
+                        if (args != null)
+                        {
+                            switch (args.Length)
+                            {
+                                case 1:
+                                    // Invoke mouse event by DOM Element ID
+                                    element = browser.Document.GetElementById(args[0] as string);
+                                    break;
+                                case 2:
+                                    // Invoke mouse event using X/Y coordinates
+                                    element = browser.Document.GetElementFromPoint(args[0], args[1]);
+                                    break;
+                            }
+                            // Nothing found?
+                            // Use document body
+                            if (element == null) element = browser.Document.Body;
+                            // Invoke mouse event
+                            element.InvokeMember(type);
+                        }
+                        // Clear the event queue
+                        Program.DoEvents();
+                        break;
+                    // Single Key events
+                    case "keydown":
+                    case "keyup":
+                        if (!browser.Focused) Native.Methods.SetForegroundWindow(browser.Handle);
+                        if (args != null && args.Length > 0)
+                        {
+                            string keys = args[0] as string;
+                            if (!String.IsNullOrEmpty(keys))
+                                SendKeys.Send(keys.Substring(0, 1));
+                            else 
+                                // Assume keycode
+                                SendKeys.Send(FindKey(args[0]));
+                        }
+                        // Clear the event queue
+                        Program.DoEvents();
+                        break;
+                    // Multiple Key events
+                    case "keypress":
+                        if (args != null && args.Length > 0) {
+                            if (args.Length > 4) {
+                                modifier = args[4];
+                            }
+                            string keys = args[0] as string;
+                            if (!String.IsNullOrEmpty(keys))
+                            {
+                                // Loop through individual key events
+                                foreach (char c in keys)
+                                {
+                                    sendEvent("keydown", new object[] { c, modifier });
+                                    sendEvent("keyup", new object[] { c, modifier });
+                                }
+                            }
+                            else
+                            {
+                                // Or try using a charcode
+                                try
+                                {
+                                    string key = FindKey(args[0]);
+                                    if (!String.IsNullOrEmpty(key))
+                                    {
+                                        sendEvent("keydown", new object[] { key, modifier });
+                                        sendEvent("keyup", new object[] { key, modifier });
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a character using key codes
+        /// TODO: Continue when "page.event.key" is ready
+        /// </summary>
+        /// <param name="keyCode"></param>
+        /// <returns></returns>
+        private string FindKey(object keyCode) {
+            return String.Empty;
+        }
+
         #endregion
 
         #region Cookies

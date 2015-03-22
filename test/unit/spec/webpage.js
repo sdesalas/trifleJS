@@ -13,6 +13,9 @@ assert.suite('Module: WebPage', function() {
 	var server = require('webserver').create();
 	var loadCount = 0;
 
+	// Add test folder
+	if (!fs.isDirectory('test')) fs.makeDirectory('test');
+
 	// --------------------------------------------
 	assert.section('Instantiation');
 
@@ -682,7 +685,7 @@ assert.suite('Module: WebPage', function() {
 
 
 	// --------------------------------------------
-	assert.section('Page Lifecycle Events: Initialize, LoadStarted/Finished, NavigationRequested, etc', function() {
+	assert.section('Page Lifecycle Events.', function() {
 
 		var data = {
 			onNavigationRequested: {},

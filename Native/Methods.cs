@@ -66,6 +66,14 @@ namespace TrifleJS.Native
             return appId.Value;
         }
 
+        #region User32.dll
+
+        // Activate an application window.
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        #endregion
+
         #region WindowsScriptingHost
 
         /// <summary>

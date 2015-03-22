@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -83,6 +84,27 @@ namespace TrifleJS
                 }
             } while (added && count < 100); // Limit to 100 frames
             return ancestors;
+        }
+
+        /// <summary>
+        /// Gets a DOM Element at specific X/Y coordinates. 
+        /// Returns null if element not found.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static HtmlElement GetElementFromPoint(this HtmlDocument document, object x, object y)
+        {
+            try
+            {
+                if (x != null && y != null)
+                {
+                    Point point = new Point((int)x, (int)y);
+                    return document.GetElementFromPoint(point);
+                }
+            }
+            catch { }
+            return null;
         }
 
     }
