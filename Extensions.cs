@@ -110,6 +110,7 @@ namespace TrifleJS
         /// <summary>
         /// Gets a list of DOM elements using a CSS query selector.
         /// Only accepts simple selectors. (ie '.myclass' or '#myid' or 'mytag')
+        /// @see http://stackoverflow.com/questions/11271737/how-do-you-click-a-button-in-a-webbrowser-control
         /// </summary>
         /// <param name="document"></param>
         /// <param name="selector"></param>
@@ -117,7 +118,7 @@ namespace TrifleJS
         public static List<HtmlElement> GetElementFromSelector(this HtmlDocument document, string selector)
         {
             List<HtmlElement> output = new List<HtmlElement>();
-            if (selector != null)
+            if (!String.IsNullOrEmpty(selector))
             {
                 selector = selector.Trim();
                 if (selector.StartsWith("#"))

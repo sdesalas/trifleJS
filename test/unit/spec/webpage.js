@@ -689,6 +689,7 @@ assert.suite('Module: WebPage', function() {
 
 		var data = {
 			onNavigationRequested: {},
+			onUrlChanged: {},
 			onLoadStarted: {}, 
 			onLoadFinished: {}, 
 			onCallback: {}, 
@@ -733,7 +734,15 @@ assert.suite('Module: WebPage', function() {
 			stopwatch.onLoadStarted = new Date();
 			trifle.wait(1);
 		}
-		
+
+		page.onUrlChanged = function(url) {
+			data.onUrlChanged.calls = (data.onUrlChanged.calls || 0) + 1;
+			data.onUrlChanged.args = arguments.length;
+			data.onUrlChanged.url = url;
+			stopwatch.onUrlChanged = new Date();
+			trifle.wait(1);
+		}
+
 		page.onLoadFinished = function(status) {
 			data.onLoadFinished.calls = (data.onLoadFinished.calls || 0) + 1;
 			data.onLoadFinished.args = arguments.length;
@@ -773,6 +782,11 @@ assert.suite('Module: WebPage', function() {
 		assert(data.onLoadStarted.calls === 1, 'page.onLoadStarted fires 1x time');
 		assert(data.onLoadStarted.args === 0, 'page.onLoadStarted fires without arguments');
 
+		assert(stopwatch.onUrlChanged instanceof Date, 'page.onUrlChanged is executed');
+		assert(data.onUrlChanged.calls === 1, 'page.onUrlChanged fires 1x time');
+		assert(data.onUrlChanged.args === 1, 'page.onUrlChanged fires with 1 argument');
+		assert(data.onUrlChanged.url === 'http://localhost:8083/page1', 'page.onUrlChanged returns new url');
+
 		assert(stopwatch.onLoadFinished instanceof Date, 'page.onLoadFinished is executed');
 		assert(data.onLoadFinished.calls === 1, 'page.onLoadFinished fires 1x time');
 		assert(data.onLoadFinished.args === 1, 'page.onLoadFinished fires with 1 argument');
@@ -795,15 +809,17 @@ assert.suite('Module: WebPage', function() {
 		// 1. beforeopen
 		// 2. navigationrequested
 		// 3. loadstarted
-		// 4. initialized
-		// 5. script
-		// 6. window.onload
-		// 7. loadfinished
-		// 8. open
+		// 4. urlchanged
+		// 5. initialized
+		// 6. script
+		// 7. window.onload
+		// 8. loadfinished
+		// 9. open
 		
 		assert(stopwatch.onCallback.beforeopen < stopwatch.onNavigationRequested, 'callPhantom() before page.open() runs before onNavigationRequested');
 		assert(stopwatch.onNavigationRequested < stopwatch.onLoadStarted, 'page.onNavigationRequested fires before page.onLoadStarted');
-		assert(stopwatch.onLoadStarted < stopwatch.onInitialized, 'page.onLoadStarted fires before page.onInitialized');
+		assert(stopwatch.onLoadStarted < stopwatch.onUrlChanged, 'page.onLoadStarted fires before page.onUrlChanged');
+		assert(stopwatch.onUrlChanged < stopwatch.onInitialized, 'page.onUrlChanged fires before page.onInitialized');
 		assert(stopwatch.onInitialized < stopwatch.onCallback.script, 'page.onInitialized fires before callPhantom() used in script tag');
 		assert(stopwatch.onCallback.script < stopwatch.onCallback.onload, 'callPhantom() used in script tag runs before window.onload');
 		assert(stopwatch.onCallback.onload < stopwatch.onLoadFinished, 'callPhantom() used on window.onload fires before onLoadFinished');

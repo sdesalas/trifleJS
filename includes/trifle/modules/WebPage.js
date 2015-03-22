@@ -41,6 +41,7 @@ this.trifle.modules = this.trifle.modules || {};
 			Object.addEvent(this, 'onError');
 			Object.addEvent(this, 'onLoadStarted');
 			Object.addEvent(this, 'onLoadFinished');
+			Object.addEvent(this, 'onUrlChanged');
 			Object.addEvent(this, 'onNavigationRequested');
 			// Add event route between 'internalpagecreated' and 'pagecreated'
 			// this allows us to use objects from V8 context  

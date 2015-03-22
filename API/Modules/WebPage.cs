@@ -510,11 +510,13 @@ namespace TrifleJS.API.Modules
         {
             if (browser != null)
             {
+                // Fire onUrlChanged event
+                _fireEvent("urlchanged", new object[] { args.Url });
+                // Set current widnow and add IE tools
                 switchToMainFrame();
-                // Add IE tools
                 _evaluateJavaScript(TrifleJS.Properties.Resources.ie_json2);
                 _evaluateJavaScript(TrifleJS.Properties.Resources.ie_tools);
-                // Fire event
+                // Fire onInitialized event
                 _fireEvent("initialized");
             }
         }
@@ -525,7 +527,6 @@ namespace TrifleJS.API.Modules
         /// </summary>
         public void BeforeNavigate2(object pDisp, ref object URL, ref object Flags, ref object TargetFrameName, ref object PostData, ref object Headers, ref bool Cancel)
         {
-            
             if (browser != null)
             {
                 IWebBrowser2 cie = (IWebBrowser2)pDisp;
@@ -796,6 +797,7 @@ namespace TrifleJS.API.Modules
                         Program.DoEvents();
                         break;
                     // Single Key events
+                    // @see https://msdn.microsoft.com/en-us/library/system.windows.forms.sendkeys.send.aspx
                     case "keydown":
                     case "keyup":
                         if (!browser.Focused) Native.Methods.SetForegroundWindow(browser.Handle);
