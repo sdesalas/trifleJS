@@ -219,7 +219,7 @@ namespace TrifleJS.Native
         /// </summary>
         /// <param name="filename">path where the screenshot is saved</param>
         /// <param name="ratio">zoom ratio</param>
-        public void Render(string filename, double ratio)
+        public void Render(string filename, double ratio = 1.0)
         {
             Render(filename, ratio, new Rectangle(0, 0, 0, 0));
         }
@@ -237,10 +237,8 @@ namespace TrifleJS.Native
         /// <param name="clipRect">Part of the image captured</param>
         public void Render(string filename, double ratio, Rectangle clipRect)
         {
-            Utils.Debug("Render");
             using (var pic = this.Render(ratio, clipRect))
             {
-                Utils.Debug("Render 1");
                 if (pic == null)
                 {
                     Utils.Debug("Picture could not be rendered");
@@ -315,6 +313,9 @@ namespace TrifleJS.Native
                 return null;
             }
 
+            if (ratio <= 0)
+                ratio = 1.0;
+
             Utils.Debug("Render(,) ratio: " + ratio);
             int _width = Convert.ToInt32(this.Width * ratio);
             //int _height = Convert.ToInt32(this.Height * ratio);
@@ -345,10 +346,14 @@ namespace TrifleJS.Native
                 Utils.Debug("Render(,) clipRect.Height: " + clipRect.Height);
                 // make sure we rquest a bitmap that fits inside the full size page
                 int width = Convert.ToInt32(Math.Min(clipRect.Width, this.Size.Width - clipRect.Left) * ratio);
+                if (width < clipRect.Width * ratio)
+                    width = Convert.ToInt32(clipRect.Width * ratio);
                 Utils.Debug("Render(,) width: " + width);
+
                 int height = Convert.ToInt32(Math.Min(clipRect.Height, this.Size.Height - clipRect.Top) * ratio);
                 if (height == 0)
                     height = Convert.ToInt32(this.Size.Height * ratio);
+
                 Utils.Debug("Render(,) height: " + height);
                 int top = Convert.ToInt32(clipRect.Top * ratio);
                 int left = Convert.ToInt32(clipRect.Left * ratio);
