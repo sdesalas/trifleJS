@@ -15,7 +15,6 @@ namespace TrifleJS
         public static API.Context Context { get; set; }
         public static List<string> Args { get; set; }
         public static bool Verbose { get; set; }
-        public static bool Testing { get; set; }
         public static bool SecureMode { get; set; }
         public static bool InEventLoop { get; set; }
 
@@ -247,9 +246,9 @@ namespace TrifleJS
         public static void Exit(int exitCode)
         {
             Proxy.Backup.Restore();
-            if (Program.Verbose || Program.Testing)
+            if (Program.Verbose)
             {
-                // Debugging/Testing? Wait for input
+                // Debugging? Wait for input
                 Console.WriteLine();
                 Console.WriteLine("Press any key to finish...");
                 Console.Read();
@@ -313,7 +312,6 @@ namespace TrifleJS
             Console.WriteLine("============================================");
 
             Program.Verbose = false;
-            Program.Testing = true;
 
             using (Program.Context = Initialise())
             {
@@ -365,6 +363,7 @@ namespace TrifleJS
                 {
                     // Handle any exceptions
                     API.Context.Handle(ex);
+                    Program.Exit(1);
                 }
             }
         }
