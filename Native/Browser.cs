@@ -67,11 +67,11 @@ namespace TrifleJS.Native
         /// @see https://msdn.microsoft.com/en-us/library/aa752085(v=vs.85).aspx
         /// @see https://msdn.microsoft.com/en-us/library/aa768283(v=vs.85).aspx
         /// </summary>
-        public SHDocVw.WebBrowser ActiveXBrowser
+        public Interop.SHDocVw.WebBrowser ActiveXBrowser
         {
             get
             {
-                return this.ActiveXInstance as SHDocVw.WebBrowser;
+                return this.ActiveXInstance as Interop.SHDocVw.WebBrowser;
             }
         }
 

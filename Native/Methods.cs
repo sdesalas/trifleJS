@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.IO;
-using IWshRuntimeLibrary;
+using Interop.IWshRuntimeLibrary;
 
 namespace TrifleJS.Native
 {

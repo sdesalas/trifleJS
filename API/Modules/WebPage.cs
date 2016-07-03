@@ -8,7 +8,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using TrifleJS.Native;
-using SHDocVw;
+using Interop.SHDocVw;
 using mshtml;
 
 namespace TrifleJS.API.Modules
