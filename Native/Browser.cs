@@ -90,6 +90,9 @@ namespace TrifleJS.Native
                 System.UInt32 dWord;
                 switch (ieVersion.ToUpper())
                 {
+                    case "EDGE12":
+                        dWord = 12001; // http://stackoverflow.com/questions/31773359/add-new-microsoft-edge-to-web-browser-control
+                        break;
                     case "IE11":
                         dWord = 11001; // "Forced" (ie IGNORE_DOCTYPE mode)
                         break;

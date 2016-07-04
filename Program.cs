@@ -41,7 +41,7 @@ namespace TrifleJS
             Console.WriteLine("  --debug=[true|false]        Prints additional warning and debug messages");
             //Console.WriteLine("  --ignore-ssl-errors=[true|false]  Ignores SSL errors (cert expired, invalid etc). Defaults to 'false'.");
             Console.WriteLine("  --render=[url]              Opens a url, renders into a file and quits");
-            Console.WriteLine("  --emulate=[version]         Emulates earlier version of IE (IE7, IE8, IE9 ..)");
+            Console.WriteLine("  --emulate=[version]         Emulate IE7, IE8, IE9, IE10, IE11 or EDGE12");
             Console.WriteLine("  --output-encoding=[enc]     Encoding for terminal output (default utf8)");
             Console.WriteLine("  --script-encoding=[enc]     Encoding for starting script (default utf8)");
             Console.WriteLine("  --clear-cache               Clears IE cache history before starting");
