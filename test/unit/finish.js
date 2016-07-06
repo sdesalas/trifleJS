@@ -10,7 +10,7 @@ if (assert.fail.count) {
 	console.API.color('red', 'Total Failed: ' + assert.fail.count); 
 	console.log();
 	// RETURN ERROR
-	phantom.exit(1);
+	phantom.exit(assert.fail.count);
 }
 else { 
 	// ALL GOOD!
