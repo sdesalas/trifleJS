@@ -69,7 +69,6 @@ namespace TrifleJS
             Program.Args = new List<string>();
 #if DEBUG
             Program.Verbose = true;
-            Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
 #endif
             // Define environment
             bool isExecuted = false;
@@ -146,6 +145,11 @@ namespace TrifleJS
                         commandLoop.Add(arg);
                         break;
                 }
+            }
+
+            // Echo input?
+            if (Program.Verbose) {
+                Utils.Debug("{0} {1}", AppDomain.CurrentDomain.FriendlyName, String.Join(" ", args));
             }
 
             // Clear cache?

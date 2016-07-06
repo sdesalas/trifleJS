@@ -107,8 +107,8 @@ assert.suite('Module: ChildProcess', function() {
 		
 		// Finished
 		assert(finished === true, '.execFile() runs asynchronously');
-		assert(context.output.indexOf(version.join('.')) > 0, 'context.output contains ' + version.join('.'));
-		assert(context.errorOutput === '', 'context.errorOutput is an empty string');
+        assert(context.output.indexOf(version.join('.')) === 0, 'context.output is [' + version.join('.') + ']');
+        assert(context.errorOutput === '', 'context.errorOutput is an empty string');
 		assert(context.exited === true, 'context.exited is true');
 		assert(context.exitCode === 0, 'context.exitCode is 0');
 	
@@ -208,7 +208,7 @@ assert.suite('Module: ChildProcess', function() {
 		assert(finished === true, '.spawn() runs asynchronously');
 		assert(returnCode === 1, 'context#exit event has a return code of 1 as argument');
 
-		assert(stdout1.length === 1, 'context#stdout returns one line of data.');
+		assert(stdout1.length === 0, 'context#stdout returns no data.');
 		assert(stdout1.length === stdout2.length && stdout2.length === stdout3.length, 'There are 3 valid ways to subscribe to stdout event data');
 		assert(stdout1.join('') === stdout2.join('') && stdout2.join('') === stdout3.join(''), 'All 3 stdout event subscription methods return same data');
 		assert(stdout1.join('') === context.output, 'context#stdout returns actual output');
