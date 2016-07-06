@@ -7,7 +7,7 @@ SET MergePath=.\Merge
 SET BinaryPath=.\Binary
 SET ILMerge=Tools\ILMerge.exe
 SET Zip=Tools\7za.exe
-SET MsBuild35=C:\Windows\Microsoft.NET\Framework\v3.5\MsBuild.exe
+SET MsBuild40=C:\Windows\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe
 
 :: Clean up last release
 
@@ -19,8 +19,8 @@ MKDIR %BinaryPath%
 
 :: Run MSBuild
 
-IF EXIST "%MsBuild35%" (
-	SET "MsBuild=%MsBuild35%"
+IF EXIST "%MsBuild40%" (
+	SET "MsBuild=%MsBuild40%"
 ) ELSE (
 	ECHO Cannot Find MsBuild!
 	EXIT /b 1

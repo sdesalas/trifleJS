@@ -16,17 +16,9 @@ namespace TrifleJS.API
         /// Exists the program
         /// </summary>
         /// <param name="exitCode">Return code</param>
-        public void exit(int exitCode)
+        public void exit(int exitCode = 0)
         {
             Program.Exit(exitCode);
-        }
-
-        /// <summary>
-        /// Exits the program
-        /// </summary>
-        public void exit()
-        {
-            exit(0);
         }
 
         /// <summary>
