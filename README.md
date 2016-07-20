@@ -90,6 +90,6 @@ Key:
 
 - 100%: Passing all unit tests
 - 1-99%: Passing some unit tests
-- ---: Untested
+- Unkn: Untested
 - N / A: IE Version unavailable in this platform
 
