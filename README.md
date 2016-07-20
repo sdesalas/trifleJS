@@ -79,12 +79,12 @@ Here is a breakdown of current unit tests:
 |Win7 32bit         |       |       |       |       |  N / A  |
 |Win7 64bit         |       |       |       |       |  N / A  |
 |2008R2 64bit       | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
-|Win8 32bit         | N / A | Unkn. | Unkn. | Unkn. |  N / A  |
-|Win8 64bit         | N / A | Unkn. | Unkn. | Unkn. |  N / A  |
-|2012R2 64bit       | N / A |       |       |       |  N / A  |
-|Win10 32bit        | N / A | Unkn. | Unkn. | Unkn. |  Unkn.  |
-|Win10 64bit        | N / A |       |       |       |         |
-|Ser 2016 64bit     | N / A | Unkn. | Unkn. | Unkn. |  Unkn.  |
+|Win8 32bit         | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
+|Win8 64bit         | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
+|2012R2 64bit       |       |       |       |       |  N / A  |
+|Win10 32bit        | Unkn. | Unkn. | Unkn. | Unkn. |  Unkn.  |
+|Win10 64bit        |       |       |       |       |         |
+|Ser 2016 64bit     | Unkn. | Unkn. | Unkn. | Unkn. |  Unkn.  |
 
 Key:
 
