@@ -74,8 +74,8 @@ Here is a breakdown of current unit tests:
 |Windows Version    | IE 8  | IE 9  | IE 10 | IE 11 | EDGE 12 |
 |-------------------|-------|-------|-------|-------|---------|
 |XP (SP2)           |       | N / A | N / A | N / A |  N / A  |
-|Vista 32/64bit     |  ---  |  ---  | N / A | N / A |  N / A  |
-|Ser 2003 32/64bi   |  ---  |  ---  | N / A | N / A |  N / A  |
+|Vista 32/64bit     | Unkn. | Unkn. | N / A | N / A |  N / A  |
+|Ser 2003 32/64bi   | Unkn. | Unkn. | N / A | N / A |  N / A  |
 |Win7 32bit         |       |       |       |       |  N / A  |
 |Win7 64bit         |       |       |       |       |  N / A  |
 |2008R2 64bit       | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
