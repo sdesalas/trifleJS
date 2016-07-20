@@ -76,8 +76,8 @@ Here is a breakdown of current unit tests:
 |XP (SP2)           |       | N / A | N / A | N / A |  N / A  |
 |Vista 32/64bit     | Unkn. | Unkn. | N / A | N / A |  N / A  |
 |Ser 2003 32/64bi   | Unkn. | Unkn. | N / A | N / A |  N / A  |
-|Win7 32bit         |       |       |       |       |  N / A  |
-|Win7 64bit         |       |       |       |       |  N / A  |
+|Win7 32bit         | 100%  | 100%  | 100%  | 100%  |  N / A  |
+|Win7 64bit         | 100%  | 100%  | 100%  | 100%  |  N / A  |
 |2008R2 64bit       | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
 |Win8 32bit         | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
 |Win8 64bit         | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
