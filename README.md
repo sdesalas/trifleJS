@@ -67,11 +67,30 @@ If you are not sure which version to use then download the ‘Latest Stable’ v
 
 #### System Requirements
 
-The ideal installation is Windows 7 (which includes .NET 3.5) using IE11, however this will still work in 32-bit XP (with SP2) or versions of the [Windows NT Kernel](http://en.wikipedia.org/wiki/Comparison_of_Microsoft_Windows_versions#Windows_NT) released after 2001.
+The ideal installation is Windows 7 (with .NET 4.0 or higher) using IE11, however this will still work in 32-bit XP (with SP2) or versions of the [Windows NT Kernel](http://en.wikipedia.org/wiki/Comparison_of_Microsoft_Windows_versions#Windows_NT) released after 2001.
 
-|Software           | Version                       |
-|-------------------|-------------------------------|
-|Windows            | XP (SP2), 7, 8, Server 2003+  |
-|Internet Explorer  | 7, 8, 9, 10 or 11             |
-|.NET Framework     | 3.5+                          |
+Here is a breakdown of current unit tests:
+
+|Windows Version    | IE 8  | IE 9  | IE 10 | IE 11 | EDGE 12 |
+|-------------------|-------|-------|-------|-------|---------|
+|XP (SP2)           |       | N / A | N / A | N / A |  N / A  |
+|Vista 32/64bit     | Unkn. | Unkn. | N / A | N / A |  N / A  |
+|Ser 2003 32/64bi   | Unkn. | Unkn. | N / A | N / A |  N / A  |
+|Win7 32bit         |       |       |       |       |  N / A  |
+|Win7 64bit         |       |       |       |       |  N / A  |
+|2008R2 32/64bit    | Unkn. | Unkn. | Unkn. | Unkn. |  N / A  |
+|Win8 32bit         | N / A | N / A | Unkn. | Unkn. |  N / A  |
+|Win8 64bit         | N / A | N / A | Unkn. | Unkn. |  N / A  |
+|2012R2 32bit       | N / A | N / A | Unkn. | Unkn. |  N / A  |
+|2012R2 64bit       | N / A | N / A |       |       |  N / A  |
+|Win10 32bit        | N / A | N / A | Unkn. | Unkn. |  Unkn.  |
+|Win10 64bit        | N / A | N / A |       |       |         |
+|Ser 2016 32/64bi   | N / A | N / A | Unkn. | Unkn. |  Unkn.  |
+
+Key:
+
+- 100%: Passing all unit tests
+- 1-99%: Passing some unit tests
+- Unkn.: Untested
+- N / A: IE Version unavailable in this platform
 
