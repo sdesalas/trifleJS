@@ -1,0 +1,63 @@
+html, body, div, span, object, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, main, summary, time, mark, audio, video {margin: 0;padding: 0;vertical-align: baseline;outline: none;font-size: 100%;background: transparent;border: none;text-decoration: none;}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, main {display: block;}
+b, i, hr, u, center, menu, layer, s, strike, font, xmp {margin: 0;padding: 0;vertical-align: baseline;outline: none;font-size: 100%;font-weight: normal;font-style: normal;background: transparent;border: none;text-decoration: none;}
+html {font-size: 16px;}
+body {line-height: 1.5;font-size: 1rem;}
+h1, h2, h3, h4, h5, h6 {font-style: normal;font-weight: normal;margin: 0 0 1.5rem;}
+h1 {font-size: 1.75rem;}
+h2 {font-size: 1.625rem;}
+h3 {font-size: 1.5rem;}
+h4 {font-size: 1.375rem;}
+h5 {font-size: 1.25rem;}
+h6 {font-size: 1.125rem;}
+p, figure {margin: 0 0 1.5rem;}
+ol, ul {list-style: none;}
+ul {list-style: disc;margin: 0 0 1.5rem 3rem;}
+ol {list-style-type: decimal;margin: 0 0 1.5rem 3rem;}
+ol ol {list-style: upper-roman;}
+ol ol ol {list-style: lower-roman;}
+ol ol ol ol {list-style: upper-alpha;}
+ol ol ol ol ol {list-style: lower-alpha;}
+ul ul, ol ol, ul ol, ol ul {margin-bottom: 0;}
+dl {margin: 0 0 1.5rem;}
+dt {margin-left: .75rem;font-weight: bold;}
+dd {margin-left: 1.5rem;}
+strong {font-weight: bold;}
+strong strong {font-weight: normal;}
+em, cite {font-style: italic;}
+em em, cite cite {font-style: normal;}
+abbr[title], time[title], acronym[title] {cursor: help;}
+abbr, acronym {border-bottom: 1px dotted #999;}
+acronym {text-transform: uppercase;}
+big {font-size: 1.125rem;}
+small, sup, sub {font-size: .875rem;}
+sup {vertical-align: baseline;position: relative;bottom: .3em;}
+sub {vertical-align: baseline;position: relative;top: .3em;}
+address {font-style: italic;margin: 0 0 1.5rem;}
+blockquote {margin: 0 1.5rem;font-style: italic;}
+blockquote em, blockquote cite {font-style: normal;}
+blockquote, q {quotes: none;}
+blockquote::before, blockquote::after, q::before, q::after {content: "";content: none;}
+a {cursor: pointer;}
+a img {border: none;}
+pre {overflow: auto;font-family: monospace;margin-bottom: 1.5rem;padding: 1.5rem;}
+code {font-family: monospace;}
+ins, dfn {font-style: italic;text-decoration: none;border-bottom: 1px solid #999;}
+del, s, strike {text-decoration: line-through;}
+object {margin-bottom: 1.5rem;}
+input, textarea {box-sizing: content-box;}
+input[type="submit"] {cursor: pointer;}
+:focus {outline: none;}
+form label {cursor: pointer;}
+table {border-collapse: collapse;border-spacing: 0;margin-bottom: 1.5rem;}
+th, td {text-align: left;}
+hr {height: 1px;margin-bottom: 1.5rem;background: #999;}
+img.wp-smiley {max-height: 12px;margin: 0;padding: 0;border: none;background: transparent;}
+.gallery {display: block;text-align: center;margin-bottom: 1.5rem;}
+.alignleft, .left {float: left;margin-right: 1.5rem;}
+.alignright, .right {float: right;margin-left: 1.5rem;}
+.aligncenter, .center {display: block;margin: 0 auto 1.5rem;}
+.alignnone {float: none;}
+.clear {clear: both;}
+img.alignleft, img.alignright {display: inline;}
+blockquote.alignleft, blockquote.alignright {width: 33%;}

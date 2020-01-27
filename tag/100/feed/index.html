@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>100% &#8211; trifleJS</title>
+	<atom:link href="http://OFFLINEZIP.wpshotag/100/feed/" rel="self" type="application/rss+xml" />
+	<link>http://OFFLINEZIP.wpsho</link>
+	<description>Headless automation for Internet Explorer</description>
+	<lastBuildDate>Tue, 10 Mar 2015 14:10:41 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.3.2</generator>
+	<item>
+		<title>Module: FileSystem</title>
+		<link>http://OFFLINEZIP.wpshosection/module-filesystem/</link>
+				<pubDate>Mon, 02 Dec 2013 02:00:35 +0000</pubDate>
+		<dc:creator><![CDATA[triflejs]]></dc:creator>
+				<category><![CDATA[Section]]></category>
+		<category><![CDATA[100%]]></category>
+
+		<guid isPermaLink="false">http://localhost/?p=27</guid>
+				<description><![CDATA[Original PhantomJS API Documentation for this section is in: https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem Feature Status Notes Properties .separator Ready The path separator for O/S. .workingDirectory Ready The current working directory. Query Methods .list(path) Ready Returns list of files in path. .absolute(path) Ready Returns&#8230;]]></description>
+								<content:encoded><![CDATA[<p>Original PhantomJS API Documentation for this section is in:</p>
+<p><a title="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem" href="https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem/5efc9a409c029f54d73436cda3de6d1bb2143f86" target="_blank">https://github.com/ariya/phantomjs/wiki/API-Reference-FileSystem</a></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em><strong>Properties</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.separator</code></td>
+<td>Ready</td>
+<td>The path separator for O/S.</td>
+</tr>
+<tr>
+<td><code>.workingDirectory</code></td>
+<td>Ready</td>
+<td>The current working directory.</td>
+</tr>
+<tr>
+<td><em><strong>Query Methods</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.list(path)</code></td>
+<td>Ready</td>
+<td>Returns list of files in <code>path</code>.</td>
+</tr>
+<tr>
+<td><code>.absolute(path)</code></td>
+<td>Ready</td>
+<td>Returns absolute path to file or directory</td>
+</tr>
+<tr>
+<td><code>.exists(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if a file or a directory exists.</td>
+</tr>
+<tr>
+<td><code>.isDirectory(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if specified <code>path</code> is directory.</td>
+</tr>
+<tr>
+<td><code>.isFile(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if specified <code>path</code> is a file</td>
+</tr>
+<tr>
+<td><code>.isAbsolute(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> for an absolute path</td>
+</tr>
+<tr>
+<td><code>.isExecutable(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if file can be executed</td>
+</tr>
+<tr>
+<td><code>.isReadable(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if file or directory is readable</td>
+</tr>
+<tr>
+<td><code>.isWritable(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if file or directory is writable</td>
+</tr>
+<tr>
+<td><code>.isLink(path)</code></td>
+<td>Ready</td>
+<td><code>true</code> if path is symbolic link (not junction)</td>
+</tr>
+<tr>
+<td><code>.readLink(path)</code></td>
+<td>Ready</td>
+<td>returns the target of a symbolic link</td>
+</tr>
+<tr>
+<td><em><strong>Directory Methods</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.changeWorkingDirectory(path)</code></td>
+<td>Ready</td>
+<td>Changes the current <code>.workingDirectory</code></td>
+</tr>
+<tr>
+<td><code>.makeDirectory(path)</code></td>
+<td>Ready</td>
+<td>Creates a new directory.</td>
+</tr>
+<tr>
+<td><code>.makeTree(path)</code></td>
+<td>Ready</td>
+<td>Creates a directory including missing parent directories.</td>
+</tr>
+<tr>
+<td><code>.removeDirectory(path)</code></td>
+<td>Ready</td>
+<td>Removes a directory if it is empty.</td>
+</tr>
+<tr>
+<td><code>.removeTree(path)</code></td>
+<td>Ready</td>
+<td>Removes specified path and everything in it.</td>
+</tr>
+<tr>
+<td><code>.copyTree(source, destination)</code></td>
+<td>Ready</td>
+<td>Copies all files from <code>source</code> to <code>destination</code> path.</td>
+</tr>
+<tr>
+<td><em><strong>File Methods</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.open(path, mode)</code></td>
+<td>Ready</td>
+<td>Returns a <code>stream</code> object (<code>mode:</code> <code>'r'</code> <code>'w'</code> <code>'a'</code> or &#8216;rb&#8217; &#8216;wb&#8217;);</td>
+</tr>
+<tr>
+<td><code>.read(path)</code></td>
+<td>Ready</td>
+<td>Reads contents of a file.</td>
+</tr>
+<tr>
+<td><code>.write(path)</code></td>
+<td>Ready</td>
+<td>Writes content to a file (<code>mode:</code> <code>'w'</code> <code>'a'</code> or <code>'wb'</code>).</td>
+</tr>
+<tr>
+<td><code>.size(path)</code></td>
+<td>Ready</td>
+<td>Returns size (in bytes) of a file.</td>
+</tr>
+<tr>
+<td><code>.remove(path)</code></td>
+<td>Ready</td>
+<td>Removes a file in specified <code>path</code></td>
+</tr>
+<tr>
+<td><code>.copy(source, destination)</code></td>
+<td>Ready</td>
+<td>Copies a file to <code>destination</code> path.</td>
+</tr>
+<tr>
+<td><code>.move(source, destination)</code></td>
+<td>Ready</td>
+<td>Moves a file to another, effectively renaming it.</td>
+</tr>
+<tr>
+<td><code>.touch(path)</code></td>
+<td>Ready</td>
+<td>Touches a file, changing its access timestamp.</td>
+</tr>
+</tbody>
+</table>
+<h3>Stream Object</h3>
+<p>A <code>stream</code> object returned from the <code>fs.open(path)</code> function has the following methods:</p>
+<table>
+<thead>
+<tr>
+<th>FEATURE</th>
+<th>STATUS</th>
+<th>NOTES</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em><strong>Methods</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>.read()</code></td>
+<td>Ready</td>
+<td>Returns the content of the stream.</td>
+</tr>
+<tr>
+<td><code>.readLine()</code></td>
+<td>Ready</td>
+<td>Reads a line from the stream and returns it.</td>
+</tr>
+<tr>
+<td><code>.atEnd()</code></td>
+<td>Ready</td>
+<td>Returns true if the end of the file was reached.</td>
+</tr>
+<tr>
+<td><code>.write(data)</code></td>
+<td>Ready</td>
+<td>Writes a data string to the stream.</td>
+</tr>
+<tr>
+<td><code>.writeLine(data)</code></td>
+<td>Ready</td>
+<td>Writes the data string as a line to the stream.</td>
+</tr>
+<tr>
+<td><code>.seek(pos)</code></td>
+<td>Ready</td>
+<td>Moves to a certain position into a stream.</td>
+</tr>
+<tr>
+<td><code>.flush()</code></td>
+<td>Ready</td>
+<td>Flushes all pending input/output.</td>
+</tr>
+<tr>
+<td><code>.close()</code></td>
+<td>Ready</td>
+<td>Closes and completes the stream operation.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+]]></content:encoded>
+										</item>
+	</channel>
+</rss>

@@ -1,0 +1,7 @@
+.idea
+bin/
+obj/
+Libs/
+*csproj.user
+*.suo
+test/

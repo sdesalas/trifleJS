@@ -1,0 +1,65 @@
+html, body, div, span, object, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, main, summary, time, mark, audio, video {margin: 0;padding: 0;vertical-align: baseline;outline: none;font-size: 100%;background: transparent;border: none;text-decoration: none;}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, main {display: block;}
+b, i, hr, u, center, menu, layer, s, strike, font, xmp {margin: 0;padding: 0;vertical-align: baseline;outline: none;font-size: 100%;font-weight: normal;font-style: normal;background: transparent;border: none;text-decoration: none;}
+body {line-height: 20px;font-family: Georgia,Times,"Times New Roman",serif;color: #333;background: #fff;}
+h1, h2, h3, h4, h5, h6 {font-style: normal;font-weight: normal;margin: 0 0 20px 0;}
+h1 {font-size: 1.8em;}
+h2 {font-size: 1.7em;}
+h3 {font-size: 1.55em;}
+h4 {font-size: 1.4em;}
+h5 {font-size: 1.25em;}
+h6 {font-size: 1.1em;}
+p, figure {margin: 0 0 20px 0;}
+ol, ul {list-style: none;}
+ul {list-style: disc;margin: 0 0 20px 2.5em;}
+ol {list-style-type: decimal;margin: 0 0 20px 3em;}
+ol ol {list-style: upper-roman;}
+ol ol ol {list-style: lower-roman;}
+ol ol ol ol {list-style: upper-alpha;}
+ol ol ol ol ol {list-style: lower-alpha;}
+ul ul, ol ol, ul ol, ol ul {margin-bottom: 0;}
+dl {margin: 0 0 20px 5px;}
+dl dt {font-weight: bold;margin: 10px 0 0 0;}
+dl dd {margin: 5px 0 0 1.5em;}
+strong {font-weight: bold;}
+strong strong {font-weight: normal;}
+em, cite {font-style: italic;}
+em em, cite cite {font-style: normal;}
+abbr[title], time[title], acronym[title] {cursor: help;}
+abbr, acronym {border-bottom: 1px dotted #666;}
+acronym {text-transform: uppercase;}
+big {font-size: 120%;}
+small, sup, sub {font-size: 80%;}
+sup {vertical-align: baseline;position: relative;bottom: .3em;}
+sub {vertical-align: baseline;position: relative;top: .3em;}
+address {font-style: italic;margin: 0 0 20px 0;}
+li address, dd address {margin: 0;}
+blockquote {margin: 0 25px;font-style: normal;}
+blockquote em, blockquote cite {font-style: italic;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after, q:before, q:after {content: "";content: none;}
+a {cursor: pointer;}
+a img {border: none;}
+pre {overflow: auto;font: .9em Monaco,monospace,Courier,"Courier New";line-height: 20px;margin-bottom: 20px;padding: 10px;}
+code {font: .9em Monaco,monospace,Courier,"Courier New";}
+pre code {font-size: 1em;}
+ins, dfn {font-style: italic;text-decoration: none;border-bottom: 1px solid #666;}
+del, s, strike {text-decoration: line-through;}
+object {margin-bottom: 20px;}
+input, textarea {font-size: 1em;padding: 4px;}
+input[type="submit"] {cursor: pointer;}
+:focus {outline: none;}
+form label {cursor: pointer;}
+option {padding: 1px 2px;}
+table {border-collapse: collapse;border-spacing: 0;margin-bottom: 20px;}
+th, td {text-align: left;}
+hr {height: 1px;margin-bottom: 20px;background: #333;}
+img.wp-smiley {max-height: 12px;margin: 0;padding: 0;border: none;}
+.gallery {display: block;text-align: center;margin-bottom: 20px;}
+.alignleft, .left {float: left;margin-right: 15px;}
+.alignright, .right {float: right;margin-left: 15px;}
+.aligncenter, .center {display: block;margin: 0 auto 20px auto;}
+.alignnone, .block {clear: both;margin: 0 0 20px 0;}
+.clear {clear: both;}
+img.alignleft, img.alignright {display: inline;}
+blockquote.alignleft, blockquote.alignright {width: 33%;}
